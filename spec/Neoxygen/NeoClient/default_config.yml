@@ -1,0 +1,16 @@
+neoclient:
+  connections:
+    default:
+      scheme: http
+      host: localhost
+      port: 7474
+
+#  extensions:
+#    core:
+#      class: "Neoxygen\\NeoClient\\Extension\\NeoClientCoreExtension"
+
+#  loggers:
+#    neoclient:
+#      type: stream
+#      path: /var/log/neoclient.log
+#      level: debug

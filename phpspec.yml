@@ -1,0 +1,4 @@
+suites:
+  suite:
+    namespace: Neoxygen\NeoClient
+    psr4_prefix: Neoxygen\NeoClient

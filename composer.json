@@ -1,0 +1,45 @@
+{
+    "name": "neoxygen/neoclient",
+    "type": "library",
+    "description": "NeoClient is a PHP HttpClient for the Neo4j ReST API",
+    "keywords": [
+        "graph",
+        "neo4j",
+        "api",
+        "client",
+        "http"
+    ],
+    "homepage": "http://neoxygen.io",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Christophe Willemsen",
+            "email": "chris@neoxygen.io"
+        }
+    ],
+    "require": {
+        "php" : ">= 5.4",
+        "symfony/console" : "~2.5@dev",
+        "symfony/yaml" : "~2.5@dev",
+        "symfony/config" : "~2.5@dev",
+        "symfony/dependency-injection" : "~2.5@dev",
+        "symfony/event-dispatcher" : "~2.5@dev",
+        "guzzlehttp/guzzle" : "4.*",
+        "monolog/monolog": "~1.3"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "~2.0",
+        "phpunit/phpunit": "4.*",
+        "bossa/phpspec2-expect": "*",
+        "behat/behat": "~3.0"
+
+    },
+    "autoload": {
+        "psr-4": {
+            "Neoxygen\\NeoClient\\": "src/"
+        }
+    },
+    "config": {
+        "bin-dir": "bin"
+    }
+}

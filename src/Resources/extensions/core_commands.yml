@@ -1,0 +1,27 @@
+# Core Commands
+# Array of all available core commands aliases and classes
+
+simple_command:
+  class: "Neoxygen\\NeoClient\\Command\\SimpleCommand"
+  disable_default_injector: ~
+
+neo.ping_command:
+  class: "Neoxygen\\NeoClient\\Command\\Core\\CorePingCommand"
+
+neo.get_labels_command:
+  class: "Neoxygen\\NeoClient\\Command\\Core\\CoreGetLabelsCommand"
+
+neo.get_neo4j_version:
+  class: "Neoxygen\\NeoClient\\Command\\Core\\CoreGetVersionCommand"
+
+neo.send_cypher_query:
+  class: "Neoxygen\\NeoClient\\Command\\Core\\CoreSendCypherQueryCommand"
+
+neo.open_transaction:
+  class: "Neoxygen\\NeoClient\\Command\\Core\\CoreOpenTransactionCommand"
+
+neo.rollback_transaction:
+  class: "Neoxygen\\NeoClient\\Command\\Core\\CoreRollbackTransactionCommand"
+
+neo.push_to_transaction:
+  class: "Neoxygen\\NeoClient\\Command\\Core\\CorePushToTransactionCommand"

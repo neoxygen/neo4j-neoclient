@@ -1,0 +1,5 @@
+vendor/
+test.php
+bin/behat
+bin/phpspec
+bin/phpunit
