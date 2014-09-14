@@ -33,7 +33,7 @@ class ServiceContainer
 
     public function __construct(ContainerInterface $serviceContainer = null)
     {
-        $this->serviceContainer = 'null' === $serviceContainer ? new ContainerBuilder() : $serviceContainer;
+        $this->serviceContainer = null === $serviceContainer ? new ContainerBuilder() : $serviceContainer;
         $this->loggers = array();
     }
 
