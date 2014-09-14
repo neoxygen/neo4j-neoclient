@@ -15,7 +15,7 @@ namespace Neoxygen\NeoClient\Command\Core;
 use Neoxygen\NeoClient\Command\AbstractCommand;
 use Neoxygen\NeoClient\Request\Request;
 
-class CoreRollbackTransactionCommand extends AbstractCommand
+class CoreRollBackTransactionCommand extends AbstractCommand
 {
     private $transactionId;
 

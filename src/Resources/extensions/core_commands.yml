@@ -21,7 +21,7 @@ neo.open_transaction:
   class: "Neoxygen\\NeoClient\\Command\\Core\\CoreOpenTransactionCommand"
 
 neo.rollback_transaction:
-  class: "Neoxygen\\NeoClient\\Command\\Core\\CoreRollbackTransactionCommand"
+  class: "Neoxygen\\NeoClient\\Command\\Core\\CoreRollBackTransactionCommand"
 
 neo.push_to_transaction:
   class: "Neoxygen\\NeoClient\\Command\\Core\\CorePushToTransactionCommand"
