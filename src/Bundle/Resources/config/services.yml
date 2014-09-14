@@ -1,4 +1,4 @@
 services:
   neoxygen.neoclient:
-    class: "Neoxygen\NeoClient\ServiceContainer"
+    class: "Neoxygen\\NeoClient\\ServiceContainer"
     arguments: ["@service_container"]
