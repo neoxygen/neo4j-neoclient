@@ -17,7 +17,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder,
     Symfony\Component\Yaml\Yaml;
 use Neoxygen\NeoClient\DependencyInjection\NeoClientExtension,
     Neoxygen\NeoClient\DependencyInjection\Compiler\ConnectionRegistryCompilerPass,
-    Neoxygen\NeoClient\DependencyInjection\Compiler\NeoClientExtensionsCompilerPass;
+    Neoxygen\NeoClient\DependencyInjection\Compiler\NeoClientExtensionsCompilerPass,
+    Neoxygen\NeoClient\EventListener\HttpRequestEventSubscriber;
 use Psr\Log\LoggerInterface,
     Psr\Log\NullLogger,
     Monolog\Logger;
@@ -34,6 +35,7 @@ class ServiceContainer
     public function __construct(ContainerInterface $serviceContainer = null)
     {
         $this->serviceContainer = null === $serviceContainer ? new ContainerBuilder() : $serviceContainer;
+
         $this->loggers = array();
     }
 
@@ -69,6 +71,11 @@ class ServiceContainer
                 $loggerManager->createLogger($name, $config);
             }
         }
+    }
+
+    public function addSubscribers()
+    {
+        $this->serviceContainer->get('event_dispatcher')->addSubscriber(new HttpRequestEventSubscriber());
     }
 
     public function getConnectionManager()

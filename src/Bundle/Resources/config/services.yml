@@ -2,6 +2,8 @@ services:
   neoxygen.neoclient:
     class: "Neoxygen\\NeoClient\\ServiceContainer"
     arguments: ["@service_container"]
+    calls:
+      - ["addSubscribers"]
 
   data_collector.neoclient:
           class: "Neoxygen\\NeoClient\\Bundle\\DataCollector\\NeoClientDataCollector"

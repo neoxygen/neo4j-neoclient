@@ -5,15 +5,15 @@ parameters:
 services:
   neoclient.connection_manager:
     class: "Neoxygen\\NeoClient\\Connection\\ConnectionManager"
-    arguments: ["@?logger"]
+    arguments: ["@?logger","@?event_dispatcher"]
 
   neoclient.command_manager:
     class: "Neoxygen\\NeoClient\\Command\\CommandManager"
-    arguments: ["@?logger"]
+    arguments: ["@?logger","@?event_dispatcher"]
 
   neoclient.http_client:
     class: "Neoxygen\\NeoClient\\HttpClient\\GuzzleHttpClient"
-    arguments: ["%neoclient.http_client.response_format%","@?logger"]
+    arguments: ["%neoclient.http_client.response_format%","@?logger","@?event_dispatcher"]
 
   neoclient.logger_manager:
     class: "Neoxygen\\NeoClient\\Logger\\LoggerManager"

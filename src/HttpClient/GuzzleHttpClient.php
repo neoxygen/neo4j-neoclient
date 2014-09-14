@@ -13,8 +13,11 @@
 namespace Neoxygen\NeoClient\HttpClient;
 
 use GuzzleHttp\Client;
-use Neoxygen\NeoClient\Request\RequestInterface;
+use Neoxygen\NeoClient\Request\RequestInterface,
+    Neoxygen\NeoClient\NeoClientEvents,
+    Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class GuzzleHttpClient implements HttpClientInterface
 {
@@ -24,11 +27,17 @@ class GuzzleHttpClient implements HttpClientInterface
 
     private $logger;
 
-    public function __construct($responseFormat = 'json', LoggerInterface $logger)
+    private $eventDispatcher;
+
+    public function __construct(
+        $responseFormat = 'json',
+        LoggerInterface $logger,
+        EventDispatcherInterface $eventDispatcher = null)
     {
         $this->client = new Client();
         $this->responseFormat = $responseFormat;
         $this->logger = $logger;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function send($method, $url, $body = null, array $headers = array())
@@ -55,6 +64,7 @@ class GuzzleHttpClient implements HttpClientInterface
             sprintf('Sending http request to %s', $request->getUrl()),
             array('body' => (string) $request->getBody())
         );
+        $this->dispatchPreRequest($request);
 
         $response = $this->client->send($httpRequest);
 
@@ -80,5 +90,11 @@ class GuzzleHttpClient implements HttpClientInterface
         }
 
         return null;
+    }
+
+    private function dispatchPreRequest(RequestInterface $request)
+    {
+        $event = new HttpClientPreSendRequestEvent($request);
+        $this->eventDispatcher->dispatch(NeoClientEvents::NEO_HTTP_PRE_REQUEST_SEND, $event);
     }
 }

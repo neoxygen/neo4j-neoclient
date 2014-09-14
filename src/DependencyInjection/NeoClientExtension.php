@@ -18,7 +18,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder,
     Symfony\Component\DependencyInjection\Extension\ExtensionInterface,
     Symfony\Component\DependencyInjection\Definition,
     Symfony\Component\Config\Definition\Processor,
-    Symfony\Component\Config\FileLocator;
+    Symfony\Component\Config\FileLocator,
+    Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Neoxygen\NeoClient\DependencyInjection\Definition as ConfigDefinition;
 use Symfony\Component\Yaml\Yaml;
 
@@ -43,6 +44,7 @@ class NeoClientExtension implements  ExtensionInterface
 
         $this->addConnectionDefinitions($config, $container);
         $this->addRegisteredExtensionsDefinitions($config, $container);
+
     }
 
     private function addConnectionDefinitions($config, $container)
