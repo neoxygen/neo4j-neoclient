@@ -14,14 +14,21 @@ namespace Neoxygen\NeoClient\HttpClient;
 
 use GuzzleHttp\Client;
 use Neoxygen\NeoClient\Request\RequestInterface;
+use Psr\Log\LoggerInterface;
 
 class GuzzleHttpClient implements HttpClientInterface
 {
     private $client;
 
-    public function __construct()
+    private $responseFormat;
+
+    private $logger;
+
+    public function __construct($responseFormat = 'json', LoggerInterface $logger)
     {
         $this->client = new Client();
+        $this->responseFormat = $responseFormat;
+        $this->logger = $logger;
     }
 
     public function send($method, $url, $body = null, array $headers = array())
@@ -32,16 +39,46 @@ class GuzzleHttpClient implements HttpClientInterface
             $request->setHeaders($headers);
         }
 
-        return $this->client->send($request)->json();
+        $response = $this->client->send($request);
+
+        return $this->getResponse($response);
     }
 
     public function sendRequest(RequestInterface $request)
     {
-        $body = !empty($request->getBody()) ? $request->getBody() : null;
+        $body = ($request->getBody()) ? $request->getBody() : null;
         $httpRequest = $this->client->createRequest($request->getMethod(), $request->getUrl(), array('body' => $body));
         $httpRequest->setHeaders($request->getHeaders());
 
-        return $this->client->send($httpRequest)->json();
+        $this->logger->log(
+            'debug',
+            sprintf('Sending http request to %s', $request->getUrl()),
+            array('body' => (string) $request->getBody())
+        );
 
+        $response = $this->client->send($httpRequest);
+
+        return $this->getResponse($response);
+
+    }
+
+    private function getResponse($response)
+    {
+        $this->logger->log(
+            'debug',
+            sprintf('Http Response received'),
+            array('response' => (string) $response->getBody())
+        );
+
+        if ($response->getBody()) {
+            if ($this->responseFormat === 'json') {
+
+                return (string) $response->getBody();
+            }
+
+            return $response->json();
+        }
+
+        return null;
     }
 }

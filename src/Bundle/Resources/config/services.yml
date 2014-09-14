@@ -2,3 +2,8 @@ services:
   neoxygen.neoclient:
     class: "Neoxygen\\NeoClient\\ServiceContainer"
     arguments: ["@service_container"]
+
+  data_collector.neoclient:
+          class: "Neoxygen\\NeoClient\\Bundle\\DataCollector\\NeoClientDataCollector"
+          tags:
+              - { name: data_collector, template: "NeoxygenNeoClientBundle::dataCollector", id: "neoclient" }

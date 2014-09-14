@@ -1,14 +1,19 @@
 # Services definitions
+parameters:
+  neoclient.http_client.response_format: "json"
 
 services:
   neoclient.connection_manager:
     class: "Neoxygen\\NeoClient\\Connection\\ConnectionManager"
+    arguments: ["@?logger"]
 
   neoclient.command_manager:
     class: "Neoxygen\\NeoClient\\Command\\CommandManager"
+    arguments: ["@?logger"]
 
   neoclient.http_client:
     class: "Neoxygen\\NeoClient\\HttpClient\\GuzzleHttpClient"
+    arguments: ["%neoclient.http_client.response_format%","@?logger"]
 
   neoclient.logger_manager:
     class: "Neoxygen\\NeoClient\\Logger\\LoggerManager"

@@ -38,9 +38,11 @@ class CoreSendCypherQueryCommand extends AbstractCommand
         $body = $this->prepareBody();
         $request = new Request('POST', $this->getPath(), $body);
 
-        NeoClient::log('debug', sprintf('Sending query %s', $body));
+        //NeoClient::log('debug', sprintf('Sending query %s', $body));
         $response = $this->httpClient->sendRequest($request);
-        NeoClient::log('debug', sprintf('Query sent with the following response %s', json_encode($response)));
+        //NeoClient::log('debug', sprintf('Query sent with the following response %s', json_encode($response)));
+
+        return $response;
     }
 
     public function prepareBody()
