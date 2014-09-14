@@ -9,8 +9,8 @@ neoclient:
 #    core:
 #      class: "Neoxygen\\NeoClient\\Extension\\NeoClientCoreExtension"
 
-#  loggers:
-#    neoclient:
-#      type: stream
-#      path: /var/log/neoclient.log
-#      level: debug
+  loggers:
+    neoclient:
+      type: stream
+      path: /Users/ikwattro/dev/logs/neoclient.log
+      level: debug

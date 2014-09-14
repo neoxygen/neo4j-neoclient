@@ -31,7 +31,7 @@ class GuzzleHttpClient implements HttpClientInterface
 
     public function __construct(
         $responseFormat = 'json',
-        LoggerInterface $logger,
+        LoggerInterface $logger = null,
         EventDispatcherInterface $eventDispatcher = null)
     {
         $this->client = new Client();

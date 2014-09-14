@@ -15,5 +15,5 @@ services:
     class: "Neoxygen\\NeoClient\\HttpClient\\GuzzleHttpClient"
     arguments: ["%neoclient.http_client.response_format%","@?logger","@?event_dispatcher"]
 
-  neoclient.logger_manager:
+  logger:
     class: "Neoxygen\\NeoClient\\Logger\\LoggerManager"

@@ -14,7 +14,9 @@ namespace Neoxygen\NeoClient;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder,
     Symfony\Component\DependencyInjection\ContainerInterface,
-    Symfony\Component\Yaml\Yaml;
+    Symfony\Component\DependencyInjection\Definition,
+    Symfony\Component\Yaml\Yaml,
+    Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Neoxygen\NeoClient\DependencyInjection\NeoClientExtension,
     Neoxygen\NeoClient\DependencyInjection\Compiler\ConnectionRegistryCompilerPass,
     Neoxygen\NeoClient\DependencyInjection\Compiler\NeoClientExtensionsCompilerPass,
@@ -35,6 +37,10 @@ class ServiceContainer
     public function __construct(ContainerInterface $serviceContainer = null)
     {
         $this->serviceContainer = null === $serviceContainer ? new ContainerBuilder() : $serviceContainer;
+
+        if (null === $serviceContainer) {
+            $this->createDispatcher();
+        }
 
         $this->loggers = array();
     }
@@ -66,11 +72,19 @@ class ServiceContainer
         $this->serviceContainer->compile();
         if (!empty($this->loadedConfig['neoclient']['loggers'])) {
 
-            $loggerManager = $this->serviceContainer->get('neoclient.logger_manager');
+            $loggerManager = $this->serviceContainer->get('logger');
             foreach ($this->loadedConfig['neoclient']['loggers'] as $name => $config) {
                 $loggerManager->createLogger($name, $config);
             }
         }
+    }
+
+    public function createDispatcher()
+    {
+        $definition = new Definition();
+        $definition->setClass('Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher')
+            ->addArgument($this->serviceContainer);
+        $this->serviceContainer->setDefinition('event_dispatcher', $definition);
     }
 
     public function addSubscribers()
