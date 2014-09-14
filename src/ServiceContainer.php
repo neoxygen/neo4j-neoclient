@@ -2,17 +2,18 @@
 
 /**
  * This file is part of the "-[:NEOXYGEN]->" NeoClient package
-*
-* (c) Neoxygen.io <http://neoxygen.io>
-*
-* For the full copyright and license information, please view the LICENSE
-* file that was distributed with this source code.
-*
-*/
+ *
+ * (c) Neoxygen.io <http://neoxygen.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ */
 
 namespace Neoxygen\NeoClient;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder,
+    Symfony\Component\DependencyInjection\ContainerInterface,
     Symfony\Component\Yaml\Yaml;
 use Neoxygen\NeoClient\DependencyInjection\NeoClientExtension,
     Neoxygen\NeoClient\DependencyInjection\Compiler\ConnectionRegistryCompilerPass,
@@ -30,9 +31,9 @@ class ServiceContainer
 
     private $loggers;
 
-    public function __construct()
+    public function __construct(ContainerInterface $serviceContainer = null)
     {
-        $this->serviceContainer = new ContainerBuilder();
+        $this->serviceContainer = 'null' === $serviceContainer ? new ContainerBuilder() : $serviceContainer;
         $this->loggers = array();
     }
 
@@ -93,7 +94,7 @@ class ServiceContainer
     public function invoke($commandAlias, $connectionAlias = null)
     {
         $connection = $this->getConnectionManager()->getConnection($connectionAlias);
-        NeoClient::log('debug', sprintf('Invoking Command "%s" for connection "%s"', $commandAlias, $connection->getAlias()));
+        //NeoClient::log('debug', sprintf('Invoking Command "%s" for connection "%s"', $commandAlias, $connection->getAlias()));
         $cmd = $this->getCommandManager()->getCommand($commandAlias);
         $cmd->setConnection($connection);
 
