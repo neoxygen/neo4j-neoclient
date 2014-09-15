@@ -2,6 +2,8 @@
 
 ## A PHP HttpClient for the Neo4j ReST API with MultiDB Support
 
+[![Build Status](https://travis-ci.org/neoxygen/neo4j-neoclient.svg?branch=master)](https://travis-ci.org/neoxygen/neo4j-neoclient)
+
 ### Installation
 
 Add the library to your `composer.json` file :
