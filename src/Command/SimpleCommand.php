@@ -20,8 +20,7 @@ class SimpleCommand extends AbstractCommand
     {
         $request = new Request('GET', $this->getUrl());
 
-        print_r($this->httpClient->sendRequest($request));
-        exit();
+        return $this->httpClient->sendRequest($request);
     }
 
     private function getUrl()

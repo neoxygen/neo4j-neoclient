@@ -1,0 +1,29 @@
+language: php
+
+php:
+    - 5.4
+    - 5.5
+
+env:
+  - NEO_VERSION="2.1.4"
+
+branches:
+    only:
+        - master
+
+before_install:
+    - sudo apt-get update > /dev/null
+    - wget dist.neo4j.org/neo4j-community-$NEO_VERSION-unix.tar.gz > null
+    - tar -xzf neo4j-community-$NEO_VERSION-unix.tar.gz > null
+    - neo4j-community-$NEO_VERSION/bin/neo4j start > null
+
+before_script:
+    - composer self-update
+    - composer install --prefer-source --no-interaction
+
+script:
+    - bin/phpspec run -f dot
+    - bin/phpunit
+
+notifications:
+    email: "willemsen.christophe@gmail.com"

@@ -21,7 +21,7 @@ class CoreGetVersionCommand extends AbstractCommand
     {
         $request = new Request('GET', $this->getPath());
 
-        $endpoints = $this->httpClient->sendRequest($request);
+        $endpoints = json_decode($this->httpClient->sendRequest($request), true);
 
         return $endpoints['neo4j_version'];
     }

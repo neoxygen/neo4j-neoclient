@@ -23,9 +23,6 @@ class CoreOpenTransactionCommand extends AbstractCommand
         $request = new Request('POST', $this->getPath());
 
         $response = $this->httpClient->sendRequest($request);
-        $transactionUrl = $response['commit'];
-        $explode = explode('/', $transactionUrl);
-        $response['transaction_id'] = $explode[count($explode) - 2];
 
         return $response;
     }

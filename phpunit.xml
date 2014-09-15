@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<phpunit bootstrap="./vendor/autoload.php" colors="true" verbose="true">
+
+    <testsuites>
+        <testsuite name="tests">
+            <directory>./tests/Neoxygen/NeoClient</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <blacklist>
+            <directory>tests</directory>
+            <directory>vendor</directory>
+            <directory>bin</directory>
+        </blacklist>
+    </filter>
+
+    <logging>
+        <log type="coverage-html" target="tests/_reports/coverage/" charset="UTF-8" yui="true" highlight="false" lowUpperBound="35" highLowerBound="70"/>
+        <log type="testdox-text" target="tests/_reports/testdox/tests.txt"/>
+        <log type="testdox-html" target="tests/_reports/testdox/tests.html"/>
+    </logging>
+</phpunit>

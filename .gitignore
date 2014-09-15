@@ -3,3 +3,4 @@ test.php
 bin/behat
 bin/phpspec
 bin/phpunit
+tests/_reports

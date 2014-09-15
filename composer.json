@@ -39,6 +39,11 @@
             "Neoxygen\\NeoClient\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Neoxygen\\NeoClient\\Tests\\": "tests/Neoxygen/NeoClient/Tests"
+        }
+    },
     "config": {
         "bin-dir": "bin"
     }
