@@ -41,7 +41,6 @@ class CoreSendCypherQueryCommand extends AbstractCommand
         //NeoClient::log('debug', sprintf('Sending query %s', $body));
         $response = $this->httpClient->sendRequest($request);
         //NeoClient::log('debug', sprintf('Query sent with the following response %s', json_encode($response)));
-
         return $response;
     }
 

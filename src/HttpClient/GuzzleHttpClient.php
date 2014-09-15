@@ -82,7 +82,6 @@ class GuzzleHttpClient implements HttpClientInterface
 
         if ($response->getBody()) {
             if ($this->responseFormat === 'json') {
-
                 return (string) $response->getBody();
             }
 

@@ -21,7 +21,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder,
     Symfony\Component\Config\FileLocator,
     Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Neoxygen\NeoClient\DependencyInjection\Definition as ConfigDefinition;
-use Symfony\Component\Yaml\Yaml;
 
 class NeoClientExtension implements  ExtensionInterface
 {

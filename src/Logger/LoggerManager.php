@@ -30,7 +30,8 @@ class LoggerManager implements LoggerInterface
         return $this;
     }
 
-    public function getLogger($name = 'defaultLogger') {
+    public function getLogger($name = 'defaultLogger')
+    {
         if (!isset($this->loggers[$name])) {
             if ('defaultLogger' === $name) {
                 $this->loggers[$name] = new NullLogger();
@@ -45,7 +46,7 @@ class LoggerManager implements LoggerInterface
         if (!isset($this->loggers[$name])) {
 
             $logger = new Logger($name);
-            switch($config['type']) {
+            switch ($config['type']) {
                 case 'stream':
                     $handler = new StreamHandler(
                         $config['path'],

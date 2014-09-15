@@ -17,3 +17,7 @@ services:
 
   logger:
     class: "Neoxygen\\NeoClient\\Logger\\LoggerManager"
+
+  event_dispatcher:
+    class: "Symfony\\Component\\EventDispatcher\\ContainerAwareEventDispatcher"
+    arguments: ["@service_container"]

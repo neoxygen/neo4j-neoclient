@@ -25,4 +25,3 @@ class NeoClientDataCollector extends DataCollector
         return 'neoclient';
     }
 }
-
