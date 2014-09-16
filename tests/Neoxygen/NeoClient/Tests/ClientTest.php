@@ -5,9 +5,11 @@ namespace Neoxygen\NeoClient\Tests;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
 use Neoxygen\NeoClient\Client;
+use Symfony\Component\Yaml\Yaml;
 
-class ClientTest extends \PHPUnit_Framework_TestCase
+class ClientTest extends NeoClientTestCase
 {
+
     public function testContainerIsNotFrozenOnConstruct()
     {
         $client = new Client();
@@ -31,6 +33,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $client->addConnection('second', 'https', 'localhost', 7575);
         $this->assertArrayHasKey('second', $client->getConfiguration()['connections']);
         $this->assertCount(2, $client->getConfiguration()['connections']);
+
+        $client->build();
+
+        $con1 = $client->getConnection('default');
+        $con2 = $client->getConnection('second');
     }
 
     public function testEventListenerIsAdded()
@@ -66,5 +73,32 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(2, $cm->getConnections());
         $this->assertEquals('default', $cm->getConnection('default')->getAlias());
         $this->assertEquals('default', $client->getConnection('default')->getAlias());
+    }
+
+    public function testSetReturnFormat()
+    {
+        $client = new Client();
+    }
+
+    public function testLoadConfigFile()
+    {
+        $file = $this->getDefaultConfig();
+        $client = new Client();
+        $client->loadConfigurationFile($file);
+        $client->build();
+    }
+
+    public function testNullLoggerIsSetIfNoLoggerExist()
+    {
+        $client = new Client();
+        $loggers = $client->getLoggers();
+
+        $this->assertCount(1, $loggers);
+    }
+
+    public function testLogEntry()
+    {
+        $client = new Client();
+        $client->log('debug', 'Hello message');
     }
 }

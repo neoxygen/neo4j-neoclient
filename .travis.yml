@@ -7,10 +7,6 @@ php:
 env:
   - NEO_VERSION="2.1.4"
 
-branches:
-    only:
-        - master
-
 before_install:
     - sudo apt-get update > /dev/null
     - wget dist.neo4j.org/neo4j-community-$NEO_VERSION-unix.tar.gz > null
@@ -20,6 +16,7 @@ before_install:
 before_script:
     - composer self-update
     - composer install --prefer-source --no-interaction
+    - mv tests/database_settings.yml.dist tests/database_settings.yml
 
 script:
     - bin/phpspec run -f dot

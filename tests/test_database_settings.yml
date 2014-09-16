@@ -1,6 +1,0 @@
-#neoclient:
-#  connections:
-#    test:
-#      scheme: http
-#      host: localhost
-#      port: 7474

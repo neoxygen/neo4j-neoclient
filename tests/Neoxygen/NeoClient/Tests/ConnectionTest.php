@@ -12,14 +12,14 @@ class ConnectionTest extends NeoClientTestCase
         $cm = $sc->getConnectionManager();
 
         $this->assertCount(1, $cm->getConnections());
-        $this->assertEquals('default', $cm->getConnection()->getAlias());
-        $cm->setDefaultConnection('default');
-        $this->assertEquals('http', $cm->getConnection('default')->getScheme());
+        $this->assertEquals('test', $cm->getConnection()->getAlias());
+        $cm->setDefaultConnection('test');
+        $this->assertEquals('http', $cm->getConnection('test')->getScheme());
         $this->assertEquals('http', $cm->getConnection(null)->getScheme());
-        $this->assertEquals('default', $cm->getDefaultConnection()->getAlias());
+        $this->assertEquals('test', $cm->getDefaultConnection()->getAlias());
 
 
-        $this->assertTrue($cm->hasConnection('default'));
+        $this->assertTrue($cm->hasConnection('test'));
     }
 
     /**

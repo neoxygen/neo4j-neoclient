@@ -8,7 +8,7 @@ class NeoClientTestCase extends \PHPUnit_Framework_TestCase
 {
     public function getDefaultConfig()
     {
-        return __DIR__.'/../../../../spec/Neoxygen/NeoClient/default_config.yml';
+        return __DIR__.'/../../../database_settings.yml';
     }
 
     public function build()

@@ -68,7 +68,7 @@ class ServiceContainer
         $this->serviceContainer->addCompilerPass(new ConnectionRegistryCompilerPass());
         $this->serviceContainer->addCompilerPass(new NeoClientExtensionsCompilerPass());
         $this->serviceContainer->registerExtension($extension);
-        $this->serviceContainer->loadFromExtension($extension->getAlias(), $this->loadedConfig['neoclient']);
+        $this->serviceContainer->loadFromExtension($extension->getAlias(), $this->loadedConfig);
         $this->serviceContainer->compile();
         if (!empty($this->loadedConfig['neoclient']['loggers'])) {
 
