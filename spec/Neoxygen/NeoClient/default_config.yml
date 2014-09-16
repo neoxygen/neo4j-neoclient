@@ -1,9 +1,8 @@
-neoclient:
-  connections:
-    default:
-      scheme: http
-      host: localhost
-      port: 7474
+connections:
+  default:
+    scheme: http
+    host: localhost
+    port: 7474
 
 #  extensions:
 #    core:
