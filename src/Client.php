@@ -136,8 +136,8 @@ class Client
         $this->serviceContainer->loadFromExtension($extension->getAlias(), $this->configuration);
         $this->serviceContainer->compile();
 
-        foreach ($this->listeners as $event => $listener) {
-            $this->serviceContainer->get('event_dispatcher')->addListener($event, $listener);
+        foreach ($this->listeners as $event => $callback) {
+            $this->serviceContainer->get('event_dispatcher')->addListener($event, $callback);
         }
     }
 
