@@ -19,7 +19,9 @@ class CoreGetLabelsCommand extends AbstractCommand
 {
     public function execute()
     {
-        $request = new Request('GET', $this->getPath());
+        $request = $this->createRequest();
+        $request->setMethod('GET');
+        $request->setUrl($this->getPath());
 
         return $this->httpClient->sendRequest($request);
     }

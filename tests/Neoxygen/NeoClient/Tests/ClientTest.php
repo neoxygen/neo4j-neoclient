@@ -101,4 +101,69 @@ class ClientTest extends NeoClientTestCase
         $client = new Client();
         $client->log('debug', 'Hello message');
     }
+
+    public function testDefaultStreamLoggerCreation()
+    {
+        $client = new Client();
+        $client->createDefaultStreamLogger('test', '/dev/null');
+
+        $this->assertCount(1, $client->getLoggers());
+        $this->assertArrayHasKey('test', $client->getLoggers());
+    }
+
+    public function testDefaultChromeHandler()
+    {
+        $client = new Client();
+        $client->createDefaultChromePHPLogger('test');
+
+        $handlers = $client->getLogger('test')->getHandlers();
+        $this->assertInstanceOf('Monolog\Handler\ChromePHPHandler', $handlers[0]);
+
+    }
+
+    public function testGetLogger()
+    {
+        $client = new Client();
+        $logger = $client->getLogger();
+        $this->assertInstanceOf('Psr\Log\NullLogger', $logger);
+    }
+
+    public function testIsFrozen()
+    {
+        $client = new Client();
+        $this->assertFalse($client->isFrozen());
+        $client->build();
+        $this->assertTrue($client->isFrozen());
+    }
+
+    public function testInvokeCommand()
+    {
+        $client = new Client();
+        $config = $this->getDefaultConfig();
+        $client->loadConfigurationFile($config);
+        $client->build();
+        $command = $client->invoke('simple_command');
+
+        $this->assertInstanceOf('Neoxygen\NeoClient\Command\SimpleCommand', $command);
+
+    }
+
+    public function testConvenienceMethods()
+    {
+        $client = new Client();
+        $config = $this->getDefaultConfig();
+        $client->loadConfigurationFile($config);
+        $client->build();
+
+        $root = json_decode($client->getRoot(), true);
+        $this->assertArrayHasKey('data', $root);
+
+    }
+
+    public function testAuthConnection()
+    {
+        $client = new Client();
+        $client->loadConfigurationFile($this->getDefaultConfig());
+        $client->build();
+    }
 }

@@ -22,6 +22,8 @@ abstract class AbstractCommand implements CommandInterface
 
     protected $httpClient;
 
+    protected $request;
+
     public function __construct(HttpClientInterface $httpClient)
     {
         $this->httpClient = $httpClient;
@@ -40,5 +42,20 @@ abstract class AbstractCommand implements CommandInterface
     public function getBaseUrl()
     {
         return $this->connection->getBaseUrl();
+    }
+
+    public function createRequest()
+    {
+        $request = new Request();
+        if ($this->connection->isAuth()) {
+            $pwd = base64_encode($this->connection->getAuthUser().':'.$this->connection->getAuthPassword());
+            $request->setHeaders(array(
+                'Authorization' => 'Basic '.$pwd
+            ));
+        }
+
+        $this->request = $request;
+
+        return $request;
     }
 }

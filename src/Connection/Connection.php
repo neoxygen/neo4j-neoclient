@@ -38,7 +38,7 @@ class Connection
     /**
      * @var bool $authMode Whether or not to use Auth headers
      */
-    private $authMode = false;
+    private $authMode;
 
     /**
      * @var string $authUser The username for the authentication
@@ -55,13 +55,25 @@ class Connection
      * @param string $scheme
      * @param string $host
      * @param int    $port
+     * @param string $authUser     The user login when using the authentication extension
+     * @param string $authPassword The user password when using the authentication extension
      */
-    public function __construct($alias, $scheme = 'http', $host = 'localhost', $port = 7474)
+    public function __construct(
+        $alias,
+        $scheme = 'http',
+        $host = 'localhost',
+        $port = 7474,
+        $authMode = false,
+        $authUser = null,
+        $authPassword = null)
     {
         $this->alias = $alias;
         $this->scheme = $scheme;
         $this->host = $host;
         $this->port = $port;
+        $this->authMode = (bool) $authMode;
+        $this->authUser = $authUser;
+        $this->authPassword = $authPassword;
     }
 
     /**

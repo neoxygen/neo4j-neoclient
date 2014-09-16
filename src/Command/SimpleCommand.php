@@ -18,7 +18,9 @@ class SimpleCommand extends AbstractCommand
 {
     public function execute()
     {
-        $request = new Request('GET', $this->getUrl());
+        $request = $this->createRequest();
+        $request->setMethod('GET');
+        $request->setUrl($this->getUrl());
 
         return $this->httpClient->sendRequest($request);
     }

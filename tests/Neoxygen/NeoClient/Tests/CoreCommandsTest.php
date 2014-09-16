@@ -2,20 +2,28 @@
 
 namespace Neoxygen\NeoClient\Tests;
 
+use Neoxygen\NeoClient\Client;
+
 class CoreCommandsTest extends NeoClientTestCase
 {
     public function testPingCommand()
     {
-        $sc = $this->build();
-        $this->assertNull($sc->ping());
+        $client = new Client();
+        $client->loadConfigurationFile($this->getDefaultConfig());
+        $client->build();
+        $this->assertNull($client->ping());
     }
 
     public function testGetLabelsCommand()
     {
-        $sc = $this->build();
+        $client = new Client();
+        $client->loadConfigurationFile($this->getDefaultConfig());
+        $client->build();
+        $con = $client->getConnection();
+
         $q = 'MERGE (n:TestLabel) RETURN n';
-        $sc->sendCypherQuery($q);
-        $labels = $sc->getLabels();
+        $client->sendCypherQuery($q);
+        $labels = $client->getLabels();
 
         $this->assertContains('TestLabel', $labels);
     }

@@ -19,7 +19,9 @@ class CorePingCommand extends AbstractCommand
 {
     public function execute()
     {
-        $request = new Request('HEAD', $this->getConnection()->getBaseUrl());
+        $request = $this->createRequest();
+        $request->setMethod('HEAD');
+        $request->setUrl($this->getConnection()->getBaseUrl());
 
         return $this->httpClient->sendRequest($request);
     }

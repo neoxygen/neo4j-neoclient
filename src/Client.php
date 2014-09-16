@@ -83,19 +83,25 @@ class Client
     }
 
     /**
-     * @param string  $alias  An alias for the connection
-     * @param string  $scheme The scheme of the connection
-     * @param string  $host   The host of the connection
-     * @param integer $port   The port for the connection
+     * @param string  $alias    An alias for the connection
+     * @param string  $scheme   The scheme of the connection
+     * @param string  $host     The host of the connection
+     * @param integer $port     The port for the connection
+     * @param bool    $authMode Whether or not the connection use the authentication extension
+     * @param string|null Authentication login
+     * @param string|null Authentication password
      *
      * @return Neoxygen\NeoClient\Client
      */
-    public function addConnection($alias, $scheme, $host, $port)
+    public function addConnection($alias, $scheme, $host, $port, $authMode = false, $authUser = null, $authPassword = null)
     {
         $this->configuration['connections'][$alias] = array(
             'scheme' => $scheme,
             'host' => $host,
-            'port' => $port
+            'port' => $port,
+            'auth' => $authMode,
+            'user' => $authUser,
+            'password' => $authPassword
         );
 
         return $this;
@@ -202,7 +208,7 @@ class Client
         $this->serviceContainer->registerExtension($extension);
         $this->serviceContainer->addCompilerPass(new ConnectionRegistryCompilerPass());
         $this->serviceContainer->addCompilerPass(new NeoClientExtensionsCompilerPass());
-        $this->serviceContainer->loadFromExtension($extension->getAlias(), $this->configuration);
+        $this->serviceContainer->loadFromExtension($extension->getAlias(), $this->getConfiguration());
         $this->serviceContainer->compile();
 
         foreach ($this->listeners as $event => $callback) {
@@ -220,6 +226,8 @@ class Client
     }
 
     /**
+     * Returns the ConnectionManager Service
+     *
      * @return Neoxygen\NeoClient\Connection\ConnectionManager
      */
     public function getConnectionManager()
@@ -228,12 +236,24 @@ class Client
     }
 
     /**
+     * Returns the connection bound to the alias, or the default connection if no alias is provided
+     *
      * @param  string|null                              $alias
      * @return Neoxygen\NeoClient\Connection\Connection The connection with alias "$alias"
      */
     public function getConnection($alias = null)
     {
         return $this->getConnectionManager()->getConnection($alias);
+    }
+
+    /**
+     * Returns the CommandManager Service
+     *
+     * @return Neoxygen\NeoClient\Command\CommandManager
+     */
+    public function getCommandManager()
+    {
+        return $this->serviceContainer->get('neoclient.command_manager');
     }
 
     /**

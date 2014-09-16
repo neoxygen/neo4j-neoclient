@@ -20,7 +20,9 @@ class CoreOpenTransactionCommand extends AbstractCommand
 
     public function execute()
     {
-        $request = new Request('POST', $this->getPath());
+        $request = $this->createRequest();
+        $request->setMethod('POST');
+        $request->setUrl($this->getPath());
 
         $response = $this->httpClient->sendRequest($request);
 

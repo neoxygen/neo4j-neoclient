@@ -63,6 +63,11 @@ class NeoClientExtension implements  ExtensionInterface
                 ->addArgument($settings['port'])
                 ->addTag('neoclient.registered_connection')
                 ->setLazy(true);
+            if (isset($settings['auth']) && true === $settings['auth']) {
+                $definition->addArgument(true)
+                    ->addArgument($settings['user'])
+                    ->addArgument($settings['password']);
+            }
             $container->setDefinition(sprintf('neoclient.connection.%s', $connectionAlias), $definition);
         }
     }

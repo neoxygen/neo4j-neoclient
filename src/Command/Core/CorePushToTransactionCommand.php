@@ -37,7 +37,10 @@ class CorePushToTransactionCommand extends AbstractCommand
 
     public function execute()
     {
-        $request = new Request('POST', $this->getPath(), $this->prepareBody());
+        $request = $this->createRequest();
+        $request->setMethod('POST');
+        $request->setUrl($this->getPath());
+        $request->setBody($this->prepareBody());
 
         return $this->httpClient->sendRequest($request);
     }

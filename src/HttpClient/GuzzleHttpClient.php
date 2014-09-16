@@ -40,8 +40,12 @@ class GuzzleHttpClient implements HttpClientInterface
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function send($method, $url, $body = null, array $headers = array())
+    public function send($method, $url, $body = null, array $headers = array(), array $options = array())
     {
+        $args = array(
+            'body' => $body
+        );
+        $opt = array_merge($args, $options);
         $request = $this->client->createRequest($method, $url, array('body' => $body));
 
         if (!empty($headers)) {
@@ -56,7 +60,11 @@ class GuzzleHttpClient implements HttpClientInterface
     public function sendRequest(RequestInterface $request)
     {
         $body = ($request->getBody()) ? $request->getBody() : null;
-        $httpRequest = $this->client->createRequest($request->getMethod(), $request->getUrl(), array('body' => $body));
+        $defaults = array(
+            'body' => $body
+        );
+
+        $httpRequest = $this->client->createRequest($request->getMethod(), $request->getUrl(), $defaults);
         $httpRequest->setHeaders($request->getHeaders());
 
         $this->logger->log(

@@ -19,7 +19,9 @@ class CoreGetVersionCommand extends AbstractCommand
 {
     public function execute()
     {
-        $request = new Request('GET', $this->getPath());
+        $request = $this->createRequest();
+        $request->setMethod('GET');
+        $request->setUrl($this->getPath());
 
         $endpoints = json_decode($this->httpClient->sendRequest($request), true);
 

@@ -2,6 +2,7 @@
 
 namespace Neoxygen\NeoClient\Tests;
 
+use Neoxygen\NeoClient\Client;
 use Neoxygen\NeoClient\ServiceContainer;
 
 class NeoClientTestCase extends \PHPUnit_Framework_TestCase
@@ -13,10 +14,10 @@ class NeoClientTestCase extends \PHPUnit_Framework_TestCase
 
     public function build()
     {
-        $sc = new ServiceContainer();
-        $sc->loadConfiguration($this->getDefaultConfig());
-        $sc->build();
+        $client = new Client();
+        $client->loadConfigurationFile($this->getDefaultConfig());
+        $client->build();
 
-        return $sc;
+        return $client;
     }
 }

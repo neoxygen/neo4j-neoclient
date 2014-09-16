@@ -38,9 +38,19 @@ class Request implements RequestInterface
         return $this->method;
     }
 
+    public function setMethod($method)
+    {
+        $this->method = $method;
+    }
+
     public function getUrl()
     {
         return $this->url;
+    }
+
+    public function setUrl($url)
+    {
+        $this->url = $url;
     }
 
     public function getBody()
@@ -48,13 +58,33 @@ class Request implements RequestInterface
         return $this->body;
     }
 
+    public function setBody($body)
+    {
+        $this->body = $body;
+    }
+
     public function getHeaders()
     {
         return $this->headers;
     }
 
+    public function setHeaders(array $headers)
+    {
+        $this->headers = $headers;
+    }
+
     public function getOptions()
     {
         return $this->options;
+    }
+
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
+    }
+
+    public function setOption($key, $value)
+    {
+        $this->options[$key] = $value;
     }
 }
