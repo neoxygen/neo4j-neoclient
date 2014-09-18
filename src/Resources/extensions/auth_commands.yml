@@ -1,0 +1,6 @@
+neo.list_users:
+  class: "Neoxygen\\NeoClient\\Command\\Auth\\AuthListUsersCommand"
+neo.add_user:
+  class: "Neoxygen\\NeoClient\\Command\\Auth\\AuthAddUserCommand"
+neo.remove_user:
+  class: "Neoxygen\\NeoClient\\Command\\Auth\\AuthRemoveUserCommand"

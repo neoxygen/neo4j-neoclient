@@ -75,14 +75,15 @@ class NeoClientExtension implements  ExtensionInterface
     private function addRegisteredExtensionsDefinitions($config, $container)
     {
         foreach ($config['extensions'] as $alias => $props) {
-            $this->registerCommandExtension($alias, $props);
+            $this->registerCoreExtension($alias, $props);
         }
 
         // Registering Core Commands
-        $this->registerCommandExtension('neoclient_core', array('class' => 'Neoxygen\NeoClient\Extension\NeoClientCoreExtension'));
+        $this->registerCoreExtension('neoclient_core', array('class' => 'Neoxygen\NeoClient\Extension\NeoClientCoreExtension'));
+        $this->registerCoreExtension('neoclient_auth', array('class' => 'Neoxygen\NeoClient\Extension\NeoClientAuthExtension'));
     }
 
-    private function registerCommandExtension($alias, $props)
+    private function registerCoreExtension($alias, $props)
     {
         $definition = new Definition();
         $definition->setClass($props['class'])

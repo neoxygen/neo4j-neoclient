@@ -103,7 +103,7 @@ $result = $client->pushToTransaction($transactionId, $query);
 {"results":[{"columns":["count(n)"],"data":[{"row":[24]}]}],"errors":[]}
 ```
 
-#### Authenticated connection
+### Authenticated connection
 
 If you are using the `authenticated-extension`, you can specify to use the authMode for the connection and provide your username
 and password :
@@ -113,6 +113,49 @@ $client->addConnection('default', 'http', 'localhost', 7474, true, 'user', 'pass
 ```
 
 Your password will automatically encoded in base64 for the Authorization.
+
+### Core Commands for the `Authentication extension`
+
+#### listUsers | List the users registered in the connection authentication extension
+
+```php
+$client->listUsers();
+```
+
+```json
+{"john:password":"RW"}
+```
+
+#### addUser | Adds a user to the extensions
+
+```php
+$client->addUser('John', 'password');
+```
+
+```json
+OK
+```
+
+The third argument of the `addUser` method is the `readOnly` parameter, default to false
+
+```
+$client->addUser('john', 'password', true);
+```
+
+```json
+OK
+{"john:password":"RO"}
+```
+
+#### removeUser | Removes a user from the extension
+
+```php
+$client->removeUser('user', 'password');
+```
+
+```json
+OK
+```
 
 #### Working with multiple connections
 

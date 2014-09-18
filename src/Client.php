@@ -407,4 +407,27 @@ class Client
             ->setArguments($transactionId, $query, $parameters)
             ->execute();
     }
+
+    public function listUsers($connectionAlias = null)
+    {
+        return $this->invoke('neo.list_users', $connectionAlias)
+            ->execute();
+    }
+
+    public function addUser($user, $password, $readOnly = false, $connectionAlias = null)
+    {
+        return $this->invoke('neo.add_user')
+            ->setReadOnly($readOnly)
+            ->setUser($user)
+            ->setPassword($password)
+            ->execute();
+    }
+
+    public function removeUser($user, $password, $connectionAlias = null)
+    {
+        return $this->invoke('neo.remove_user', $connectionAlias)
+            ->setUser($user)
+            ->setPassword($password)
+            ->execute();
+    }
 }
