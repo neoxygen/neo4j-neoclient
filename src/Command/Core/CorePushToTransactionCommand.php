@@ -17,6 +17,10 @@ use Neoxygen\NeoClient\Request\Request;
 
 class CorePushToTransactionCommand extends AbstractCommand
 {
+    const METHOD = 'POST';
+
+    const PATH = '/db/data/transaction/';
+
     public $query;
 
     public $parameters;
@@ -37,12 +41,7 @@ class CorePushToTransactionCommand extends AbstractCommand
 
     public function execute()
     {
-        $request = $this->createRequest();
-        $request->setMethod('POST');
-        $request->setUrl($this->getPath());
-        $request->setBody($this->prepareBody());
-
-        return $this->httpClient->sendRequest($request);
+        return $this->httpClient->send(self::METHOD, $this->getPath(), $this->prepareBody(), $this->connection);
     }
 
     public function prepareBody()
@@ -63,7 +62,7 @@ class CorePushToTransactionCommand extends AbstractCommand
 
     public function getPath()
     {
-        return $this->getBaseUrl() . '/db/data/transaction/' . $this->getTransactionId() . '/commit';
+        return self::PATH . $this->getTransactionId() . '/commit';
     }
 
     public function getTransactionId()

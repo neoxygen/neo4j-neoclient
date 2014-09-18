@@ -273,9 +273,9 @@ class Client
      */
     public function invoke($commandAlias, $connectionAlias = null)
     {
-        $connection = $this->getConnectionManager()->getConnection($connectionAlias);
+        //$connection = $this->getConnectionManager()->getConnection($connectionAlias);
         $command = $this->getCommandManager()->getCommand($commandAlias);
-        $command->setConnection($connection);
+        $command->setConnection($connectionAlias);
 
         return $command;
     }

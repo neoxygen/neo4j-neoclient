@@ -17,20 +17,20 @@ use Neoxygen\NeoClient\Request\Request;
 
 class CoreRollBackTransactionCommand extends AbstractCommand
 {
+    const METHOD = 'DELETE';
+
+    const PATH = '/db/data/transaction/';
+
     private $transactionId;
 
     public function execute()
     {
-        $request = $this->createRequest();
-        $request->setMethod('DELETE');
-        $request->setUrl($this->getPath());
-
-        return $this->httpClient->sendRequest($request);
+        return $this->httpClient->send(self::METHOD, $this->getPath(), null, $this->connection);
     }
 
     public function getPath()
     {
-        return $this->getBaseUrl() . '/db/data/transaction/'.$this->getTransactionId();
+        return self::PATH . $this->getTransactionId();
     }
 
     public function getTransactionId()

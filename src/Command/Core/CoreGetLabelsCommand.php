@@ -12,22 +12,16 @@
 
 namespace Neoxygen\NeoClient\Command\Core;
 
-use Neoxygen\NeoClient\Command\AbstractCommand,
-    Neoxygen\NeoClient\Request\Request;
+use Neoxygen\NeoClient\Command\AbstractCommand;
 
 class CoreGetLabelsCommand extends AbstractCommand
 {
+    const METHOD = 'GET';
+
+    const PATH = '/db/data/labels';
+
     public function execute()
     {
-        $request = $this->createRequest();
-        $request->setMethod('GET');
-        $request->setUrl($this->getPath());
-
-        return $this->httpClient->sendRequest($request);
-    }
-
-    private function getPath()
-    {
-        return $this->getConnection()->getBaseUrl() . '/db/data/labels';
+        return $this->httpClient->send(self::METHOD, self::PATH, null, $this->connection);
     }
 }

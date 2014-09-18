@@ -17,20 +17,12 @@ use Neoxygen\NeoClient\Request\Request;
 
 class CoreOpenTransactionCommand extends AbstractCommand
 {
+    const METHOD = 'POST';
+
+    const PATH = '/db/data/transaction';
 
     public function execute()
     {
-        $request = $this->createRequest();
-        $request->setMethod('POST');
-        $request->setUrl($this->getPath());
-
-        $response = $this->httpClient->sendRequest($request);
-
-        return $response;
-    }
-
-    public function getPath()
-    {
-        return $this->getBaseUrl() . '/db/data/transaction';
+        return $this->httpClient->send(self::METHOD, self::PATH, null, $this->connection);
     }
 }

@@ -18,6 +18,10 @@ use Neoxygen\NeoClient\Request\Request;
 
 class CoreSendCypherQueryCommand extends AbstractCommand
 {
+    const METHOD = 'POST';
+
+    const PATH = '/db/data/transaction/commit';
+
     public $query;
 
     public $parameters;
@@ -35,15 +39,7 @@ class CoreSendCypherQueryCommand extends AbstractCommand
 
     public function execute()
     {
-        $body = $this->prepareBody();
-        $request = $this->createRequest();
-        $request->setMethod('POST');
-        $request->setBody($body);
-        $request->setUrl($this->getPath());
-
-        $response = $this->httpClient->sendRequest($request);
-
-        return $response;
+        return $this->httpClient->send(self::METHOD, self::PATH, $this->prepareBody(), $this->connection);
     }
 
     public function prepareBody()

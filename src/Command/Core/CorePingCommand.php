@@ -17,12 +17,12 @@ use Neoxygen\NeoClient\Command\AbstractCommand,
 
 class CorePingCommand extends AbstractCommand
 {
+    const METHOD = 'HEAD';
+
+    const PATH = '/';
+
     public function execute()
     {
-        $request = $this->createRequest();
-        $request->setMethod('HEAD');
-        $request->setUrl($this->getConnection()->getBaseUrl());
-
-        return $this->httpClient->sendRequest($request);
+        return $this->httpClient->send(self::METHOD, self::PATH, null, $this->connection);
     }
 }

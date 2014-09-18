@@ -16,13 +16,16 @@ use Neoxygen\NeoClient\Request\Request;
 
 class SimpleCommand extends AbstractCommand
 {
+    const METHOD = 'GET';
+
+    const PATH = '/';
+
     public function execute()
     {
-        $request = $this->createRequest();
-        $request->setMethod('GET');
-        $request->setUrl($this->getUrl());
 
-        return $this->httpClient->sendRequest($request);
+        return $this->httpClient->send(self::METHOD, self::PATH, null, $this->connection);
+
+        //return $this->httpClient->sendRequest($request);
     }
 
     private function getUrl()

@@ -29,7 +29,7 @@ abstract class AbstractCommand implements CommandInterface
         $this->httpClient = $httpClient;
     }
 
-    public function setConnection(Connection $connection)
+    public function setConnection($connection)
     {
         $this->connection = $connection;
     }
@@ -37,25 +37,5 @@ abstract class AbstractCommand implements CommandInterface
     public function getConnection()
     {
         return $this->connection;
-    }
-
-    public function getBaseUrl()
-    {
-        return $this->connection->getBaseUrl();
-    }
-
-    public function createRequest()
-    {
-        $request = new Request();
-        if ($this->connection->isAuth()) {
-            $pwd = base64_encode($this->connection->getAuthUser().':'.$this->connection->getAuthPassword());
-            $request->setHeaders(array(
-                'Authorization' => 'Basic '.$pwd
-            ));
-        }
-
-        $this->request = $request;
-
-        return $request;
     }
 }

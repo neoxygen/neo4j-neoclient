@@ -17,19 +17,18 @@ use Neoxygen\NeoClient\Request\Request;
 
 class CoreGetVersionCommand extends AbstractCommand
 {
+    const METHOD = 'GET';
+
+    const PATH = '/db/data';
+
     public function execute()
     {
-        $request = $this->createRequest();
-        $request->setMethod('GET');
-        $request->setUrl($this->getPath());
+        $data = $this->httpClient->send(self::METHOD, self::PATH, null, $this->connection);
 
-        $endpoints = json_decode($this->httpClient->sendRequest($request), true);
+        if (!is_array($data)) {
+            $data = json_decode($data, true);
+        }
 
-        return $endpoints['neo4j_version'];
-    }
-
-    public function getPath()
-    {
-        return $this->getBaseUrl() .'/db/data';
+        return $data['neo4j_version'];
     }
 }

@@ -13,6 +13,7 @@
 namespace Neoxygen\NeoClient\HttpClient;
 
 use GuzzleHttp\Client;
+use Neoxygen\NeoClient\Connection\ConnectionManager;
 use Neoxygen\NeoClient\Request\RequestInterface,
     Neoxygen\NeoClient\NeoClientEvents,
     Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent;
@@ -29,30 +30,35 @@ class GuzzleHttpClient implements HttpClientInterface
 
     private $eventDispatcher;
 
+    private $connectionManager;
+
     public function __construct(
-        $responseFormat = 'json',
+        $responseFormat = null,
         LoggerInterface $logger = null,
-        EventDispatcherInterface $eventDispatcher = null)
+        EventDispatcherInterface $eventDispatcher = null,
+        ConnectionManager $connectionManager)
     {
         $this->client = new Client();
-        $this->responseFormat = $responseFormat;
+        $this->responseFormat = null === $responseFormat ? 'json' : $responseFormat;
         $this->logger = $logger;
         $this->eventDispatcher = $eventDispatcher;
+        $this->connectionManager = $connectionManager;
     }
 
-    public function send($method, $url, $body = null, array $headers = array(), array $options = array())
+    public function send($method, $path, $body = null, $connectionAlias = null)
     {
-        $args = array(
+
+        $conn = $this->connectionManager->getConnection($connectionAlias);
+        $url = $conn->getBaseUrl() . $path;
+        $defaults = array(
             'body' => $body
         );
-        $opt = array_merge($args, $options);
-        $request = $this->client->createRequest($method, $url, array('body' => $body));
-
-        if (!empty($headers)) {
-            $request->setHeaders($headers);
+        $httpRequest = $this->client->createRequest($method, $url, $defaults);
+        if ($conn->isAuth()) {
+            $httpRequest->setHeader('Authorization', 'Basic '.base64_encode($conn->getAuthUser().':'.$conn->getAuthPassword()));
         }
 
-        $response = $this->client->send($request);
+        $response = $this->client->send($httpRequest);
 
         return $this->getResponse($response);
     }
