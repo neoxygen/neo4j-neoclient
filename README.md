@@ -95,7 +95,7 @@ $rollback = $client->rollbackTransaction($transactionId);
 
 ```php
 $transactionId = 60;
-$query = 'MATCH (n) RETURN count(n);
+$query = 'MATCH (n) RETURN count(n)';
 $result = $client->pushToTransaction($transactionId, $query);
 ```
 
