@@ -44,6 +44,7 @@ class NeoClientExtension implements  ExtensionInterface
         $this->addConnectionDefinitions($config, $container);
         $this->addRegisteredExtensionsDefinitions($config, $container);
         $this->addListeners($config);
+        $this->registerCustomCommands($config);
 
     }
 
@@ -87,7 +88,18 @@ class NeoClientExtension implements  ExtensionInterface
         $definition = new Definition();
         $definition->setClass($props['class'])
             ->addTag('neoclient.extension_class');
-        $this->container->setDefinition(sprintf('neoclient.extension_', $alias), $definition);
+        $this->container->setDefinition(sprintf('neoclient.extension_%s', $alias), $definition);
+    }
+
+    private function registerCustomCommands(array $config)
+    {
+        foreach ($config['custom_commands'] as $command)
+        {
+            $definition = new Definition();
+            $definition->setClass($command['class']);
+            $definition->addTag('neoclient.custom_command', array($command['alias']));
+            $this->container->setDefinition(sprintf('neoclient.custom_command.%s', $command['alias']), $definition);
+        }
     }
 
     private function addListeners(array $config)

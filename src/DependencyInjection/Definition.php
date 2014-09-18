@@ -63,6 +63,13 @@ class Definition implements ConfigurationInterface
                 ->end()
             ->end()
         ->end()
+        ->arrayNode('custom_commands')
+            ->prototype('array')
+                ->children()
+                    ->scalarNode('alias')->end()
+                    ->scalarNode('class')->end()
+                ->end()
+            ->end()
         ->end();
 
         return $treeBuilder;

@@ -138,6 +138,61 @@ $client->createDefaultStreamLogger('name', '/path/to/your/log/file.log', 'debug'
 $client->createDefaultChromePHPLogger('app', 'debug');
 ```
 
+#### Creating your own commands :
+
+You can extend the library by creating your own commands.
+
+Create your `Command` class, this class must extend `Neoxygen\NeoClient\Command\AbstractCommand` and must implement
+the `execute` method.
+
+By extending the AbstractCommand class, you have access to the http client, and also the connection alias that is used
+when invoking the command.
+
+The best way to execute a command is by calling the `send` request of the HttpClient and passing the `method`, `path`,
+`body` and `connectionAlias` arguments :
+
+```php
+<?php
+
+namespace Acme;
+
+use Neoxygen\NeoClient\Command\AbstractCommand;
+
+/**
+* Class that is used to get the extensions listed in the API
+*/
+class MyCommand extends AbstractCommand
+{
+    public function execute()
+    {
+        $method = 'GET';
+        $path = '/db/data/extensions';
+
+        // The arguments for the send method of the http client are
+        // $method, $path, $body = null, $connectionAlias = null
+
+        return $this->httpClient->send($method, $path, null, $this->connection);
+    }
+}
+```
+
+Then you have to register your command when building the client by passing an alias for your command and the class name :
+
+```php
+$client = new Client()
+    ->addConnection('default', 'http', 'localhost', 7474)
+    ->registerCommand('custom_get_extensions', 'My\Command\Class\Name')
+    ->build();
+```
+
+Then to use your command, just use the invoke method of the client :
+
+```php
+$command = $client->invoke('custom_get_extensions');
+$extensions = $command->execute();
+print_r($extensions);
+```
+
 ---
 
 

@@ -47,5 +47,17 @@ class NeoClientExtensionsCompilerPass implements CompilerPassInterface
                 $this->registeredCommands[$alias] = true;
             }
         }
+
+        $customCommands = $container->findTaggedServiceIds('neoclient.custom_command');
+
+        foreach ($customCommands as $id => $params) {
+            $def = $container->getDefinition($id);
+            $def->addArgument($httpClient);
+            $class = $def->getClass();
+            $commandManager->addMethodCall(
+                'registerCommand',
+                array($params[0][0], $def)
+            );
+        }
     }
 }
