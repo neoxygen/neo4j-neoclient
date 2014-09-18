@@ -193,6 +193,38 @@ $extensions = $command->execute();
 print_r($extensions);
 ```
 
+#### Creating a Commands Extension
+
+When you have a lot of commands, it may be good to create a command extension. Creating a command extension is quite simple :
+
+You need to create a class that implements the `Neoxygen\NeoClient\Extension\NeoClientExtensionInterface`, and you have to
+implement the `getAvailableCommands` method that return an array of command aliases bounded to command classes :
+
+```php
+
+use Neoxygen\NeoClient\Extension\NeoClientExtensionInterface;
+
+class MyExtension implements NeoClientExtensionInterface
+{
+    public static function getAvailableCommands()
+    {
+        return array(
+            'custom_get_extensions' => 'My\Command\Class',
+            'custom_other_exec' => 'My\Other\Class'
+            );
+    }
+}
+```
+
+And then register your extension when building the client by giving an alias and the class of your extension :
+
+```php
+
+$client->registerExtension('my_commands', 'My\Extension\Class')
+    ->build();
+```
+
+
 ---
 
 

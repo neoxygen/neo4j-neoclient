@@ -210,6 +210,13 @@ class Client
         return $this;
     }
 
+    public function registerExtension($alias, $class)
+    {
+        $this->configuration['extensions'][$alias] = array('class' => $class);
+
+        return $this;
+    }
+
     /**
      * Builds the service definitions and processes the configuration
      */
