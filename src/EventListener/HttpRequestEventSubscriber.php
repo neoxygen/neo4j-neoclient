@@ -19,6 +19,6 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
 
     public function onPreHttpRequestSend(HttpClientPreSendRequestEvent $event)
     {
-        //var_dump($event);
+
     }
 }

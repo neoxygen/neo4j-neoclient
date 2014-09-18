@@ -24,4 +24,3 @@ script:
 
 notifications:
     email: "willemsen.christophe@gmail.com"
-    
