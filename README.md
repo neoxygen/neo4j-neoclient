@@ -81,7 +81,27 @@ $client->openTransaction();
 {"commit":"http://localhost:7474/db/data/transaction/32/commit","results":[],"transaction":{"expires":"Tue, 16 Sep 2014 21:56:29 +0000"},"errors":[]}
 ```
 
-... More to be written
+#### rollBackTransaction | Roll backs a transaction
+```php
+$transactionId = 59;
+$client->rollbackTransaction($transactionId);
+```
+
+```json
+{"results":[],"errors":[]}
+```
+
+#### pushToTransaction | Add a statement to a given transaction
+
+```php
+$transactionId = 60;
+$query = 'MATCH (n) RETURN count(n);
+$client->pushToTransaction($transactionId, $query);
+```
+
+```json
+{"results":[{"columns":["count(n)"],"data":[{"row":[24]}]}],"errors":[]}
+```
 
 #### Authenticated connection
 

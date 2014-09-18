@@ -50,7 +50,8 @@ class CoreCommandsTest extends NeoClientTestCase
         $expl = explode('/', $transaction['commit']);
         $tx_id = $expl[count($expl)-2];
 
-        $rollback = json_decode($sc->rollbackTransaction($tx_id), true);
+        $response = $sc->rollbackTransaction($tx_id);
+        $rollback = json_decode($response, true);
 
         $this->assertArrayHasKey('results', $rollback);
         $this->assertEmpty($rollback['errors']);
@@ -64,8 +65,8 @@ class CoreCommandsTest extends NeoClientTestCase
         $tx_id = $expl[count($expl)-2];
 
         $q = 'MATCH (n) RETURN count(n)';
-        $push = json_decode($sc->pushToTransaction($tx_id, $q), true);
-
+        $response = $sc->pushToTransaction($tx_id, $q);
+        $push = json_decode($response, true);
         $this->assertEmpty($push['errors']);
         $this->assertNotEmpty($push['results']);
     }
