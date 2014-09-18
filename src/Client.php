@@ -408,12 +408,23 @@ class Client
             ->execute();
     }
 
+    /**
+     * @param string|null $connectionAlias
+     * @return mixed
+     */
     public function listUsers($connectionAlias = null)
     {
         return $this->invoke('neo.list_users', $connectionAlias)
             ->execute();
     }
 
+    /**
+     * @param $user
+     * @param $password
+     * @param bool $readOnly
+     * @param string|null $connectionAlias
+     * @return mixed
+     */
     public function addUser($user, $password, $readOnly = false, $connectionAlias = null)
     {
         return $this->invoke('neo.add_user')
@@ -423,6 +434,12 @@ class Client
             ->execute();
     }
 
+    /**
+     * @param $user
+     * @param $password
+     * @param string|null $connectionAlias
+     * @return mixed
+     */
     public function removeUser($user, $password, $connectionAlias = null)
     {
         return $this->invoke('neo.remove_user', $connectionAlias)
