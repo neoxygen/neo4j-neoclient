@@ -138,3 +138,25 @@ $client->createDefaultStreamLogger('name', '/path/to/your/log/file.log', 'debug'
 $client->createDefaultChromePHPLogger('app', 'debug');
 ```
 
+---
+
+
+## License
+
+The library is released under the MIT License, refer to the LICENSE file.
+
+## Tests
+
+To run the test suite, you need to copy the `tests/database_settings.yml.dist` to `tests/database_settings.yml`, as it will
+create nodes to a real database.
+
+Integration Tests :
+
+Run `vendor/bin/phpunit`
+
+Unit tests:
+
+Run `vendor/bin/phpspec -f`
+
+
+
