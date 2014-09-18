@@ -427,7 +427,7 @@ class Client
      */
     public function addUser($user, $password, $readOnly = false, $connectionAlias = null)
     {
-        return $this->invoke('neo.add_user')
+        return $this->invoke('neo.add_user', $connectionAlias)
             ->setReadOnly($readOnly)
             ->setUser($user)
             ->setPassword($password)
@@ -445,6 +445,22 @@ class Client
         return $this->invoke('neo.remove_user', $connectionAlias)
             ->setUser($user)
             ->setPassword($password)
+            ->execute();
+    }
+
+    /**
+     * @param  string|null $uuid
+     * @param  int|null    $limit
+     * @param  int|null    $moduleId
+     * @param  string|null $connectionAlias
+     * @return mixed
+     */
+    public function getChangeFeed($uuid = null, $limit = null, $moduleId = null, $connectionAlias = null)
+    {
+        return $this->invoke('neo.changefeed', $connectionAlias)
+            ->setUuid($uuid)
+            ->setLimit($limit)
+            ->setModuleId($moduleId)
             ->execute();
     }
 }

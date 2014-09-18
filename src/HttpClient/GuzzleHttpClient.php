@@ -45,7 +45,7 @@ class GuzzleHttpClient implements HttpClientInterface
         $this->connectionManager = $connectionManager;
     }
 
-    public function send($method, $path, $body = null, $connectionAlias = null)
+    public function send($method, $path, $body = null, $connectionAlias = null, $queryString = null)
     {
 
         $conn = $this->connectionManager->getConnection($connectionAlias);
@@ -53,6 +53,9 @@ class GuzzleHttpClient implements HttpClientInterface
         $defaults = array(
             'body' => $body
         );
+        if ($queryString) {
+            $defaults['query'] = $queryString;
+        }
         $httpRequest = $this->client->createRequest($method, $url, $defaults);
         if ($conn->isAuth()) {
             $httpRequest->setHeader('Authorization', 'Basic '.base64_encode($conn->getAuthUser().':'.$conn->getAuthPassword()));
