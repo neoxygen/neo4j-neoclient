@@ -409,7 +409,7 @@ class Client
     }
 
     /**
-     * @param string|null $connectionAlias
+     * @param  string|null $connectionAlias
      * @return mixed
      */
     public function listUsers($connectionAlias = null)
@@ -421,8 +421,8 @@ class Client
     /**
      * @param $user
      * @param $password
-     * @param bool $readOnly
-     * @param string|null $connectionAlias
+     * @param  bool        $readOnly
+     * @param  string|null $connectionAlias
      * @return mixed
      */
     public function addUser($user, $password, $readOnly = false, $connectionAlias = null)
@@ -437,7 +437,7 @@ class Client
     /**
      * @param $user
      * @param $password
-     * @param string|null $connectionAlias
+     * @param  string|null $connectionAlias
      * @return mixed
      */
     public function removeUser($user, $password, $connectionAlias = null)
