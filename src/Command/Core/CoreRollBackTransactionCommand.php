@@ -13,7 +13,6 @@
 namespace Neoxygen\NeoClient\Command\Core;
 
 use Neoxygen\NeoClient\Command\AbstractCommand;
-use Neoxygen\NeoClient\Request\Request;
 
 class CoreRollBackTransactionCommand extends AbstractCommand
 {

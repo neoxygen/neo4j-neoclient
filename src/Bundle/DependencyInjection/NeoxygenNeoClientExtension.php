@@ -4,9 +4,7 @@ namespace Neoxygen\NeoClient\Bundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\DependencyInjection\Loader,
-    Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Loader;
 use Neoxygen\NeoClient\DependencyInjection\NeoClientExtension;
 
 /**

@@ -20,8 +20,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface,
     Symfony\Component\Yaml\Yaml;
 use Neoxygen\NeoClient\DependencyInjection\NeoClientExtension,
     Neoxygen\NeoClient\DependencyInjection\Compiler\ConnectionRegistryCompilerPass,
-    Neoxygen\NeoClient\DependencyInjection\Compiler\NeoClientExtensionsCompilerPass,
-    Neoxygen\NeoClient\Command\CommandInterface;
+    Neoxygen\NeoClient\DependencyInjection\Compiler\NeoClientExtensionsCompilerPass;
 
 class Client
 {

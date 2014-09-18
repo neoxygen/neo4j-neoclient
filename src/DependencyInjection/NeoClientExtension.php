@@ -18,8 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder,
     Symfony\Component\DependencyInjection\Extension\ExtensionInterface,
     Symfony\Component\DependencyInjection\Definition,
     Symfony\Component\Config\Definition\Processor,
-    Symfony\Component\Config\FileLocator,
-    Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;
+    Symfony\Component\Config\FileLocator;
 use Neoxygen\NeoClient\DependencyInjection\Definition as ConfigDefinition;
 
 class NeoClientExtension implements  ExtensionInterface
@@ -93,8 +92,7 @@ class NeoClientExtension implements  ExtensionInterface
 
     private function registerCustomCommands(array $config)
     {
-        foreach ($config['custom_commands'] as $command)
-        {
+        foreach ($config['custom_commands'] as $command) {
             $definition = new Definition();
             $definition->setClass($command['class']);
             $definition->addTag('neoclient.custom_command', array($command['alias']));

@@ -13,8 +13,6 @@
 namespace Neoxygen\NeoClient\Command\Core;
 
 use Neoxygen\NeoClient\Command\AbstractCommand;
-use Neoxygen\NeoClient\NeoClient;
-use Neoxygen\NeoClient\Request\Request;
 
 class CoreSendCypherQueryCommand extends AbstractCommand
 {

@@ -12,8 +12,7 @@
 
 namespace Neoxygen\NeoClient\Command\Core;
 
-use Neoxygen\NeoClient\Command\AbstractCommand,
-    Neoxygen\NeoClient\Request\Request;
+use Neoxygen\NeoClient\Command\AbstractCommand;
 
 class CorePingCommand extends AbstractCommand
 {

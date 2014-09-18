@@ -12,8 +12,6 @@
 
 namespace Neoxygen\NeoClient\Command;
 
-use Neoxygen\NeoClient\Request\Request;
-
 class SimpleCommand extends AbstractCommand
 {
     const METHOD = 'GET';
@@ -22,14 +20,7 @@ class SimpleCommand extends AbstractCommand
 
     public function execute()
     {
-
         return $this->httpClient->send(self::METHOD, self::PATH, null, $this->connection);
 
-        //return $this->httpClient->sendRequest($request);
-    }
-
-    private function getUrl()
-    {
-        return $this->connection->getBaseUrl() . '/';
     }
 }

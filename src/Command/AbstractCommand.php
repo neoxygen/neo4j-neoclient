@@ -12,17 +12,13 @@
 
 namespace Neoxygen\NeoClient\Command;
 
-use Neoxygen\NeoClient\Connection\Connection,
-    Neoxygen\NeoClient\HttpClient\HttpClientInterface,
-    Neoxygen\NeoClient\Request\Request;
+use Neoxygen\NeoClient\HttpClient\HttpClientInterface;
 
 abstract class AbstractCommand implements CommandInterface
 {
     protected $connection;
 
     protected $httpClient;
-
-    protected $request;
 
     public function __construct(HttpClientInterface $httpClient)
     {
