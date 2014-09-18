@@ -67,14 +67,14 @@ $labels = $client->getLabels();
 #### getVersion | Returns the Neo4j version of the current connection
 
 ```php
-$client->getVersion();
+$version = $client->getVersion();
 
 // Returns (string) 2.1.4
 ```
 
 #### openTransaction | Opens a new http transaction
-```
-$client->openTransaction();
+```php
+$transaction = $client->openTransaction();
 ```
 
 ```json
@@ -84,7 +84,7 @@ $client->openTransaction();
 #### rollBackTransaction | Roll backs a transaction
 ```php
 $transactionId = 59;
-$client->rollbackTransaction($transactionId);
+$rollback = $client->rollbackTransaction($transactionId);
 ```
 
 ```json
@@ -96,7 +96,7 @@ $client->rollbackTransaction($transactionId);
 ```php
 $transactionId = 60;
 $query = 'MATCH (n) RETURN count(n);
-$client->pushToTransaction($transactionId, $query);
+$result = $client->pushToTransaction($transactionId, $query);
 ```
 
 ```json
