@@ -115,8 +115,8 @@ class Client
     /**
      * Defines a fallback connection for a given connection
      *
-     * @param string $connectionAlias
-     * @param string $fallbackConnectionAlias
+     * @param  string $connectionAlias
+     * @param  string $fallbackConnectionAlias
      * @return $this
      */
     public function setFallbackConnection($connectionAlias, $fallbackConnectionAlias)
@@ -235,6 +235,12 @@ class Client
         return $this;
     }
 
+    /**
+     * Enables the cache option for the container dumping
+     *
+     * @param $cachePath
+     * @return $this
+     */
     public function enableCache($cachePath)
     {
         $this->configuration['cache']['enabled'] = true;
@@ -258,7 +264,7 @@ class Client
         if (!$this->isCacheEnabled()) {
             return null;
         }
-        
+
         $path = $this->getConfiguration()['cache']['cache_path'];
         if (!preg_match('#/$#', $path)) {
             $path = $path . '/';
@@ -275,7 +281,7 @@ class Client
         if ($this->isCacheEnabled()) {
             $file = $this->getCachePath() . self::CACHE_FILENAME;
             if (file_exists($file)) {
-                require_once($file);
+                require_once $file;
                 $this->serviceContainer = new \ProjectServiceContainer();
 
                 return true;
@@ -536,10 +542,10 @@ class Client
      * Convenience method for working with replication
      * Sends a read only query
      *
-     * @param string $query
-     * @param array $parameters
-     * @param string|null $connectionAlias
-     * @param array $resultDataContents
+     * @param  string      $query
+     * @param  array       $parameters
+     * @param  string|null $connectionAlias
+     * @param  array       $resultDataContents
      * @return mixed
      */
     public function sendReadQuery($query, array $parameters = array(), $connectionAlias = null, array $resultDataContents = array())
@@ -556,10 +562,10 @@ class Client
     /**
      * Convenience method for working with replication
      *
-     * @param string $query
-     * @param array $parameters
-     * @param string|null $connectionAlias
-     * @param array $resultDataContents
+     * @param  string      $query
+     * @param  array       $parameters
+     * @param  string|null $connectionAlias
+     * @param  array       $resultDataContents
      * @return mixed
      */
     public function sendWriteQuery($query, array $parameters = array(), $connectionAlias = null, array $resultDataContents = array())
@@ -573,9 +579,9 @@ class Client
      *
      * @param $transactionId
      * @param $query
-     * @param array $parameters
-     * @param null $conn
-     * @param array $resultDataContents
+     * @param  array $parameters
+     * @param  null  $conn
+     * @param  array $resultDataContents
      * @return mixed
      */
     public function pushReadQueryToTransaction($transactionId, $query, array $parameters = array(), $conn = null, array $resultDataContents = array())
@@ -594,9 +600,9 @@ class Client
      *
      * @param $transactionId
      * @param $query
-     * @param array $parameters
-     * @param null $conn
-     * @param array $resultDataContents
+     * @param  array $parameters
+     * @param  null  $conn
+     * @param  array $resultDataContents
      * @return mixed
      */
     public function pushWriteQueryToTransaction($transactionId, $query, array $parameters = array(), $conn = null, array $resultDataContents = array())
