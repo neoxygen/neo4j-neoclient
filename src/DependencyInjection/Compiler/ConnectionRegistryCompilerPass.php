@@ -21,12 +21,21 @@ class ConnectionRegistryCompilerPass implements CompilerPassInterface
     {
         $connections = $container->findTaggedServiceIds('neoclient.registered_connection');
         $connectionManager = $container->findDefinition('neoclient.connection_manager');
+        $fallbacks = $container->findTaggedServiceIds('neoclient.fallback_connection');
 
         foreach ($connections as $id => $params) {
             $connectionManager
                 ->addMethodCall(
                     'registerConnection',
                     array($container->getDefinition($id))
+                );
+        }
+
+        foreach ($fallbacks as $id => $params) {
+            $connectionManager
+                ->addMethodCall(
+                    'setFallbackConnection',
+                    array($params[0]['fallback_of'], $params[0]['connection_alias'])
                 );
         }
     }

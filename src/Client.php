@@ -108,6 +108,20 @@ class Client
     }
 
     /**
+     * Defines a fallback connection for a given connection
+     *
+     * @param string $connectionAlias
+     * @param string $fallbackConnectionAlias
+     * @return $this
+     */
+    public function setFallbackConnection($connectionAlias, $fallbackConnectionAlias)
+    {
+        $this->configuration['fallbacks'][$connectionAlias] = $fallbackConnectionAlias;
+
+        return $this;
+    }
+
+    /**
      * @param $event The Event to listen to
      * @param $listener The listener, can be a Closure, a callback function or a class
      * @return $this
@@ -231,7 +245,10 @@ class Client
         foreach ($this->listeners as $event => $callback) {
             $this->serviceContainer->get('event_dispatcher')->addListener($event, $callback);
         }
-        $this->log('debug', 'container has been compiled');
+
+        foreach ($this->loggers as $alias => $logger) {
+            $this->serviceContainer->get('logger')->setLogger($alias, $logger);
+        }
     }
 
     /**

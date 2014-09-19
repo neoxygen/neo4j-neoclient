@@ -70,6 +70,10 @@ class Definition implements ConfigurationInterface
                     ->scalarNode('class')->end()
                 ->end()
             ->end()
+        ->end()
+        ->arrayNode('fallback')
+            ->prototype('scalar')->end()
+        ->end()
         ->end();
 
         return $treeBuilder;

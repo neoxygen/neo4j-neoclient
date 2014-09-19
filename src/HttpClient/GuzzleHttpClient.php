@@ -13,10 +13,12 @@
 namespace Neoxygen\NeoClient\HttpClient;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Neoxygen\NeoClient\Connection\ConnectionManager;
 use Neoxygen\NeoClient\Request\RequestInterface,
     Neoxygen\NeoClient\NeoClientEvents,
-    Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent;
+    Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent,
+    Neoxygen\NeoClient\Exception\HttpException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -61,9 +63,25 @@ class GuzzleHttpClient implements HttpClientInterface
             $httpRequest->setHeader('Authorization', 'Basic '.base64_encode($conn->getAuthUser().':'.$conn->getAuthPassword()));
         }
 
-        $response = $this->client->send($httpRequest);
+        try {
+            $response = $this->client->send($httpRequest);
 
-        return $this->getResponse($response);
+            return $this->getResponse($response);
+        } catch (RequestException $e) {
+                if ($this->connectionManager->hasFallbackConnection($conn->getAlias())) {
+                    $this->logger->log('alert', sprintf('Connection "%s" unreacheable, using fallback connection', $conn->getAlias()));
+                    $fallback = $this->connectionManager->getFallbackConnection($conn->getAlias());
+                    $this->send($method, $path, $body, $fallback->getAlias(), $queryString);
+            } else {
+                    $message = (string) $e->getRequest() ."\n";
+                    if ($e->hasResponse()) {
+                        $message .= (string) $response ."\n";
+                    }
+                    $this->logger->log('emergency', $message);
+                    throw new HttpException($message, $e->getCode());
+                }
+        }
+
     }
 
     public function sendRequest(RequestInterface $request)

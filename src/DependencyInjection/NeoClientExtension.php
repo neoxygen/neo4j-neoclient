@@ -68,6 +68,9 @@ class NeoClientExtension implements  ExtensionInterface
                     ->addArgument($settings['user'])
                     ->addArgument($settings['password']);
             }
+            if ($fallbackOf = $this->isFallbackConnection($config, $connectionAlias)) {
+                $definition->addTag('neoclient.fallback_connection', array('fallback_of' => $fallbackOf, 'connection_alias' => $connectionAlias));
+            }
             $container->setDefinition(sprintf('neoclient.connection.%s', $connectionAlias), $definition);
         }
     }
@@ -100,6 +103,19 @@ class NeoClientExtension implements  ExtensionInterface
             $definition->addTag('neoclient.custom_command', array($command['alias']));
             $this->container->setDefinition(sprintf('neoclient.custom_command.%s', $command['alias']), $definition);
         }
+    }
+
+    private function isFallbackConnection(array $config, $alias)
+    {
+        if (isset($config['fallback'])) {
+            foreach ($config['fallback'] as $con => $fallback) {
+                if ($alias === $fallback) {
+                    return $con;
+                }
+            }
+        }
+
+        return false;
     }
 
     private function addListeners(array $config)

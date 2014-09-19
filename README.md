@@ -158,7 +158,7 @@ $client->removeUser('user', 'password');
 OK
 ```
 
-#### Working with multiple connections
+### Working with multiple connections
 
 You can work with as many connections you want :
 
@@ -176,7 +176,23 @@ $client->getRoot('default');
 $client->sendCypherQuery('MATCH (n) RETURN count(n) as total', array(), 'testdb');
 ```
 
-#### Adding Event Listeners
+### Fallback connections
+
+When working with multiple connections, you may work with a main db and a backup db, and define the backup db as
+a fallback in case of connection failure with the main db.
+
+It is as simple as doing :
+
+```php
+$client->setFallbackConnection('defaultdb_alias' => 'backupdb_alias')
+    ->build();
+```
+
+For each command, in case of connection failure, the http client will check if a fallback is defined and use it.
+
+If you have loggers settled up, an `alert` entry will be logged to avert you of the connection failure.
+
+### Adding Event Listeners
 
 You can add listeners to hook into the built-in event system, for all list of all available events, look inside the
 `NeoEvents.php` file.

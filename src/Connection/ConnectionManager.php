@@ -29,11 +29,17 @@ class ConnectionManager
     private $defaultConnection;
 
     /**
+     * @var array Array containing connections fallbacks configs
+     */
+    private $fallbacks;
+
+    /**
      * Initialize connections array
      */
     public function __construct()
     {
         $this->connections = array();
+        $this->fallbacks = array();
     }
 
     /**
@@ -81,8 +87,8 @@ class ConnectionManager
     }
 
     /**
-     * @return The                        default Connection if defined, the first connection in the connections array otherwise
-     * @throws InvalidConnectionException if no connections are configured
+     * @return Neoxygen\NeoClient\Connection\Connection                The default Connection if defined, the first connection in the connections array otherwise
+     * @throws Neoxygen\NeoClient\Exception\InvalidConnectionException If no connections are configured
      */
     public function getDefaultConnection()
     {
@@ -112,6 +118,8 @@ class ConnectionManager
     }
 
     /**
+     * Returns whether or not a connection exist for a given alias
+     *
      * @param  string $alias The connection's alias to verify the existence
      * @return bool
      */
@@ -119,4 +127,48 @@ class ConnectionManager
     {
         return array_key_exists($alias, $this->connections);
     }
+
+    /**
+     * Defines a fallback connection for a given collection
+     *
+     * @param  string The connection alias to have a fallback
+     * @param  string The fallback connection alias
+     * @throws Neoxygen\NeoClient\Exception\InvalidConnectionException If one of the connections is not defined
+     */
+    public function setFallbackConnection($connectionAlias, $fallbackAlias)
+    {
+        if (!$this->hasConnection($connectionAlias) || !$this->hasConnection($fallbackAlias)) {
+            throw new InvalidConnectionException('The fallback connection can not be set, one of the connections does not exist');
+        }
+
+        $this->fallbacks[$connectionAlias] = $fallbackAlias;
+    }
+
+    /**
+     * Returns whether or not a given connection has a fallback connection
+     *
+     * @param  string $connectionAlias The connection alias
+     * @return bool
+     */
+    public function hasFallbackConnection($connectionAlias)
+    {
+        return array_key_exists($connectionAlias, $this->fallbacks);
+    }
+
+    /**
+     * Returns the fallback connection for a given connection alias
+     *
+     * @param  string The connection alias
+     * @return Neoxygen\NeoClient\Connection\Connection
+     * @throws Neoxygen\NeoClient\Exception\InvalidConnectionException If the connection has no fallback
+     */
+    public function getFallbackConnection($connectionAlias)
+    {
+        if (!$this->hasFallbackConnection($connectionAlias)) {
+            throw new InvalidConnectionException(sprintf('The connection "%s" has no defined fallback'));
+        }
+
+        return $this->getConnection($this->fallbacks[$connectionAlias]);
+    }
+
 }

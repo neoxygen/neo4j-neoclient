@@ -1,3 +1,7 @@
+## 1.4
+
+- Added a fallback mode for defining fallback connections in case of main connection failure
+
 ## 1.3
 
 - ChangeFeed Module command added to core
