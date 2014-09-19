@@ -307,6 +307,20 @@ $client->registerExtension('my_commands', 'My\Extension\Class')
     ->build();
 ```
 
+### Production settings
+
+The library uses a Dependency Injenction Container and service files definitions, while this provide flexibilty and
+robust code, this comes at a price.
+
+By providing a cache path where the container and all the configuration can be dumped, you'll have the best of both worlds.
+
+```php
+$client->enableCache('/my/cache/path')
+->build();
+```
+
+Don't forget to add full permissions to the cache path : `chmod -R 777 your/cache/path` .
+
 ### Extra Commands
 
 #### GraphAware ChangeFeed Module

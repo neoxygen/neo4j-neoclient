@@ -13,10 +13,12 @@
 namespace Neoxygen\NeoClient;
 
 use Monolog\Logger;
+use PhpSpec\ServiceContainer;
 use Psr\Log\NullLogger,
     Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface,
     Symfony\Component\DependencyInjection\ContainerBuilder,
+    Symfony\Component\DependencyInjection\Dumper\PhpDumper,
     Symfony\Component\Yaml\Yaml;
 use Neoxygen\NeoClient\DependencyInjection\NeoClientExtension,
     Neoxygen\NeoClient\DependencyInjection\Compiler\ConnectionRegistryCompilerPass,
@@ -24,6 +26,8 @@ use Neoxygen\NeoClient\DependencyInjection\NeoClientExtension,
 
 class Client
 {
+    const CACHE_FILENAME = 'neoclient_container.php';
+
     /**
      * @var ContainerBuilder
      */
@@ -57,6 +61,7 @@ class Client
         if (null === $serviceContainer) {
             $this->serviceContainer = new ContainerBuilder();
         }
+        $this->configuration['cache']['enabled'] = false;
 
         return $this;
     }
@@ -230,11 +235,47 @@ class Client
         return $this;
     }
 
+    public function enableCache($cachePath)
+    {
+        $this->configuration['cache']['enabled'] = true;
+        $this->configuration['cache']['cache_path'] = $cachePath;
+
+        return $this;
+    }
+
+    public function isCacheEnabled()
+    {
+        $cf = $this->getConfiguration();
+        if ($cf['cache']['enabled'] === true) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getCachePath()
+    {
+        if (!$this->isCacheEnabled()) {
+            return null;
+        }
+
+        return $this->getConfiguration()['cache']['cache_path'];
+    }
+
     /**
      * Builds the service definitions and processes the configuration
      */
     public function build()
     {
+        if ($this->isCacheEnabled()) {
+            $file = $this->getCachePath() . self::CACHE_FILENAME;
+            if (file_exists($file)) {
+                require_once($file);
+                $this->serviceContainer = new \ProjectServiceContainer();
+
+                return true;
+            }
+        }
         $extension = new NeoClientExtension();
         $this->serviceContainer->registerExtension($extension);
         $this->serviceContainer->addCompilerPass(new ConnectionRegistryCompilerPass());
@@ -248,6 +289,11 @@ class Client
 
         foreach ($this->loggers as $alias => $logger) {
             $this->serviceContainer->get('logger')->setLogger($alias, $logger);
+        }
+
+        if ($this->isCacheEnabled()) {
+            $dumper = new PhpDumper($this->serviceContainer);
+            file_put_contents($file, $dumper->dump());
         }
     }
 

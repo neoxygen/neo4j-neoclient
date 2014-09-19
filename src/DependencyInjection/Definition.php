@@ -74,6 +74,14 @@ class Definition implements ConfigurationInterface
         ->arrayNode('fallback')
             ->prototype('scalar')->end()
         ->end()
+        ->arrayNode('cache')
+            ->canBeUnset()
+            ->addDefaultsIfNotSet()
+                ->children()
+                    ->booleanNode('enabled')->defaultValue(false)->end()
+                    ->scalarNode('cache_path')->end()
+                ->end()
+        ->end()
         ->end();
 
         return $treeBuilder;

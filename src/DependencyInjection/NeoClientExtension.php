@@ -40,6 +40,10 @@ class NeoClientExtension implements  ExtensionInterface
 
         $loader->load('services.yml');
 
+        if ($config['cache']['enabled'] === true) {
+            $container->setParameter('neoclient.cache_path', $config['cache']['cache_path']);
+        }
+
         $this->addConnectionDefinitions($config, $container);
         $this->addRegisteredExtensionsDefinitions($config, $container);
         $this->addListeners($config);
