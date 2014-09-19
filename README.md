@@ -21,7 +21,20 @@ Add the library to your `composer.json` file :
 ```
 ### Configuration
 
-Require the composer autoloader and load your configuration :
+Configuration can be done with a `yaml` configuration file, if you want to configure the library with proceduaral PHP,
+check the [Configuration Reference](https://github.com/neoxygen/neo4j-neoclient#configuration-reference) section.
+
+Create for e.g. a `neoconfig.yml` file at the root of your project and start defining your connection settings :
+
+```yaml
+connections:
+  default_db:
+    scheme: http
+    host: localhost
+    port: 7474
+```
+
+Require the composer autoloader and load your configuration file:
 
 ```php
 <?php
@@ -31,7 +44,7 @@ require_once 'vendor/autoload.php';
 use Neoxygen\NeoClient\Client;
 
 $client = new Client()
-    ->addConnection('default', 'http', 'localhost', 7474)
+    ->loadConfigurationFile('/path/to/your_project/neoclient.yml')
     ->build();
 ```
 
@@ -109,8 +122,15 @@ $result = $client->pushToTransaction($transactionId, $query);
 If you are using the `authenticated-extension`, you can specify to use the authMode for the connection and provide your username
 and password :
 
-```php
-$client->addConnection('default', 'http', 'localhost', 7474, true, 'user', 'password');
+```yaml
+connections:
+  default:
+    scheme: http
+    host: localhost
+    port: 7474
+    auth: true
+    user: user
+    password: s3Cr3T
 ```
 
 Your password will automatically encoded in base64 for the Authorization.
@@ -162,11 +182,16 @@ OK
 
 You can work with as many connections you want :
 
-```php
-$client
-    ->addConnection('default', 'http', 'localhost', 7474)
-    ->addConnection('testdb', 'https', 'testserver.dev', 7575)
-    ->build();
+```yaml
+connections:
+  default:
+    scheme: http
+    host: localhost
+    port: 7474
+  testdb:
+    scheme: http
+    host: testserver.dev
+    port: 7475
 ```
 
 When calling commands, you can specify to which connection the command has to be executed by passing the connection alias as argument :
@@ -181,11 +206,22 @@ $client->sendCypherQuery('MATCH (n) RETURN count(n) as total', array(), 'testdb'
 When working with multiple connections, you may work with a main db and a backup db, and define the backup db as
 a fallback in case of connection failure with the main db.
 
-It is as simple as doing :
+Configuring a fallback connection in your config file (define a connection key with the fallback connection to use as
+value :
 
-```php
-$client->setFallbackConnection('defaultdb_alias' => 'backupdb_alias')
-    ->build();
+```yaml
+connections:
+  default:
+    scheme: http
+    host: localhost
+    port: 7474
+  testdb:
+    scheme: http
+    host: testserver.dev
+    port: 7475
+
+fallback:
+  default: testdb
 ```
 
 For each command, in case of connection failure, the http client will check if a fallback is defined and use it.
@@ -200,8 +236,12 @@ You can add listeners to hook into the built-in event system, for all list of al
 A listener can be a \Closure instance, an object implementing an __invoke method,
 a string representing a function, or an array representing an object method or a class method.
 
+Event listeners are currently not configurable with the yaml file, it will come soon...
+
 ```php
-$client->addEventListener('foo.action', function (Event $event));
+$client
+    ->loadConfiguration('file')
+    ->addEventListener('foo.action', function (Event $event));
 ```
 
 #### Logging
@@ -261,11 +301,20 @@ class MyCommand extends AbstractCommand
 
 Then you have to register your command when building the client by passing an alias for your command and the class name :
 
-```php
-$client = new Client()
-    ->addConnection('default', 'http', 'localhost', 7474)
-    ->registerCommand('custom_get_extensions', 'My\Command\Class\Name')
-    ->build();
+```yaml
+connections:
+  default:
+    scheme: http
+    host: localhost
+    port: 7474
+  testdb:
+    scheme: http
+    host: testserver.dev
+    port: 7475
+
+custom_commands:
+    custom_get_extensions:
+        class: My\Custom\Command\Class
 ```
 
 Then to use your command, just use the invoke method of the client :
@@ -301,10 +350,20 @@ class MyExtension implements NeoClientExtensionInterface
 
 And then register your extension when building the client by giving an alias and the class of your extension :
 
-```php
+```yaml
+connections:
+  default:
+    scheme: http
+    host: localhost
+    port: 7474
+  testdb:
+    scheme: http
+    host: testserver.dev
+    port: 7475
 
-$client->registerExtension('my_commands', 'My\Extension\Class')
-    ->build();
+extensions:
+  my_extension:
+    class: My\Extension\Clas
 ```
 
 ### Production settings
@@ -314,9 +373,23 @@ robust code, this comes at a price.
 
 By providing a cache path where the container and all the configuration can be dumped, you'll have the best of both worlds.
 
-```php
-$client->enableCache('/my/cache/path')
-->build();
+```yaml
+connections:
+  default:
+    scheme: http
+    host: localhost
+    port: 7474
+  testdb:
+    scheme: http
+    host: testserver.dev
+    port: 7475
+
+fallback:
+  default: testdb
+
+cache:
+  enable: true
+  cache_path: /dev/project/cache/
 ```
 
 Don't forget to add full permissions to the cache path : `chmod -R 777 your/cache/path` and also to empty the cache dir when
@@ -340,6 +413,55 @@ $changes = $client->getChangeFeed(null, 10);
 ```json
 [{"uuid":"6f166230-3d0b-11e4-8f99-84383559c16e","timestamp":1410808004563,"changes":["Created node (:TestLabel)"]},{"uuid":"86c3d3b0-3ac0-11e4-8f99-84383559c16e","timestamp":1410555929707,"changes":["Created node (:Looob)"]},{"uuid":"93358400-3abf-11e4-8f99-84383559c16e","timestamp":1410555521088,"changes":["Created node (:UriahHeep)"]},{"uuid":"b4e4fa20-398b-11e4-8f99-84383559c16e","timestamp":1410423292610,"changes":["Created node (:Person {type: hello})"]},{"uuid":"8adf60d0-398b-11e4-8f99-84383559c16e","timestamp":1410423222109,"changes":["Created node (:MyLabel {green: yel})","Created relationship (:Product:Track {name: hello})-[:LOVESPRIMES_AT]->(:MyLabel {green: yel})","Created node (:Product:Track {name: hello})"]},{"uuid":"6f10b200-398b-11e4-8f99-84383559c16e","timestamp":1410423175456,"changes":["Created node (:MyLabel {green: yellow})","Created relationship (:Product {name: hello})-[:LOVES_TO]->(:MyLabel {green: yellow})","Created node (:Product {name: hello})"]}]airbook:commandr ikwattro$ php test.php
 [{"uuid":"6f166230-3d0b-11e4-8f99-84383559c16e","timestamp":1410808004563,"changes":["Created node (:TestLabel)"]}]
+```
+
+### Configuration Reference
+
+### YAML
+
+```yaml
+connections:
+  default:
+    scheme: http
+    host: localhost
+    port: 7474
+  testdb:
+    scheme: http
+    host: testserver.dev
+    port: 7475
+
+fallback:
+  default: testdb
+
+cache:
+  enabled: true
+  cache_path: /dev/project/cache
+
+custom_commands:
+  my_command:
+    class: My\Command\Class
+
+extensions:
+  my_extension:
+    class: My\Extension\Class
+```
+
+### PHP
+
+```php
+
+$client = new Client();
+$client
+  ->addConnection('default','http','localhost',7474,true,'user','password')
+  ->addConnection('backupdb','http','testserver',7475)
+  ->setFallbackConnection('default', backupdb'-
+  ->enableCache('my/cache/path')
+  ->registerCommand('my_command', 'My\Command\Path')
+  ->registerExtension('my_extension', 'My\Extension\Class\Path')
+  ->setLogger('my_logger', MyLoggerInstance())
+  ->createDefaultStreamLogger('main', '/path/to/log/', 'debug'-
+  ->createDefaultChromePHPLogger('other_log')
+  ->build();
 ```
 
 
