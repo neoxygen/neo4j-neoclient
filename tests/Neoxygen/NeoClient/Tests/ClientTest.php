@@ -173,4 +173,18 @@ class ClientTest extends NeoClientTestCase
         $root = json_decode($client->getRoot(), true);
         $this->assertArrayHasKey('data', $root);
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testReadOnlyQuery()
+    {
+        $q = 'MERGE (n:Label) RETURN n';
+        $q2 = 'CREATE (n:Label) RETURN n';
+        $client = $this->build();
+        $client->sendReadQuery($q);
+        $client->sendReadQuery($q2);
+        $client->pushToTransaction(45, $q);
+        $client->pushToTransaction(46, $q2);
+    }
 }

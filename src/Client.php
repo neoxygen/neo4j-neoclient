@@ -375,7 +375,7 @@ class Client
      * @param  array       $resultDataContents
      * @return mixed
      */
-    public function sendCypherQuery($query, array $parameters = array(), $conn = null, array $resultDataContents = array())
+    public function sendCypherQuery($query, array $parameters = array(), $conn = null, array $resultDataContents = array(), $writeMode = true)
     {
         return $this->invoke('neo.send_cypher_query', $conn)
             ->setArguments($query, $parameters, $resultDataContents)
@@ -418,7 +418,7 @@ class Client
      * @param  string|null $conn       The alias of the connection to use
      * @return mixed
      */
-    public function pushToTransaction($transactionId, $query, array $parameters = array(), $conn = null)
+    public function pushToTransaction($transactionId, $query, array $parameters = array(), $conn = null, array $resultDataContents = array(), $writeMode = true)
     {
         return $this->invoke('neo.push_to_transaction', $conn)
             ->setArguments($transactionId, $query, $parameters)
@@ -479,5 +479,77 @@ class Client
             ->setLimit($limit)
             ->setModuleId($moduleId)
             ->execute();
+    }
+
+    /**
+     * Convenience method for working with replication
+     * Sends a read only query
+     *
+     * @param string $query
+     * @param array $parameters
+     * @param string|null $connectionAlias
+     * @param array $resultDataContents
+     * @return mixed
+     */
+    public function sendReadQuery($query, array $parameters = array(), $connectionAlias = null, array $resultDataContents = array())
+    {
+        foreach (array('MERGE', 'CREATE') as $pattern) {
+            if (preg_match('/'.$pattern.'/i', $query)) {
+                throw new \InvalidArgumentException(sprintf('The query "%s" contains cypher write clauses', $query));
+            }
+        }
+
+        return $this->sendCypherQuery($query, $parameters, $connectionAlias, $resultDataContents, false);
+    }
+
+    /**
+     * Convenience method for working with replication
+     *
+     * @param string $query
+     * @param array $parameters
+     * @param string|null $connectionAlias
+     * @param array $resultDataContents
+     * @return mixed
+     */
+    public function sendWriteQuery($query, array $parameters = array(), $connectionAlias = null, array $resultDataContents = array())
+    {
+        return $this->sendCypherQuery($query, $parameters, $connectionAlias, $resultDataContents, true);
+    }
+
+    /**
+     * Convenience method for the replication mode
+     * Push a read only query to the transaction
+     *
+     * @param $transactionId
+     * @param $query
+     * @param array $parameters
+     * @param null $conn
+     * @param array $resultDataContents
+     * @return mixed
+     */
+    public function pushReadQueryToTransaction($transactionId, $query, array $parameters = array(), $conn = null, array $resultDataContents = array())
+    {
+        foreach (array('MERGE', 'CREATE') as $pattern) {
+            if (preg_match('/'.$pattern.'/i', $query)) {
+                throw new \InvalidArgumentException(sprintf('The query "%s" contains cypher write clauses', $query));
+            }
+        }
+
+        return $this->pushToTransaction($transactionId, $query, $parameters, $conn, $resultDataContents, false);
+    }
+
+    /**
+     * Convenience method for working with the replication mode
+     *
+     * @param $transactionId
+     * @param $query
+     * @param array $parameters
+     * @param null $conn
+     * @param array $resultDataContents
+     * @return mixed
+     */
+    public function pushWriteQueryToTransaction($transactionId, $query, array $parameters = array(), $conn = null, array $resultDataContents = array())
+    {
+        return $this->pushToTransaction($transactionId, $query, $parameters, $conn, $resultDataContents, true);
     }
 }
