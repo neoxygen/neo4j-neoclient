@@ -13,7 +13,6 @@
 namespace Neoxygen\NeoClient;
 
 use Monolog\Logger;
-use PhpSpec\ServiceContainer;
 use Psr\Log\NullLogger,
     Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface,
