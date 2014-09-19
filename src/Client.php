@@ -116,7 +116,7 @@ class Client
      */
     public function setFallbackConnection($connectionAlias, $fallbackConnectionAlias)
     {
-        $this->configuration['fallbacks'][$connectionAlias] = $fallbackConnectionAlias;
+        $this->configuration['fallback'][$connectionAlias] = $fallbackConnectionAlias;
 
         return $this;
     }

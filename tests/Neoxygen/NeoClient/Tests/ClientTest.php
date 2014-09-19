@@ -166,4 +166,11 @@ class ClientTest extends NeoClientTestCase
         $client->loadConfigurationFile($this->getDefaultConfig());
         $client->build();
     }
+
+    public function testFallbackConnection()
+    {
+        $client = $this->buildMultiple();
+        $root = json_decode($client->getRoot(), true);
+        $this->assertArrayHasKey('data', $root);
+    }
 }

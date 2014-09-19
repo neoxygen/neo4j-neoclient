@@ -49,7 +49,6 @@ class GuzzleHttpClient implements HttpClientInterface
 
     public function send($method, $path, $body = null, $connectionAlias = null, $queryString = null)
     {
-
         $conn = $this->connectionManager->getConnection($connectionAlias);
         $url = $conn->getBaseUrl() . $path;
         $defaults = array(
@@ -71,11 +70,11 @@ class GuzzleHttpClient implements HttpClientInterface
                 if ($this->connectionManager->hasFallbackConnection($conn->getAlias())) {
                     $this->logger->log('alert', sprintf('Connection "%s" unreacheable, using fallback connection', $conn->getAlias()));
                     $fallback = $this->connectionManager->getFallbackConnection($conn->getAlias());
-                    $this->send($method, $path, $body, $fallback->getAlias(), $queryString);
+                    return $this->send($method, $path, $body, $fallback->getAlias(), $queryString);
             } else {
                     $message = (string) $e->getRequest() ."\n";
                     if ($e->hasResponse()) {
-                        $message .= (string) $response ."\n";
+                        $message .= (string) $e->getResponse() ."\n";
                     }
                     $this->logger->log('emergency', $message);
                     throw new HttpException($message, $e->getCode());
