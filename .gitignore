@@ -5,3 +5,4 @@ bin/phpspec
 bin/phpunit
 tests/_reports
 tests/database_settings.yml
+cache/
