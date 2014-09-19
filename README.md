@@ -454,7 +454,7 @@ $client = new Client();
 $client
   ->addConnection('default','http','localhost',7474,true,'user','password')
   ->addConnection('backupdb','http','testserver',7475)
-  ->setFallbackConnection('default', backupdb'-
+  ->setFallbackConnection('default', backupdb')
   ->enableCache('my/cache/path')
   ->registerCommand('my_command', 'My\Command\Path')
   ->registerExtension('my_extension', 'My\Extension\Class\Path')
