@@ -1,5 +1,13 @@
 connections:
-  test:
+  default:
     scheme: http
     host: localhost
     port: 7474
+    auth: true
+    user: user
+    password: s3cr3t
+
+  test:
+    scheme: http
+    host: localhost
+    port: 7473
