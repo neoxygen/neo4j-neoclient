@@ -21,7 +21,7 @@ class ClientTest extends NeoClientTestCase
     public function testDefaultAttributes()
     {
         $client = new Client();
-        $this->assertEmpty($client->getConfiguration());
+        $this->assertInternalType('array', $client->getConfiguration());
     }
 
     public function testAddingANewConnection()
