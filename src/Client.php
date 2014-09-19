@@ -258,8 +258,13 @@ class Client
         if (!$this->isCacheEnabled()) {
             return null;
         }
+        
+        $path = $this->getConfiguration()['cache']['cache_path'];
+        if (!preg_match('#/$#', $path)) {
+            $path = $path . '/';
+        }
 
-        return $this->getConfiguration()['cache']['cache_path'];
+        return $path;
     }
 
     /**

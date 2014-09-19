@@ -319,7 +319,8 @@ $client->enableCache('/my/cache/path')
 ->build();
 ```
 
-Don't forget to add full permissions to the cache path : `chmod -R 777 your/cache/path` .
+Don't forget to add full permissions to the cache path : `chmod -R 777 your/cache/path` and also to empty the cache dir when
+you do changes to your configuration.
 
 ### Extra Commands
 
