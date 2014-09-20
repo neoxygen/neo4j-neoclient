@@ -154,6 +154,8 @@ class Client
         if (!isset($this->loggers[$name])) {
             $this->loggers[$name] = $logger;
         }
+
+        return $this;
     }
 
     /**
