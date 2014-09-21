@@ -126,8 +126,10 @@ class Client
     }
 
     /**
-     * @param $event The Event to listen to
-     * @param $listener The listener, can be a Closure, a callback function or a class
+     * Adds an event listener to an event
+     *
+     * @param  string          $event    The Event to listen to
+     * @param  string|\Closure $listener The listener, can be a Closure, a callback function or a class
      * @return $this
      */
     public function addEventListener($event, $listener)
@@ -146,8 +148,10 @@ class Client
     }
 
     /**
-     * @param $name
-     * @param LoggerInterface $logger
+     * Register a user defined logger
+     *
+     * @param string          $name   Logger channel name
+     * @param LoggerInterface $logger User logger instance
      */
     public function setLogger($name, LoggerInterface $logger)
     {
@@ -173,7 +177,7 @@ class Client
     /**
      * Returns a registered Logger
      *
-     * @param  null            $name The name of the Logger
+     * @param  string|null     $name The name of the Logger
      * @return LoggerInterface The logger bounded to the specified name
      */
     public function getLogger($name = null)
@@ -186,6 +190,13 @@ class Client
         return $this->loggers[$name];
     }
 
+    /**
+     * Logs a record to the registered loggers
+     *
+     * @param string $level   Record logging level
+     * @param string $message Log record message
+     * @param array  $context Context of message
+     */
     public function log($level = 'debug', $message, array $context = array())
     {
         foreach ($this->getLoggers() as $key => $logger) {
@@ -193,6 +204,14 @@ class Client
         }
     }
 
+    /**
+     * Creates an internal stream logger
+     *
+     * @param  string     $name  Logger channel name
+     * @param  string     $path  Path to the log file
+     * @param  int|string $level Logging level
+     * @return $this
+     */
     public function createDefaultStreamLogger($name, $path, $level = Logger::DEBUG)
     {
         $logger = new Logger($name);
@@ -203,6 +222,13 @@ class Client
         return $this;
     }
 
+    /**
+     * Creates an internal chrome php logger
+     *
+     * @param  string     $name  Logger channel name
+     * @param  int|string $level Logging level
+     * @return $this
+     */
     public function createDefaultChromePHPLogger($name, $level = Logger::DEBUG)
     {
         $logger = new Logger($name);
@@ -219,6 +245,13 @@ class Client
         $this->loggers['nullLogger'] = $logger;
     }
 
+    /**
+     * Register a user custom command
+     *
+     * @param  string $alias Command alias
+     * @param  string $class The Command class name
+     * @return $this
+     */
     public function registerCommand($alias, $class)
     {
         $this->configuration['custom_commands'][] = array(
@@ -229,6 +262,13 @@ class Client
         return $this;
     }
 
+    /**
+     * Register a user custom extension
+     *
+     * @param  string $alias The extension alias
+     * @param  string $class The class name of the extension
+     * @return $this
+     */
     public function registerExtension($alias, $class)
     {
         $this->configuration['extensions'][$alias] = array('class' => $class);
@@ -239,7 +279,7 @@ class Client
     /**
      * Enables the cache option for the container dumping
      *
-     * @param $cachePath
+     * @param  string $cachePath The cache path
      * @return $this
      */
     public function enableCache($cachePath)
@@ -250,6 +290,9 @@ class Client
         return $this;
     }
 
+    /**
+     * @return bool True if the cache is enabled, false otherwise
+     */
     public function isCacheEnabled()
     {
         $cf = $this->getConfiguration();
@@ -260,6 +303,9 @@ class Client
         return false;
     }
 
+    /**
+     * @return null|string The defined cache path, null if cache disabled
+     */
     public function getCachePath()
     {
         if (!$this->isCacheEnabled()) {
@@ -359,7 +405,7 @@ class Client
     /**
      * Invokes a Command by alias and connectionAlias(optional)
      *
-     * @param $commandAlias The alias of the Command to invoke
+     * @param  string                                      $commandAlias    The alias of the Command to invoke
      * @param  string|null                                 $connectionAlias
      * @return Neoxygen\NeoClient\Command\CommandInterface
      */
@@ -455,7 +501,7 @@ class Client
     /**
      * Convenience method that invoke the RollBackTransactionCommand
      *
-     * @param $id The id of the transaction
+     * @param  int         $id   The id of the transaction
      * @param  string|null $conn The alias of the connection to use
      * @return mixed
      */
@@ -470,15 +516,32 @@ class Client
      * Convenience method that invoke the PushToTransactionCommand
      * and passes the query and parameters as arguments
      *
-     * @param $transactionId The transaction id
-     * @param $query The query to send
-     * @param  array       $parameters Parameters map of the query
-     * @param  string|null $conn       The alias of the connection to use
+     * @param  int         $transactionId The transaction id
+     * @param  string      $query         The query to send
+     * @param  array       $parameters    Parameters map of the query
+     * @param  string|null $conn          The alias of the connection to use
      * @return mixed
      */
     public function pushToTransaction($transactionId, $query, array $parameters = array(), $conn = null, array $resultDataContents = array(), $writeMode = true)
     {
         return $this->invoke('neo.push_to_transaction', $conn)
+            ->setArguments($transactionId, $query, $parameters)
+            ->execute();
+    }
+
+    /**
+     * Convenience method that commit the transaction
+     * and passes the optional query and parameters as arguments
+     *
+     * @param  int         $transactionId The transaction id
+     * @param  string|null $query         The query to send
+     * @param  array       $parameters    Parameters map of the query
+     * @param  string|null $conn          The alias of the connection to use
+     * @return mixed
+     */
+    public function commitTransaction($transactionId, $query = null, array $parameters = array(), $conn = null, array $resultDataContents = array(), $writeMode = true)
+    {
+        return $this->invoke('neo.commit_transaction', $conn)
             ->setArguments($transactionId, $query, $parameters)
             ->execute();
     }
@@ -494,8 +557,8 @@ class Client
     }
 
     /**
-     * @param $user
-     * @param $password
+     * @param  string      $user
+     * @param  string      $password
      * @param  bool        $readOnly
      * @param  string|null $connectionAlias
      * @return mixed
@@ -510,8 +573,8 @@ class Client
     }
 
     /**
-     * @param $user
-     * @param $password
+     * @param  string      $user
+     * @param  string      $password
      * @param  string|null $connectionAlias
      * @return mixed
      */

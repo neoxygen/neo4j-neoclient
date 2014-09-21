@@ -25,3 +25,6 @@ neo.rollback_transaction:
 
 neo.push_to_transaction:
   class: "Neoxygen\\NeoClient\\Command\\Core\\CorePushToTransactionCommand"
+
+neo.commit_transaction:
+  class: "Neoxygen\\NeoClient\\Command\\Core\\CoreCommitTransactionCommand"

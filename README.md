@@ -117,6 +117,20 @@ $result = $client->pushToTransaction($transactionId, $query);
 {"results":[{"columns":["count(n)"],"data":[{"row":[24]}]}],"errors":[]}
 ```
 
+#### commitTransaction | Add a statement to a given transaction
+
+Query is here optional, as you can commit a transaction without adding a cypher statement.
+
+```php
+$transactionId = 60;
+$query = 'MATCH (n) RETURN count(n)';
+$result = $client->commitTransaction($transactionId, $query);
+```
+
+```json
+{"results":[{"columns":["count(n)"],"data":[{"row":[24]}]}],"errors":[]}
+```
+
 ### Authenticated connection
 
 If you are using the `authenticated-extension`, you can specify to use the authMode for the connection and provide your username
