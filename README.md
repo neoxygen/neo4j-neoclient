@@ -14,8 +14,8 @@ Add the library to your `composer.json` file :
 
 ```json
 {
-    require: {
-        "neoxygen/neoclient": "dev-master"
+    "require": {
+        "neoxygen/neoclient": "~1.4"
     }
 }
 ```
