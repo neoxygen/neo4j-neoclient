@@ -14,7 +14,7 @@ namespace Neoxygen\NeoClient\Command\Core;
 
 use Neoxygen\NeoClient\Command\AbstractCommand;
 
-class CoreCommitTransaction extends AbstractCommand
+class CoreCommitTransactionCommand extends AbstractCommand
 {
     const METHOD = 'POST';
 
