@@ -19,11 +19,11 @@
     ],
     "require": {
         "php" : ">= 5.4",
-        "symfony/console" : "~2.5@dev",
-        "symfony/yaml" : "~2.5@dev",
-        "symfony/config" : "~2.5@dev",
-        "symfony/dependency-injection" : "~2.5@dev",
-        "symfony/event-dispatcher" : "~2.5@dev",
+        "symfony/console" : "~2.5",
+        "symfony/yaml" : "~2.5",
+        "symfony/config" : "~2.5",
+        "symfony/dependency-injection" : "~2.5",
+        "symfony/event-dispatcher" : "~2.5",
         "guzzlehttp/guzzle" : "4.*",
         "monolog/monolog": "~1.3"
     },
