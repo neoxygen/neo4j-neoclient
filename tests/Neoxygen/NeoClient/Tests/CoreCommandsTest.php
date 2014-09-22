@@ -70,4 +70,16 @@ class CoreCommandsTest extends NeoClientTestCase
         $this->assertEmpty($push['errors']);
         $this->assertNotEmpty($push['results']);
     }
+
+    public function testSendCypher()
+    {
+        $client = $this->build();
+        $q = 'MATCH (n) RETURN n';
+        $resultFormat = array('row', 'graph');
+        $response = $client->sendCypherQuery($q, array(), null, $resultFormat);
+
+        $result = json_decode($response, true);
+        $this->assertArrayHasKey('graph', $result['results'][0]['data'][0]);
+    }
 }
+
