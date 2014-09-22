@@ -47,6 +47,9 @@ class CoreSendCypherQueryCommand extends AbstractCommand
         if (!empty($this->parameters)) {
             $statement['parameters'] = $this->parameters;
         }
+        if (!empty($this->resultDataContents)) {
+            $statement['resultDataContents'] = $this->resultDataContents;
+        }
         $body = array(
             'statements' => array(
                 $statement
