@@ -44,10 +44,11 @@ class Result
     {
         $collection = array();
         foreach ($this->getNodes() as $node){
-            if ($node->hasLabel($name) === $name){
+            if ($node->hasLabel($name)){
                 $collection[] = $node;
             }
         }
+        return $collection;
     }
 
     public function getRelationships()

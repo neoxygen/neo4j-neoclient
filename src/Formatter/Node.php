@@ -38,8 +38,10 @@ class Node
     public function hasLabel($label = null)
     {
         if (null !== $label) {
-            if (in_array($label, $this->labels)) {
-                return true;
+            foreach ($this->getLabels() as $k => $v){
+                if ($v == $label) {
+                    return true;
+                }
             }
         }
 
