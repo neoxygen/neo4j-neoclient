@@ -40,6 +40,16 @@ class Result
         return null;
     }
 
+    public function getNodesByLabel($name)
+    {
+        $collection = array();
+        foreach ($this->getNodes() as $node){
+            if ($node->hasLabel($name) === $name){
+                $collection[] = $node;
+            }
+        }
+    }
+
     public function getRelationships()
     {
         return $this->relationships;
