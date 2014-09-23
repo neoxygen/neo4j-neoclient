@@ -45,7 +45,7 @@ class Node
             }
         }
 
-        if (!empty($this->labels)) {
+        if (null === $label && !empty($this->labels)) {
             return true;
         }
 
