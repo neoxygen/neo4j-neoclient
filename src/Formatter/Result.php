@@ -40,6 +40,22 @@ class Result
         return null;
     }
 
+    /**
+     * Returns a single node from the nodes collection
+     * To use when you do cypher queries returning only one node
+     *
+     * @return mixed|null
+     */
+    public function getSingleNode()
+    {
+        if (empty($this->nodes)){
+            return null;
+        }
+
+        reset($this->nodes);
+        return array_shift($this->nodes);
+    }
+
     public function getNodesByLabel($name)
     {
         $collection = array();
