@@ -17,15 +17,6 @@ class ResponseFormatter
 
     protected $result;
 
-    public function __construct()
-    {
-        $this->nodesMap = array();
-        $this->relationshipsMap = array();
-        $this->nodesByLabel = array();
-
-        $this->result = new Result();
-    }
-
     public function hasErrors()
     {
         return null !== $this->errors;
@@ -33,6 +24,7 @@ class ResponseFormatter
 
     public function format($response)
     {
+        $this->reset();
         if (!is_string($response) && !is_array($response)) {
             throw new \InvalidArgumentException('Invalid Response Format');
         }
@@ -138,6 +130,20 @@ class ResponseFormatter
             $startNode->addOutboundRelationship($r);
             $endNode->addInboundRelationship($r);
         }
+    }
+
+    private function reset()
+    {
+        unset($this->nodesMap);
+        unset($this->relationshipsMap);
+        unset($this->errors);
+        unset($this->nodesByLabel);
+        unset($this->relsByType);
+        unset($this->result);
+        $this->nodesMap = array();
+        $this->relationshipsMap = array();
+        $this->nodesByLabel = array();
+        $this->result = new Result();
     }
 
 
