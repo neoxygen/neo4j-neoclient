@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f902eaa6c56058620cb44156bafe027a",
+    "hash": "c63c00eb9dc7f58d06c1858b7d264141",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -545,16 +545,16 @@
     "packages-dev": [
         {
             "name": "behat/behat",
-            "version": "v3.0.13",
+            "version": "v3.0.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/Behat.git",
-                "reference": "349a6f8188a7d1ad01909d4cd4a73747cd74d09d"
+                "reference": "3f097cd577feed73e681fa56cd4e4e1dda9c115d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Behat/zipball/349a6f8188a7d1ad01909d4cd4a73747cd74d09d",
-                "reference": "349a6f8188a7d1ad01909d4cd4a73747cd74d09d",
+                "url": "https://api.github.com/repos/Behat/Behat/zipball/3f097cd577feed73e681fa56cd4e4e1dda9c115d",
+                "reference": "3f097cd577feed73e681fa56cd4e4e1dda9c115d",
                 "shasum": ""
             },
             "require": {
@@ -622,7 +622,7 @@
                 "symfony",
                 "testing"
             ],
-            "time": "2014-08-28 10:31:09"
+            "time": "2014-09-23 10:47:14"
         },
         {
             "name": "behat/gherkin",
@@ -767,6 +767,60 @@
                 "specification"
             ],
             "time": "2014-09-12 09:25:51"
+        },
+        {
+            "name": "doctrine/instantiator",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/instantiator.git",
+                "reference": "26404e0c90565b614ee76b988b9bc8790d77f590"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/26404e0c90565b614ee76b988b9bc8790d77f590",
+                "reference": "26404e0c90565b614ee76b988b9bc8790d77f590",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.3"
+            },
+            "require-dev": {
+                "athletic/athletic": "~0.1.8",
+                "ext-pdo": "*",
+                "ext-phar": "*",
+                "phpunit/phpunit": "~4.0",
+                "squizlabs/php_codesniffer": "2.0.*@ALPHA"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Doctrine\\Instantiator\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marco Pivetta",
+                    "email": "ocramius@gmail.com",
+                    "homepage": "http://ocramius.github.com/"
+                }
+            ],
+            "description": "A small, lightweight utility to instantiate objects in PHP without invoking their constructors",
+            "homepage": "https://github.com/doctrine/instantiator",
+            "keywords": [
+                "constructor",
+                "instantiate"
+            ],
+            "time": "2014-08-25 15:09:25"
         },
         {
             "name": "ocramius/instantiator",
@@ -1039,19 +1093,20 @@
         },
         {
             "name": "phpspec/prophecy",
-            "version": "v1.2.0",
+            "version": "v1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "328484c88ed3cd7d1980b624bb98fa635f212ec9"
+                "reference": "ed9c0bcffe4639a5b0ff83e399eeb28e7fcc68f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/328484c88ed3cd7d1980b624bb98fa635f212ec9",
-                "reference": "328484c88ed3cd7d1980b624bb98fa635f212ec9",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/ed9c0bcffe4639a5b0ff83e399eeb28e7fcc68f0",
+                "reference": "ed9c0bcffe4639a5b0ff83e399eeb28e7fcc68f0",
                 "shasum": ""
             },
             "require": {
+                "doctrine/instantiator": "~1.0,>=1.0.2",
                 "phpdocumentor/reflection-docblock": "~2.0"
             },
             "require-dev": {
@@ -1093,7 +1148,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2014-07-18 21:26:55"
+            "time": "2014-09-23 10:52:18"
         },
         {
             "name": "phpunit/php-code-coverage",

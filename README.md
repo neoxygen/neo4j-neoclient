@@ -31,7 +31,7 @@ Add the library to your `composer.json` file :
 ```json
 {
     "require": {
-        "neoxygen/neoclient": "~1.4"
+        "neoxygen/neoclient": "~1.5"
     }
 }
 ```

@@ -1,3 +1,6 @@
+## 1.5
+- Added a ResponseFormatter for handling API responses
+
 ## 1.4
 
 - Added a fallback mode for defining fallback connections in case of main connection failure
