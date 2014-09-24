@@ -13,14 +13,14 @@
 * [Installation](https://github.com/neoxygen/neo4j-neoclient#installation)
 * [Configuration](https://github.com/neoxygen/neo4j-neoclient#configuration)
 * [Usage](https://github.com/neoxygen/neo4j-neoclient#usage)
-* [The Response formatter](https://github.com/neoxygen/neo4j-neoclient#the response formatter)
+* [The Response formatter](https://github.com/neoxygen/neo4j-neoclient#the-response-formatter)
 * [Authenticated Connection](https://github.com/neoxygen/neo4j-neoclient#authenticated-connection)
 * [Working with multiple connections](https://github.com/neoxygen/neo4j-neoclient#working-with-multiple-connections)
-* [Fallback connections](https://github.com/neoxygen/neo4j-neoclient#fallback-connection)
+* [Fallback connections](https://github.com/neoxygen/neo4j-neoclient#fallback-connections)
 * [Event Listeners](https://github.com/neoxygen/neo4j-neoclient#event-listeners)
 * [Logging](https://github.com/neoxygen/neo4j-neoclient#logging)
-* [Creating your own commans](https://github.com/neoxygen/neo4j-neoclient#creating-your-own-commands)
-* [Creating a Commands Extension](https://github.com/neoxygen/neo4j-neoclient#creating a commands-extension)
+* [Creating your own commands](https://github.com/neoxygen/neo4j-neoclient#creating-your-own-commands)
+* [Creating a Commands Extension](https://github.com/neoxygen/neo4j-neoclient#creating-a-commands-extension)
 * [Production settings](https://github.com/neoxygen/neo4j-neoclient#production-settings)
 * [Extra commands](https://github.com/neoxygen/neo4j-neoclient#extra-commands)
 
@@ -303,7 +303,7 @@ For each command, in case of connection failure, the http client will check if a
 
 If you have loggers settled up, an `alert` entry will be logged to avert you of the connection failure.
 
-### Adding Event Listeners
+### Event Listeners
 
 You can add listeners to hook into the built-in event system, for all list of all available events, look inside the
 `NeoEvents.php` file.
@@ -336,7 +336,7 @@ $client->createDefaultStreamLogger('name', '/path/to/your/log/file.log', 'debug'
 $client->createDefaultChromePHPLogger('app', 'debug');
 ```
 
-### Creating your own commands :
+### Creating your own commands
 
 You can extend the library by creating your own commands.
 
