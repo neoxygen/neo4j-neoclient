@@ -33,7 +33,7 @@ class Result
 
     public function getNode($id)
     {
-        if ($this->nodes[$id]){
+        if ($this->nodes[$id]) {
             return $this->nodes[$id];
         }
 
@@ -57,14 +57,13 @@ class Result
     /**
      * Returns a single node for a given label
      *
-     * @param string $label The label to match for
+     * @param  string    $label The label to match for
      * @return Node|null The Node or null if not node found matching the label
      */
     public function getSingleNodeByLabel($label)
     {
         foreach ($this->nodes as $node) {
             if ($node->hasLabel($label)) {
-
                 return $node;
             }
         }
@@ -75,11 +74,12 @@ class Result
     public function getNodesByLabel($name)
     {
         $collection = array();
-        foreach ($this->getNodes() as $node){
-            if ($node->hasLabel($name)){
+        foreach ($this->getNodes() as $node) {
+            if ($node->hasLabel($name)) {
                 $collection[] = $node;
             }
         }
+
         return $collection;
     }
 
@@ -90,7 +90,7 @@ class Result
 
     public function getRelationship($id)
     {
-        if ($this->relationships[$id]){
+        if ($this->relationships[$id]) {
             return $this->relationships[$id];
         }
 

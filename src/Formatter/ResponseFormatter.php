@@ -39,7 +39,7 @@ class ResponseFormatter
                     foreach ($data['graph']['nodes'] as $node) {
                         $this->nodesMap[$node['id']] = $node;
                     }
-                    foreach ($data['graph']['relationships'] as $rel){
+                    foreach ($data['graph']['relationships'] as $rel) {
                         $this->relationshipsMap[$rel['id']] = $rel;
                     }
                 }
@@ -145,7 +145,5 @@ class ResponseFormatter
         $this->nodesByLabel = array();
         $this->result = new Result();
     }
-
-
 
 }

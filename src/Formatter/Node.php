@@ -2,8 +2,6 @@
 
 namespace Neoxygen\NeoClient\Formatter;
 
-use Neoxygen\NeoClient\Formatter\Relationship;
-
 class Node
 {
     /**
@@ -65,13 +63,13 @@ class Node
     }
 
     /**
-     * @param string|null $label The label to check for
-     * @return bool True if the label is matched or if no label is given if the node has minimum 1 label, false otherwise
+     * @param  string|null $label The label to check for
+     * @return bool        True if the label is matched or if no label is given if the node has minimum 1 label, false otherwise
      */
     public function hasLabel($label = null)
     {
         if (null !== $label) {
-            foreach ($this->getLabels() as $k => $v){
+            foreach ($this->getLabels() as $k => $v) {
                 if ($v == $label) {
                     return true;
                 }

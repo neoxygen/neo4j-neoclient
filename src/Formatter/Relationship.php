@@ -2,8 +2,6 @@
 
 namespace Neoxygen\NeoClient\Formatter;
 
-use Neoxygen\NeoClient\Formatter\Node;
-
 class Relationship
 {
     protected $id;
