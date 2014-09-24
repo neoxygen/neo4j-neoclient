@@ -12,11 +12,11 @@
 
 * [Installation](https://github.com/neoxygen/neo4j-neoclient#installation)
 * [Configuration](https://github.com/neoxygen/neo4j-neoclient#configuration)
-* [Usage]((https://github.com/neoxygen/neo4j-neoclient#usage)
+* [Usage](https://github.com/neoxygen/neo4j-neoclient#usage)
 * [The Response formatter](https://github.com/neoxygen/neo4j-neoclient#the response formatter)
 * [Authenticated Connection](https://github.com/neoxygen/neo4j-neoclient#authenticated-connection)
 * [Working with multiple connections](https://github.com/neoxygen/neo4j-neoclient#working-with-multiple-connections)
-* [Fallback connections]((https://github.com/neoxygen/neo4j-neoclient#fallback-connection)
+* [Fallback connections](https://github.com/neoxygen/neo4j-neoclient#fallback-connection)
 * [Event Listeners](https://github.com/neoxygen/neo4j-neoclient#event-listeners)
 * [Logging](https://github.com/neoxygen/neo4j-neoclient#logging)
 * [Creating your own commans](https://github.com/neoxygen/neo4j-neoclient#creating-your-own-commands)
