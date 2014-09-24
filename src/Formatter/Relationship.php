@@ -50,6 +50,13 @@ class Relationship
         return $this->properties;
     }
 
+    public function getProperty($name)
+    {
+        $value = isset($this->properties[$name]) ?: null;
+
+        return $value;
+    }
+
     public function hasProperty($property)
     {
         return array_key_exists($property, $this->properties);

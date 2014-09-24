@@ -8,6 +8,22 @@
 [![License](https://poser.pugx.org/neoxygen/neoclient/license.svg)](https://packagist.org/packages/neoxygen/neoclient)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/bac840f0-7b30-4206-a0e0-c6f4ca320077/big.png)](https://insight.sensiolabs.com/projects/bac840f0-7b30-4206-a0e0-c6f4ca320077)
 
+## Documentation
+
+* [Installation](https://github.com/neoxygen/neo4j-neoclient#installation)
+* [Configuration](https://github.com/neoxygen/neo4j-neoclient#configuration)
+* [Usage]((https://github.com/neoxygen/neo4j-neoclient#usage)
+* [The Response formatter](https://github.com/neoxygen/neo4j-neoclient#the response formatter)
+* [Authenticated Connection](https://github.com/neoxygen/neo4j-neoclient#authenticated-connection)
+* [Working with multiple connections](https://github.com/neoxygen/neo4j-neoclient#working-with-multiple-connections)
+* [Fallback connections]((https://github.com/neoxygen/neo4j-neoclient#fallback-connection)
+* [Event Listeners](https://github.com/neoxygen/neo4j-neoclient#event-listeners)
+* [Logging](https://github.com/neoxygen/neo4j-neoclient#logging)
+* [Creating your own commans](https://github.com/neoxygen/neo4j-neoclient#creating-your-own-commands)
+* [Creating a Commands Extension](https://github.com/neoxygen/neo4j-neoclient#creating a commands-extension)
+* [Production settings](https://github.com/neoxygen/neo4j-neoclient#production-settings)
+* [Extra commands](https://github.com/neoxygen/neo4j-neoclient#extra-commands)
+
 ### Installation
 
 Add the library to your `composer.json` file :
@@ -129,6 +145,51 @@ $result = $client->commitTransaction($transactionId, $query);
 
 ```json
 {"results":[{"columns":["count(n)"],"data":[{"row":[24]}]}],"errors":[]}
+```
+
+### The Response Formatter
+
+The library comes with a handy response formatter, using it is currently optional, in the future the choice will have
+to be made in the configuration.
+
+The formatter works with the graph resultDataContent, so don't forget to specify it when doing your queries.
+
+The following examples are based on the Neo4j movie database example :
+
+```php
+use Neoxygen\NeoClient\Formatter\ResponseFormatter;
+
+$formatter = new Formatter();
+$query = 'MATCH p=(a:Actor)-[]-(m:Movie) RETURN p';
+$response = $client->sendCypherQuery($q, array(), null, array('graph'));
+
+$result = $formatter->format($response);
+
+// Getting all nodes
+
+$nodes = $result->getNodes();
+
+// Getting all movie nodes from the respone
+$movies = $result->getNodesByLabel('Movie');
+
+// Getting only one movie (returns in fact the first element of an array, but is handy when you expect only one node
+$movie = $result->getSingleNode('Movie');
+
+// Checking for errors
+
+if ($result->hasErrors() {
+    // ...
+}
+
+// Working with the relationships
+
+$movie = $result->getSingleNode('Movie');
+$actors = $movie->getRelationships('ACTS_IN');
+// Or you may want to specify direction
+$actors = $movie->getRelationships('ACTS_IN', 'IN');
+
+// If you need only one relationship :
+$actor = $movie->getSingleRelationship('ACTS_IN');
 ```
 
 ### Authenticated connection
@@ -258,7 +319,7 @@ $client
     ->addEventListener('foo.action', function (Event $event));
 ```
 
-#### Logging
+### Logging
 
 You can add your logging system or ask the library to use the default built-in logging mechanism (currently only stream and ChromePHP
 are supported).
@@ -275,7 +336,7 @@ $client->createDefaultStreamLogger('name', '/path/to/your/log/file.log', 'debug'
 $client->createDefaultChromePHPLogger('app', 'debug');
 ```
 
-#### Creating your own commands :
+### Creating your own commands :
 
 You can extend the library by creating your own commands.
 
@@ -339,7 +400,7 @@ $extensions = $command->execute();
 print_r($extensions);
 ```
 
-#### Creating a Commands Extension
+### Creating a Commands Extension
 
 When you have a lot of commands, it may be good to create a command extension. Creating a command extension is quite simple :
 
@@ -478,12 +539,13 @@ $client
   ->build();
 ```
 
+---
 
-## License
+### License
 
 The library is released under the MIT License, refer to the LICENSE file.
 
-## Tests
+### Tests
 
 To run the test suite, you need to copy the `tests/database_settings.yml.dist` to `tests/database_settings.yml`, as it will
 create nodes to a real database.

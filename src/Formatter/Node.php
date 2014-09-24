@@ -6,16 +6,36 @@ use Neoxygen\NeoClient\Formatter\Relationship;
 
 class Node
 {
+    /**
+     * @var int $id the node internal ID
+     */
     protected $id;
 
+    /**
+     * @var array $labels Collection of the node labels
+     */
     protected $labels;
 
+    /**
+     * @var array $properties The properties of the node
+     */
     protected $properties;
 
+    /**
+     * @var array[Neoxygen\NeoClient\Formatter\Relationship] $inboundRelationships The collection of inbound relationships
+     */
     protected $inboundRelationships;
 
+    /**
+     * @var array[Neoxygen\NeoClient\Formatter\Relationship] $outboundRelationships The collection of outbound relationships
+     */
     protected $outboundRelationships;
 
+    /**
+     * @param $id
+     * @param array $labels
+     * @param array $properties
+     */
     public function __construct($id, array $labels = array(), array $properties = array())
     {
         $this->id = $id;
@@ -25,16 +45,29 @@ class Node
         $this->outboundRelationships = array();
     }
 
+    /**
+     * Returns the node internal id
+     *
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     *
+     * @return array collection of node's labels
+     */
     public function getLabels()
     {
         return $this->labels;
     }
 
+    /**
+     * @param string|null $label The label to check for
+     * @return bool True if the label is matched or if no label is given if the node has minimum 1 label, false otherwise
+     */
     public function hasLabel($label = null)
     {
         if (null !== $label) {
@@ -50,6 +83,21 @@ class Node
         }
 
         return false;
+    }
+
+    /**
+     * Used when only one label is expected
+     *
+     * @return string|null the label of the node
+     */
+    public function getLabel()
+    {
+        if (empty($this->labels)) {
+            return null;
+        }
+        reset($this->labels);
+
+        return current($this->labels);
     }
 
     public function getProperties()
@@ -91,11 +139,38 @@ class Node
         return $this->outboundRelationships;
     }
 
-    public function getRelationships()
+    public function getRelationships($type = null, $direction = null)
     {
-        $relationships = array_merge($this->inboundRelationships, $this->outboundRelationships);
+        if (null === $direction) {
+            $relationships = array_merge($this->inboundRelationships, $this->outboundRelationships);
+        } else {
+            $dir = strtoupper($direction);
+            if (!in_array($direction, array('IN', 'OUT'))) {
+                throw new \InvalidArgumentException(sprintf('The direction "%s" is not valid', $direction));
+            }
+            $relationships = ('IN' === $dir) ? $this->getInboundRelationships() : $this->getOutboundRelationships();
+        }
 
-        return $relationships;
+        if (null === $type) {
+            return $relationships;
+        }
+
+        $collection = array();
+        foreach ($relationships as $rel) {
+            if ($rel->getType() === $type) {
+                $collection[] = $rel;
+            }
+        }
+
+        return $collection;
+    }
+
+    public function getSingleRelationship($type = null, $direction = null)
+    {
+        $relationships = $this->getRelationships($type, $direction);
+        reset($relationships);
+
+        return current($relationships);
     }
 
     public function hasRelationships()
@@ -110,17 +185,5 @@ class Node
     public function getRelationshipsCount()
     {
         return count($this->getRelationships());
-    }
-
-    public function getRelationshipsByType($type)
-    {
-        $collection = array();
-        foreach ($this->getRelationships() as $relationship) {
-            if ($relationship->getType() === $type) {
-                $collection[] = $relationship;
-            }
-        }
-
-        return $collection;
     }
 }

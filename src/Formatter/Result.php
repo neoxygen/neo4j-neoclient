@@ -46,14 +46,30 @@ class Result
      *
      * @return mixed|null
      */
-    public function getSingleNode()
+    public function getSingleNode($label = null)
     {
-        if (empty($this->nodes)){
-            return null;
+        $nodes = (null === $label) ? $this->getNodes() : $this->getNodesByLabel($label);
+        $single = current($nodes);
+
+        return $single;
+    }
+
+    /**
+     * Returns a single node for a given label
+     *
+     * @param string $label The label to match for
+     * @return Node|null The Node or null if not node found matching the label
+     */
+    public function getSingleNodeByLabel($label)
+    {
+        foreach ($this->nodes as $node) {
+            if ($node->hasLabel($label)) {
+
+                return $node;
+            }
         }
 
-        reset($this->nodes);
-        return array_shift($this->nodes);
+        return null;
     }
 
     public function getNodesByLabel($name)
@@ -79,5 +95,15 @@ class Result
         }
 
         return null;
+    }
+
+    public function getNodesCount()
+    {
+        return count($this->nodes);
+    }
+
+    public function getRelationshipsCount()
+    {
+        return count($this->relationships);
     }
 }
