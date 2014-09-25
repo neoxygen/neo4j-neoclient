@@ -25,7 +25,7 @@ class CommandManagerTest extends NeoClientTestCase
         $sc = $this->build();
         $cm = $sc->getCommandManager();
 
-        $command = new SimpleCommand(new GuzzleHttpClient(null, null, null, new ConnectionManager()));
+        $command = new SimpleCommand(new GuzzleHttpClient('json', null, null, new ConnectionManager()));
         $cm->registerCommand('simple_command', $command);
 
     }

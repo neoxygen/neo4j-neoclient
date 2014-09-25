@@ -18,7 +18,8 @@ use Neoxygen\NeoClient\Connection\ConnectionManager;
 use Neoxygen\NeoClient\Request\RequestInterface,
     Neoxygen\NeoClient\NeoClientEvents,
     Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent,
-    Neoxygen\NeoClient\Exception\HttpException;
+    Neoxygen\NeoClient\Exception\HttpException,
+    Neoxygen\NeoClient\Formatter\ResponseFormatterInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -28,6 +29,8 @@ class GuzzleHttpClient implements HttpClientInterface
 
     private $responseFormat;
 
+    private $responseFormatter;
+
     private $logger;
 
     private $eventDispatcher;
@@ -35,16 +38,25 @@ class GuzzleHttpClient implements HttpClientInterface
     private $connectionManager;
 
     public function __construct(
-        $responseFormat = null,
+        $responseFormat = 'json',
         LoggerInterface $logger = null,
         EventDispatcherInterface $eventDispatcher = null,
         ConnectionManager $connectionManager)
     {
         $this->client = new Client();
-        $this->responseFormat = null === $responseFormat ? 'json' : $responseFormat;
         $this->logger = $logger;
         $this->eventDispatcher = $eventDispatcher;
         $this->connectionManager = $connectionManager;
+
+        if (!in_array($responseFormat, array('json', 'array'))) {
+            if (!$responseFormat instanceof ResponseFormatterInterface) {
+                throw new \InvalidArgumentException('The response formatter should be "json", "array" or a
+                class implementing "ResponseFormatterInterface"');
+            }
+            $this->responseFormatter = $responseFormat;
+            $this->responseFormat = null;
+        }
+        $this->responseFormat = $responseFormat;
     }
 
     public function send($method, $path, $body = null, $connectionAlias = null, $queryString = null)
@@ -109,6 +121,7 @@ class GuzzleHttpClient implements HttpClientInterface
 
     private function getResponse($response)
     {
+
         $this->logger->log(
             'debug',
             sprintf('Http Response received'),
@@ -116,7 +129,11 @@ class GuzzleHttpClient implements HttpClientInterface
         );
 
         if ($response->getBody()) {
-            if ($this->responseFormat === 'json') {
+            if (null === $this->responseFormat) {
+                return $this->responseFormatter->format($response);
+            }
+
+            if ('json' === $this->responseFormat) {
                 return (string) $response->getBody();
             }
 

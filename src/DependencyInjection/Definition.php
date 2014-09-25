@@ -82,6 +82,7 @@ class Definition implements ConfigurationInterface
                     ->scalarNode('cache_path')->end()
                 ->end()
         ->end()
+            ->scalarNode('response_format')->defaultValue('json')->end()
         ->end();
 
         return $treeBuilder;

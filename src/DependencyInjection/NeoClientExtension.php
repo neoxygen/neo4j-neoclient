@@ -44,6 +44,8 @@ class NeoClientExtension implements  ExtensionInterface
             $container->setParameter('neoclient.cache_path', $config['cache']['cache_path']);
         }
 
+        $container->setParameter('neoclient.response_format', $config['response_format']);
+
         $this->addConnectionDefinitions($config, $container);
         $this->addRegisteredExtensionsDefinitions($config, $container);
         $this->addListeners($config);

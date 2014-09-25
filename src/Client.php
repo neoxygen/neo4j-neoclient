@@ -334,6 +334,7 @@ class Client
                 return true;
             }
         }
+        //$this->serviceContainer->setParameter('neoclient.response_format', 'array');
         $extension = new NeoClientExtension();
         $this->serviceContainer->registerExtension($extension);
         $this->serviceContainer->addCompilerPass(new ConnectionRegistryCompilerPass());
