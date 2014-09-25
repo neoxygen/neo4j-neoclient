@@ -14,5 +14,6 @@ namespace Neoxygen\NeoClient\Formatter;
 
 interface ResponseFormatterInterface
 {
+    public static function getDefaultResultDataContents();
     public function format($response);
 }

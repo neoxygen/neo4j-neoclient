@@ -45,11 +45,29 @@ class NeoClientExtension implements  ExtensionInterface
         }
 
         $container->setParameter('neoclient.response_format', $config['response_format']);
+        $container->setParameter('neoclient.default_result_data_content', $config['default_result_data_content']);
 
         $this->addConnectionDefinitions($config, $container);
         $this->addRegisteredExtensionsDefinitions($config, $container);
         $this->addListeners($config);
         $this->registerCustomCommands($config);
+
+        if ($config['response_format'] === 'custom') {
+            $class = $config['response_formatter_class'];
+            if (!class_exists($class)) {
+                throw new \InvalidArgumentException(sprintf('The class %s does not exist', $class));
+            }
+
+            $definition = new Definition();
+            $definition->setClass($class);
+            $container->setDefinition('neoclient.response_formatter', $definition);
+
+            $client = $container->findDefinition('neoclient.http_client');
+            $client->addMethodCall(
+                'setResponseFormatter',
+                array($definition)
+            );
+        }
 
     }
 

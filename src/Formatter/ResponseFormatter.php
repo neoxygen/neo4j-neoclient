@@ -27,6 +27,11 @@ class ResponseFormatter implements ResponseFormatterInterface
 
     protected $result;
 
+    public static function getDefaultResultDataContents()
+    {
+        return array('row', 'graph');
+    }
+
     public function hasErrors()
     {
         return null !== $this->errors;

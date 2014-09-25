@@ -23,6 +23,7 @@
 * [Creating a Commands Extension](https://github.com/neoxygen/neo4j-neoclient#creating-a-commands-extension)
 * [Production settings](https://github.com/neoxygen/neo4j-neoclient#production-settings)
 * [Extra commands](https://github.com/neoxygen/neo4j-neoclient#extra-commands)
+* [Configuration Reference)(https://github.com/neoxygen/neo4j-neoclient#configuration-reference)
 
 ### Installation
 
@@ -519,6 +520,8 @@ custom_commands:
 extensions:
   my_extension:
     class: My\Extension\Class
+
+default_result_data_content: ['row','graph','rest'] #default to "row"
 ```
 
 ### PHP
@@ -536,6 +539,7 @@ $client
   ->setLogger('my_logger', new MyLogger())
   ->createDefaultStreamLogger('main', '/path/to/log/', 'debug')
   ->createDefaultChromePHPLogger('other_log')
+  ->setDefaultResultDataContent(array('row', 'graph', 'rest')
   ->build();
 ```
 

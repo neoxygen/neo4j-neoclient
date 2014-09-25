@@ -81,6 +81,9 @@ class Client
 
     public function loadConfigurationFile($file)
     {
+        if (!file_exists($file)) {
+            throw new \InvalidArgumentException(sprintf('Configuration file "%s" not found', $file));
+        }
         $this->loadedConfig = Yaml::parse($file);
 
         return $this;
@@ -121,6 +124,19 @@ class Client
     public function setFallbackConnection($connectionAlias, $fallbackConnectionAlias)
     {
         $this->configuration['fallback'][$connectionAlias] = $fallbackConnectionAlias;
+
+        return $this;
+    }
+
+    /**
+     * Sets the default result data content for the http transactional cypher
+     *
+     * @param array $defaultResultDataContent array containing values of "graph", "rest" or "row"
+     * @return $this
+     */
+    public function setDefaultResultDataContent(array $defaultResultDataContent = array('row'))
+    {
+        $this->configuration['default_result_data_content'] = $defaultResultDataContent;
 
         return $this;
     }
@@ -412,6 +428,11 @@ class Client
      */
     public function invoke($commandAlias, $connectionAlias = null)
     {
+        if (!$this->isFrozen()){
+            throw new \RuntimeException('The commands can not be used while the application has not been built.
+            You maybe forgot to add the "->build" chained method to the client construction?');
+
+        }
         $command = $this->getCommandManager()->getCommand($commandAlias);
         $command->setConnection($connectionAlias);
 
@@ -482,8 +503,18 @@ class Client
      */
     public function sendCypherQuery($query, array $parameters = array(), $conn = null, array $resultDataContents = array(), $writeMode = true)
     {
-        return $this->invoke('neo.send_cypher_query', $conn)
-            ->setArguments($query, $parameters, $resultDataContents)
+        $command = $this->invoke('neo.send_cypher_query', $conn);
+        $response_format = $this->getServiceContainer()->getParameter('neoclient.response_format');
+        if ('custom' === $response_format) {
+            $formatter = $this->getServiceContainer()->get('neoclient.response_formatter');
+            $requiredRDC = $formatter::getDefaultResultDataContents();
+        }
+        $rdc = !(empty($resultDataContents)) ? $resultDataContents : $this->getServiceContainer()->getParameter('neoclient.default_result_data_content');
+        if (isset($requiredRDC)) {
+            $rdc = array_merge($rdc, $requiredRDC);
+        }
+        print_r($rdc);
+        return $command->setArguments($query, $parameters, $rdc)
             ->execute();
     }
 

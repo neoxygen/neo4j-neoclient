@@ -47,16 +47,12 @@ class GuzzleHttpClient implements HttpClientInterface
         $this->logger = $logger;
         $this->eventDispatcher = $eventDispatcher;
         $this->connectionManager = $connectionManager;
-
-        if (!in_array($responseFormat, array('json', 'array'))) {
-            if (!$responseFormat instanceof ResponseFormatterInterface) {
-                throw new \InvalidArgumentException('The response formatter should be "json", "array" or a
-                class implementing "ResponseFormatterInterface"');
-            }
-            $this->responseFormatter = $responseFormat;
-            $this->responseFormat = null;
-        }
         $this->responseFormat = $responseFormat;
+    }
+
+    public function setResponseFormatter(ResponseFormatterInterface $responseFormatter)
+    {
+        $this->responseFormatter = $responseFormatter;
     }
 
     public function send($method, $path, $body = null, $connectionAlias = null, $queryString = null)
@@ -121,6 +117,7 @@ class GuzzleHttpClient implements HttpClientInterface
 
     private function getResponse($response)
     {
+        print_r((string)$response->getBody());
 
         $this->logger->log(
             'debug',

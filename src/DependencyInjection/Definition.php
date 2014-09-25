@@ -17,12 +17,15 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 class Definition implements ConfigurationInterface
 {
+    protected $allowedModes = array('rest', 'graph', 'row');
+
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('neoclient');
 
         $supportedSchemes = array('http', 'https');
+
 
         $rootNode->children()
         ->arrayNode('connections')
@@ -82,7 +85,21 @@ class Definition implements ConfigurationInterface
                     ->scalarNode('cache_path')->end()
                 ->end()
         ->end()
-            ->scalarNode('response_format')->defaultValue('json')->end()
+        ->scalarNode('response_format')->defaultValue('json')->end()
+        ->scalarNode('response_formatter_class')->defaultNull()->end()
+        ->arrayNode('default_result_data_content')
+            ->beforeNormalization()
+                ->ifString()
+                ->then(function ($v) { return array($v); })
+                ->end()
+            ->isRequired()
+            ->requiresAtLeastOneElement()
+            ->prototype('scalar')->end()
+            ->validate()
+                ->ifTrue(function($v) {foreach ($v as $k => $m) {if(!in_array($m, $this->allowedModes)){ return true;}}})
+                ->thenInvalid('One of the result data contents in "%s" is not valid, please use one of '.json_encode($this->allowedModes))
+            ->end()
+        ->end()
         ->end();
 
         return $treeBuilder;
