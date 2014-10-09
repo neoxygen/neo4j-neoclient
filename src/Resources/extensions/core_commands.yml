@@ -1,5 +1,4 @@
 # Core Commands
-# Array of all available core commands aliases and classes
 
 simple_command:
   class: "Neoxygen\\NeoClient\\Command\\SimpleCommand"
@@ -28,3 +27,6 @@ neo.push_to_transaction:
 
 neo.commit_transaction:
   class: "Neoxygen\\NeoClient\\Command\\Core\\CoreCommitTransactionCommand"
+
+neo.push_multiple_to_transaction:
+  class: "Neoxygen\\NeoClient\\Command\\Core\\CorePushMultipleToTransactionCommand"

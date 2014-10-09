@@ -561,6 +561,13 @@ class Client
             ->execute();
     }
 
+    public function pushMultipleToTransaction($transactionId, array $statements, $conn = null, array $resultDataContents)
+    {
+        return $this->invoke('neo.push_multiple_to_transaction', $conn)
+            ->setArguments($transactionId, $statements, $resultDataContents)
+            ->execute();
+    }
+
     /**
      * Convenience method that commit the transaction
      * and passes the optional query and parameters as arguments

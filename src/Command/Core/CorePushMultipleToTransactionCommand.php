@@ -14,25 +14,22 @@ namespace Neoxygen\NeoClient\Command\Core;
 
 use Neoxygen\NeoClient\Command\AbstractCommand;
 
-class CorePushToTransactionCommand extends AbstractCommand
+class CorePushMultipleToTransactionCommand extends AbstractCommand
 {
     const METHOD = 'POST';
 
     const PATH = '/db/data/transaction/';
 
-    public $query;
-
-    public $parameters;
+    public $statements;
 
     public $resultDataContents;
 
     public $transactionId;
 
-    public function setArguments($transactionId, $query, array $parameters = array(), array $resultDataContents = array())
+    public function setArguments($transactionId, $statements, array $resultDataContents = array())
     {
         $this->transactionId = (int) $transactionId;
-        $this->query = $query;
-        $this->parameters = $parameters;
+        $this->statements = $statements;
         $this->resultDataContents = $resultDataContents;
 
         return $this;
@@ -45,16 +42,10 @@ class CorePushToTransactionCommand extends AbstractCommand
 
     public function prepareBody()
     {
-        $statement = array();
-        $statement['statement'] = $this->query;
-        if (!empty($this->parameters)) {
-            $statement['parameters'] = $this->parameters;
+        $body = [];
+        foreach ($this->statements as $statement){
+            $body['statements'][] = $statement;
         }
-        $body = array(
-            'statements' => array(
-                $statement
-            )
-        );
 
         return json_encode($body);
     }
