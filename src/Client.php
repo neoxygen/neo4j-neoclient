@@ -478,6 +478,13 @@ class Client
         return $command->execute();
     }
 
+    public function getConstraints($conn = null)
+    {
+        $command = $this->invoke('neo.get_constraints_command', $conn);
+
+        return $command->execute();
+    }
+
     /**
      * Convenience method that invoke the GetVersionCommand
      *
@@ -561,7 +568,7 @@ class Client
             ->execute();
     }
 
-    public function pushMultipleToTransaction($transactionId, array $statements, $conn = null, array $resultDataContents)
+    public function pushMultipleToTransaction($transactionId, array $statements, $conn = null, array $resultDataContents = array())
     {
         return $this->invoke('neo.push_multiple_to_transaction', $conn)
             ->setArguments($transactionId, $statements, $resultDataContents)
