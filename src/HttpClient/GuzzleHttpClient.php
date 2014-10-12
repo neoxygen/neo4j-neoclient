@@ -117,8 +117,6 @@ class GuzzleHttpClient implements HttpClientInterface
 
     private function getResponse($response)
     {
-        print_r((string)$response->getBody());
-
         $this->logger->log(
             'debug',
             sprintf('Http Response received'),
