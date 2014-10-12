@@ -520,7 +520,6 @@ class Client
         if (isset($requiredRDC)) {
             $rdc = array_merge($rdc, $requiredRDC);
         }
-        print_r($rdc);
         return $command->setArguments($query, $parameters, $rdc)
             ->execute();
     }
