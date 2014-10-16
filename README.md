@@ -23,7 +23,7 @@
 * [Creating a Commands Extension](https://github.com/neoxygen/neo4j-neoclient#creating-a-commands-extension)
 * [Production settings](https://github.com/neoxygen/neo4j-neoclient#production-settings)
 * [Extra commands](https://github.com/neoxygen/neo4j-neoclient#extra-commands)
-* [Configuration Reference)(https://github.com/neoxygen/neo4j-neoclient#configuration-reference)
+* [Configuration Reference](https://github.com/neoxygen/neo4j-neoclient#configuration-reference)
 
 ### Installation
 
@@ -32,7 +32,7 @@ Add the library to your `composer.json` file :
 ```json
 {
     "require": {
-        "neoxygen/neoclient": "~1.5"
+        "neoxygen/neoclient": "~1.6"
     }
 }
 ```
