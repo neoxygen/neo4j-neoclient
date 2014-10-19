@@ -159,7 +159,7 @@ The formatter works with the graph resultDataContent, so don't forget to specify
 The following examples are based on the Neo4j movie database example :
 
 ```php
-use Neoxygen\NeoClient\Formatter\ResponseFormatter;
+use Neoxygen\NeoClient\Formatter\ResponseFormatter as Formatter;
 
 $formatter = new Formatter();
 $query = 'MATCH p=(a:Actor)-[]-(m:Movie) RETURN p';
