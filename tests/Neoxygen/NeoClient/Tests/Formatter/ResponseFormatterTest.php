@@ -70,6 +70,14 @@ class ResponseFormatterTest extends NeoClientTestCase
         $this->assertEquals('Movie', $movie->getLabel());
         $this->assertEmpty($result->getSingleNode('Singer'));
 
+        // Test multiple properties request
+        $props = $movie->getProperties(array('title'));
+        $this->assertArrayHasKey('title', $props);
+        $props2 = $movie->getProperties(array('title', 'year', 'nonExistent'));
+        $this->assertNotNull($props2['year']);
+        $this->assertNotNull($props2['title']);
+        $this->assertNull($props2['nonExistent']);
+
     }
 
     private function setUpMovieDb($client)

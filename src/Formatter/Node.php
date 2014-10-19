@@ -108,9 +108,18 @@ class Node
         return current($this->labels);
     }
 
-    public function getProperties()
+    public function getProperties(array $props = array())
     {
-        return $this->properties;
+        if (empty($props)){
+            return $this->properties;
+        }
+
+        $properties = [];
+        foreach ($props as $key){
+            $properties[$key] = isset($this->properties[$key]) ?: null;
+        }
+
+        return $properties;
     }
 
     public function getProperty($name)
