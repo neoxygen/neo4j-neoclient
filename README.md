@@ -4,6 +4,7 @@
 
 [![Build Status](https://travis-ci.org/neoxygen/neo4j-neoclient.svg?branch=master)](https://travis-ci.org/neoxygen/neo4j-neoclient)
 [![Latest Stable Version](https://poser.pugx.org/neoxygen/neoclient/v/stable.svg)](https://packagist.org/packages/neoxygen/neoclient)
+[![Total Downloads](https://poser.pugx.org/neoxygen/neoclient/downloads.svg)](https://packagist.org/packages/neoxygen/neoclient)
 [![Latest Unstable Version](https://poser.pugx.org/neoxygen/neoclient/v/unstable.svg)](https://packagist.org/packages/neoxygen/neoclient)
 [![License](https://poser.pugx.org/neoxygen/neoclient/license.svg)](https://packagist.org/packages/neoxygen/neoclient)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/bac840f0-7b30-4206-a0e0-c6f4ca320077/big.png)](https://insight.sensiolabs.com/projects/bac840f0-7b30-4206-a0e0-c6f4ca320077)
@@ -23,7 +24,7 @@
 * [Creating a Commands Extension](https://github.com/neoxygen/neo4j-neoclient#creating-a-commands-extension)
 * [Production settings](https://github.com/neoxygen/neo4j-neoclient#production-settings)
 * [Extra commands](https://github.com/neoxygen/neo4j-neoclient#extra-commands)
-* [Configuration Reference)(https://github.com/neoxygen/neo4j-neoclient#configuration-reference)
+* [Configuration Reference](https://github.com/neoxygen/neo4j-neoclient#configuration-reference)
 
 ### Installation
 
@@ -32,7 +33,7 @@ Add the library to your `composer.json` file :
 ```json
 {
     "require": {
-        "neoxygen/neoclient": "~1.5"
+        "neoxygen/neoclient": "~1.6"
     }
 }
 ```
@@ -158,7 +159,7 @@ The formatter works with the graph resultDataContent, so don't forget to specify
 The following examples are based on the Neo4j movie database example :
 
 ```php
-use Neoxygen\NeoClient\Formatter\ResponseFormatter;
+use Neoxygen\NeoClient\Formatter\ResponseFormatter as Formatter;
 
 $formatter = new Formatter();
 $query = 'MATCH p=(a:Actor)-[]-(m:Movie) RETURN p';
