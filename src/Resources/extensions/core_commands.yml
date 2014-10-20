@@ -13,6 +13,9 @@ neo.get_labels_command:
 neo.get_constraints_command:
   class: "Neoxygen\\NeoClient\\Command\\Core\\CoreGetConstraintsCommand"
 
+neo.list_index_command:
+  class: "Neoxygen\\NeoClient\\Command\\Core\\CoreListIndexCommand"
+
 neo.get_neo4j_version:
   class: "Neoxygen\\NeoClient\\Command\\Core\\CoreGetVersionCommand"
 

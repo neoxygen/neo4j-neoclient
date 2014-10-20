@@ -187,4 +187,13 @@ class ClientTest extends NeoClientTestCase
         $client->pushToTransaction(45, $q);
         $client->pushToTransaction(46, $q2);
     }
+
+    public function testCreateIndex()
+    {
+        $client = $this->build();
+        $this->assertTrue($client->createIndex('Person', 'name'));
+        $this->assertTrue($client->isIndexed('Person', 'name'));
+        $this->assertTrue($client->dropIndex('Person', 'name'));
+        $this->assertFalse($client->isIndexed('Person', 'name'));
+    }
 }

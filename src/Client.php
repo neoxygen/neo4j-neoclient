@@ -13,6 +13,7 @@
 namespace Neoxygen\NeoClient;
 
 use Monolog\Logger;
+use Neoxygen\NeoClient\Exception\CommandException;
 use Psr\Log\NullLogger,
     Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface,
@@ -131,7 +132,7 @@ class Client
     /**
      * Sets the default result data content for the http transactional cypher
      *
-     * @param array $defaultResultDataContent array containing values of "graph", "rest" or "row"
+     * @param  array $defaultResultDataContent array containing values of "graph", "rest" or "row"
      * @return $this
      */
     public function setDefaultResultDataContent(array $defaultResultDataContent = array('row'))
@@ -428,7 +429,7 @@ class Client
      */
     public function invoke($commandAlias, $connectionAlias = null)
     {
-        if (!$this->isFrozen()){
+        if (!$this->isFrozen()) {
             throw new \RuntimeException('The commands can not be used while the application has not been built.
             You maybe forgot to add the "->build" chained method to the client construction?');
 
@@ -478,11 +479,52 @@ class Client
         return $command->execute();
     }
 
+    /**
+     * Returns the registered constraints
+     *
+     * @param  string|null $conn
+     * @return mixed
+     */
     public function getConstraints($conn = null)
     {
         $command = $this->invoke('neo.get_constraints_command', $conn);
 
         return $command->execute();
+    }
+
+    /**
+     * Returns the list of indexed properties for a given Label
+     *
+     * @param  string      $label
+     * @param  string|null $conn
+     * @return mixed
+     */
+    public function listIndex($label, $conn = null)
+    {
+        $command = $this->invoke('neo.list_index_command', $conn);
+        $command->setArguments($label);
+
+        return $command->execute();
+    }
+
+    /**
+     * Checks if a property is indexed for a given label
+     *
+     * @param  string      $label
+     * @param  string      $propertyKey
+     * @param  string|null $conn
+     * @return bool
+     */
+    public function isIndexed($label, $propertyKey, $conn = null)
+    {
+        $indexes = json_decode($this->listIndex($label, $conn), true);
+        foreach ($indexes as $index) {
+            if (in_array($propertyKey, $index['property_keys'])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -520,6 +562,7 @@ class Client
         if (isset($requiredRDC)) {
             $rdc = array_merge($rdc, $requiredRDC);
         }
+
         return $command->setArguments($query, $parameters, $rdc)
             ->execute();
     }
@@ -718,4 +761,81 @@ class Client
     {
         return $this->pushToTransaction($transactionId, $query, $parameters, $conn, $resultDataContents, true);
     }
+
+    /**
+     * Creates an index on a label
+     *
+     * @param  string $label
+     * @param  string $property
+     * @return bool
+     */
+    public function createIndex($label, $property)
+    {
+        $query = 'CREATE INDEX ON :'.$label.'('.$property.')';
+        $response = $this->sendCypherQuery($query);
+        if (!empty($response['errors'])) {
+            throw new CommandException($response['errors'][0]['message']);
+        }
+
+        return true;
+    }
+
+    /**
+     * Drops an index on a label
+     *
+     * @param  string $label
+     * @param  string $property
+     * @return bool
+     */
+    public function dropIndex($label, $property)
+    {
+        $query = 'DROP INDEX ON :'.$label.'('.$property.')';
+        $response = $this->sendCypherQuery($query);
+        if (!empty($response['errors'])) {
+            throw new CommandException($response['errors'][0]['message']);
+        }
+
+        return true;
+    }
+
+    /**
+     * Create a unique constraint on a label
+     *
+     * @param  string $label
+     * @param  string $property
+     * @return bool
+     */
+    public function createConstraint($label, $property)
+    {
+        $identifier = strtolower($label);
+        $query = 'CREATE CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$property.' IS UNIQUE';
+        $response = $this->sendCypherQuery($query);
+
+        if (!empty($response['errors'])) {
+            throw new CommandException($response['errors'][0]['message']);
+        }
+
+        return true;
+    }
+
+    /**
+     * Drops a unique constraint on a label
+     *
+     * @param  string $label
+     * @param  string $property
+     * @return bool
+     */
+    public function dropConstraint($label, $property)
+    {
+        $identifier = strtolower($label);
+        $query = 'DROP CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$property.' IS UNIQUE';
+        $response = $this->sendCypherQuery($query);
+
+        if (!empty($response['errors'])) {
+            throw new CommandException($response['errors'][0]['message']);
+        }
+
+        return true;
+    }
+
 }

@@ -110,12 +110,12 @@ class Node
 
     public function getProperties(array $props = array())
     {
-        if (empty($props)){
+        if (empty($props)) {
             return $this->properties;
         }
 
         $properties = [];
-        foreach ($props as $key){
+        foreach ($props as $key) {
             $properties[$key] = isset($this->properties[$key]) ?: null;
         }
 

@@ -43,7 +43,7 @@ class CorePushMultipleToTransactionCommand extends AbstractCommand
     public function prepareBody()
     {
         $body = [];
-        foreach ($this->statements as $statement){
+        foreach ($this->statements as $statement) {
             $body['statements'][] = $statement;
         }
 

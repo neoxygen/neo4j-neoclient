@@ -26,7 +26,6 @@ class Definition implements ConfigurationInterface
 
         $supportedSchemes = array('http', 'https');
 
-
         $rootNode->children()
         ->arrayNode('connections')
         ->requiresAtLeastOneElement()
@@ -95,7 +94,7 @@ class Definition implements ConfigurationInterface
                 ->end()
             ->prototype('scalar')->end()
             ->validate()
-                ->ifTrue(function($v) {foreach ($v as $k => $m) {if(!in_array($m, $this->allowedModes)){ return true;}}})
+                ->ifTrue(function ($v) {foreach ($v as $k => $m) {if(!in_array($m, $this->allowedModes)) { return true;}}})
                 ->thenInvalid('One of the result data contents in "%s" is not valid, please use one of '.json_encode($this->allowedModes))
             ->end()
         ->end()
