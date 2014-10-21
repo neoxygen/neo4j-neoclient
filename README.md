@@ -155,7 +155,7 @@ The library comes with a Transaction Manager removing you the burden of parsing 
 
 Usage is straightforward :
 
-```
+```php
 $transaction = $client->createTransaction();
 $transaction->pushQuery('MERGE (n:User {id: 123}) RETURN n');
 $transaction->pushQuery('MATCH (n) RETURN count(n)');
