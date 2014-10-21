@@ -13,7 +13,8 @@
 namespace Neoxygen\NeoClient;
 
 use Monolog\Logger;
-use Neoxygen\NeoClient\Exception\CommandException;
+use Neoxygen\NeoClient\Exception\CommandException,
+    Neoxygen\NeoClient\Transaction\Transaction;
 use Psr\Log\NullLogger,
     Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface,
@@ -836,6 +837,13 @@ class Client
         }
 
         return true;
+    }
+
+    public function createTransaction($conn = null)
+    {
+        $transaction = new Transaction($conn, $this);
+
+        return $transaction;
     }
 
 }
