@@ -35,15 +35,45 @@ class Transaction
         $this->checkIfOpened();
         $response = $this->client->pushToTransaction($this->transactionId, $query, $parameters, $this->conn, $resultDataContents);
         $this->checkResultErrors($response);
+        $this->results[] = $response['results'];
+
+        return $this;
+    }
+
+    public function commit()
+    {
+        $this->checkIfOpened();
+        $response = $this->client->commitTransaction($this->transactionId);
+        $this->active = false;
+
+        return $response;
+    }
+
+    public function rollback()
+    {
+        $this->checkIfOpened();
+        $response = $this->client->rollBackTransaction($this->transactionId);
+        $this->active = false;
+
+        return $response;
+    }
+
+    public function getResults()
+    {
+        return $this->results;
+    }
+
+    public function getLastResult()
+    {
+        $last = end($this->results);
+        reset($this->results);
+
+        return $last;
     }
 
     public function isActive()
     {
-        if (null !== $this->active){
-            return true;
-        }
-
-        return false;
+        return $this->active;
     }
 
     private function parseTransactionId()

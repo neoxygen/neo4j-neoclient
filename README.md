@@ -149,6 +149,26 @@ $result = $client->commitTransaction($transactionId, $query);
 {"results":[{"columns":["count(n)"],"data":[{"row":[24]}]}],"errors":[]}
 ```
 
+### Using the Transaction Manager
+
+The library comes with a Transaction Manager removing you the burden of parsing commit urls and transaction ids.
+
+Usage is straightforward :
+
+```
+$transaction = $client->createTransaction();
+$transaction->pushQuery('MERGE (n:User {id: 123}) RETURN n');
+$transaction->pushQuery('MATCH (n) RETURN count(n)');
+$transaction->commit();
+
+// Other methods :
+$transaction->rollback();
+$transaction->getLastResult // Returns the result of the last transaction statements
+$transaction->getResults() // Returns the results of all the statements
+```
+
+Note that a commited or a rolled back transaction will not accept pushQuery calls anymore.
+
 ### The Response Formatter
 
 The library comes with a handy response formatter, using it is currently optional, in the future the choice will have
