@@ -84,14 +84,14 @@ class Transaction
 
     private function checkIfOpened()
     {
-        if (!$this->isActive()){
+        if (!$this->isActive()) {
             throw new \RuntimeException('The transaction has not been opened or is closed');
         }
     }
 
     private function checkResultErrors(array $response)
     {
-        if (!empty($response['errors'])){
+        if (!empty($response['errors'])) {
             throw new \Exception(sprintf('Transaction Error : %s', $response['errors'][0]['message']));
         }
     }

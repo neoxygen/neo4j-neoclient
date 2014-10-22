@@ -839,6 +839,12 @@ class Client
         return true;
     }
 
+    /**
+     * Creates a new Transaction Handler
+     *
+     * @param  string|null $conn The connection alias
+     * @return Transaction
+     */
     public function createTransaction($conn = null)
     {
         $transaction = new Transaction($conn, $this);
@@ -846,31 +852,41 @@ class Client
         return $transaction;
     }
 
+    /**
+     * Retrieve paths between two nodes
+     *
+     * @param  array       $startNodeProperties
+     * @param  array       $endNodeProperties
+     * @param  int|null    $depth
+     * @param  string|null $direction
+     * @param  string|null $conn
+     * @return mixed
+     */
     public function getPathBetween(array $startNodeProperties, array $endNodeProperties, $depth = null, $direction = 'ALL', $conn = null)
     {
         $this->checkPathNode($startNodeProperties);
         $this->checkPathNode($endNodeProperties);
         $parameters = [];
         $startNPattern = '(start';
-        if (isset($startNodeProperties['label']) && !empty($startNodeProperties['label'])){
-            if (is_array($startNodeProperties['label'])){
+        if (isset($startNodeProperties['label']) && !empty($startNodeProperties['label'])) {
+            if (is_array($startNodeProperties['label'])) {
                 $label = implode(':', $startNodeProperties['label']);
             } else {
                 $label = ':'.$startNodeProperties['label'];
             }
             $startNPattern .= $label;
         }
-        if (isset($startNodeProperties['properties']) && !empty($startNodeProperties['properties'])){
+        if (isset($startNodeProperties['properties']) && !empty($startNodeProperties['properties'])) {
             $startNPattern .= ' {';
             $propsCount = count($startNodeProperties['properties']);
             $i = 0;
-            foreach ($startNodeProperties['properties'] as $key => $value){
+            foreach ($startNodeProperties['properties'] as $key => $value) {
                 $startNPattern .= $key . ': {start_'.$key.'}';
-                if ($value instanceof \DateTime){
+                if ($value instanceof \DateTime) {
                     $value = $value->format('Ymdhis');
                 }
                 $parameters['start_'.$key] = $value;
-                if ($i < $propsCount -1){
+                if ($i < $propsCount -1) {
                     $startNPattern .= ', ';
                 }
                 $i++;
@@ -880,25 +896,25 @@ class Client
         $startNPattern .= ')';
 
         $endNPattern = '(end';
-        if (isset($endNodeProperties['label']) && !empty($endNodeProperties['label'])){
-            if (is_array($endNodeProperties['label'])){
+        if (isset($endNodeProperties['label']) && !empty($endNodeProperties['label'])) {
+            if (is_array($endNodeProperties['label'])) {
                 $label = implode(':', $endNodeProperties['label']);
             } else {
                 $label = ':'.$endNodeProperties['label'];
             }
             $endNPattern .= $label;
         }
-        if (isset($endNodeProperties['properties']) && !empty($endNodeProperties['properties'])){
+        if (isset($endNodeProperties['properties']) && !empty($endNodeProperties['properties'])) {
             $endNPattern .= ' {';
             $propsCount = count($endNodeProperties['properties']);
             $i = 0;
-            foreach ($endNodeProperties['properties'] as $key => $value){
+            foreach ($endNodeProperties['properties'] as $key => $value) {
                 $endNPattern .= $key . ': {end_'.$key.'}';
-                if ($value instanceof \DateTime){
+                if ($value instanceof \DateTime) {
                     $value = $value->format('Ymdhis');
                 }
                 $parameters['end_'.$key] = $value;
-                if ($i < $propsCount -1){
+                if ($i < $propsCount -1) {
                     $endNPattern .= ', ';
                 }
                 $i++;
@@ -906,13 +922,13 @@ class Client
             $endNPattern .= '}';
         }
         $endNPattern .= ')';
-        if (null === $depth){
+        if (null === $depth) {
             $rel = '[*]';
         } else {
             $d = (int) $depth;
             $rel = '[*1..'.$d.']';
         }
-        switch ($direction){
+        switch ($direction) {
             case 'ALL':
                 $in = '-';
                 $out = '-';
@@ -935,7 +951,7 @@ class Client
 
     private function checkPathNode(array $node)
     {
-        if ( (!isset($node['label']) || empty($node['label'])) && (!isset($node['properties']) || empty($node['properties']))){
+        if ( (!isset($node['label']) || empty($node['label'])) && (!isset($node['properties']) || empty($node['properties']))) {
             throw new \InvalidArgumentException('The node must contain a label or properties');
         }
     }
