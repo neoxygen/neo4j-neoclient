@@ -862,7 +862,7 @@ class Client
      * @param  string|null $conn
      * @return mixed
      */
-    public function getPathBetween(array $startNodeProperties, array $endNodeProperties, $depth = null, $direction = 'ALL', $conn = null)
+    public function getPathBetween(array $startNodeProperties, array $endNodeProperties, $depth = null, $direction = null, $conn = null)
     {
         $this->checkPathNode($startNodeProperties);
         $this->checkPathNode($endNodeProperties);
@@ -929,7 +929,7 @@ class Client
             $rel = '[*1..'.$d.']';
         }
         switch ($direction) {
-            case 'ALL':
+            case null:
                 $in = '-';
                 $out = '-';
                 break;
