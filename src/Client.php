@@ -930,7 +930,7 @@ class Client
         }
         $q = 'MATCH p='.$startNPattern.$in.$rel.$out.$endNPattern.' RETURN p';
 
-        return $this->sendCypherQuery($q, $parameters, $conn, array('graph'));
+        return $this->sendCypherQuery($q, $parameters, $conn, array('graph', 'row'));
     }
 
     private function checkPathNode(array $node)

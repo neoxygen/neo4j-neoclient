@@ -5,6 +5,7 @@ namespace Neoxygen\NeoClient\Tests;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
 use Neoxygen\NeoClient\Client;
+use Neoxygen\NeoClient\Formatter\ResponseFormatter;
 use Symfony\Component\Yaml\Yaml;
 
 class ClientTest extends NeoClientTestCase
@@ -195,5 +196,52 @@ class ClientTest extends NeoClientTestCase
         $this->assertTrue($client->isIndexed('Person', 'name'));
         $this->assertTrue($client->dropIndex('Person', 'name'));
         $this->assertFalse($client->isIndexed('Person', 'name'));
+    }
+
+    public function testGetPathBetween()
+    {
+        $client = $this->build();
+        $emptyQ = 'MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE r,n';
+        $client->sendCypherQuery($emptyQ);
+
+        $loadQ = 'CREATE (n1:Link {id:1})-[:NEXT]->(n2:Link {id:2})-[:NEXT]->(n3:Link {id:3})-[:NEXT]->(n4:Link {id:4})-[:NEXT]->(n5:Link {id:5})';
+        $client->sendCypherQuery($loadQ);
+
+
+        $start = [
+            'label' => 'Link',
+            'properties' => [
+                'id' => 1
+            ]
+        ];
+
+        $end = [
+            'label' => 'Link',
+            'properties' => [
+                'id' => 5
+            ]
+        ];
+        $response = $client->getPathBetween($start, $end);
+        $formatter = new ResponseFormatter();
+        $result = $formatter->format($response);
+        $this->assertEquals(4, $result->getRelationshipsCount());
+
+        $start = [
+            'label' => 'Link',
+            'properties' => [
+                'id' => 1
+            ]
+        ];
+
+        $end = [
+            'label' => 'Link',
+            'properties' => [
+                'id' => 5
+            ]
+        ];
+        $response = $client->getPathBetween($start, $end, 3);
+        $formatter = new ResponseFormatter();
+        $result = $formatter->format($response);
+        $this->assertEquals(0, $result->getRelationshipsCount());
     }
 }
