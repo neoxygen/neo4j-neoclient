@@ -504,8 +504,23 @@ class Client
     {
         $command = $this->invoke('neo.list_index_command', $conn);
         $command->setArguments($label);
+        $response = $command->execute();
+        if (!is_array($response)){
+            $indexes = json_decode($response, true);
+        } else {
+            $indexes = $response;
+        }
 
-        return $command->execute();
+        $propertiesIndexed = [];
+        foreach ($indexes as $index){
+            foreach ($index['property_keys'] as $key){
+                $propertiesIndexed[] = $key;
+            }
+        }
+
+        return [
+            $label => $propertiesIndexed
+        ];
     }
 
     /**
@@ -518,11 +533,9 @@ class Client
      */
     public function isIndexed($label, $propertyKey, $conn = null)
     {
-        $indexes = json_decode($this->listIndex($label, $conn), true);
-        foreach ($indexes as $index) {
-            if (in_array($propertyKey, $index['property_keys'])) {
-                return true;
-            }
+        $indexes = $this->listIndex($label, $conn);
+        if (in_array($propertyKey, $indexes[$label])) {
+            return true;
         }
 
         return false;

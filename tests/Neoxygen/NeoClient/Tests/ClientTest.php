@@ -198,6 +198,17 @@ class ClientTest extends NeoClientTestCase
         $this->assertFalse($client->isIndexed('Person', 'name'));
     }
 
+    public function testCreateMultipleIndexes()
+    {
+        $client = $this->build();
+        $keys = array('lastname', 'firstname', 'cool');
+        $client->createIndex('Person', $keys);
+        $idx = $client->listIndex('Person');
+        $this->assertTrue($client->isIndexed('Person', 'lastname'));
+        $this->assertTrue($client->isIndexed('Person', 'firstname'));
+        $this->assertTrue($client->isIndexed('Person', 'cool'));
+    }
+
     public function testGetPathBetween()
     {
         $client = $this->build();
