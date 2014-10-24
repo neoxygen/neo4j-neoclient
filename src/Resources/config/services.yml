@@ -14,6 +14,10 @@ services:
   logger:
     class: "Neoxygen\\NeoClient\\Logger\\LoggerManager"
 
+  neoclient.extension_manager:
+    class: "Neoxygen\\NeoClient\\Extension\\ExtensionManager"
+    arguments: ["@neoclient.command_manager"]
+
   event_dispatcher:
     class: "Symfony\\Component\\EventDispatcher\\ContainerAwareEventDispatcher"
     arguments: ["@service_container"]

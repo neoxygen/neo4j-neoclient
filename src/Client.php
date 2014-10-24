@@ -421,77 +421,7 @@ class Client
         return true === $this->getServiceContainer()->isFrozen();
     }
 
-    /**
-     * Invokes a Command by alias and connectionAlias(optional)
-     *
-     * @param  string                                      $commandAlias    The alias of the Command to invoke
-     * @param  string|null                                 $connectionAlias
-     * @return Neoxygen\NeoClient\Command\CommandInterface
-     */
-    public function invoke($commandAlias, $connectionAlias = null)
-    {
-        if (!$this->isFrozen()) {
-            throw new \RuntimeException('The commands can not be used while the application has not been built.
-            You maybe forgot to add the "->build" chained method to the client construction?');
 
-        }
-        $command = $this->getCommandManager()->getCommand($commandAlias);
-        $command->setConnection($connectionAlias);
-
-        return $command;
-    }
-
-    /**
-     * Convenience method that returns the root of the Neo4j Api
-     *
-     * @param  string|null $conn The alias of the connection to use
-     * @return mixed
-     */
-    public function getRoot($conn = null)
-    {
-        $command = $this->invoke('simple_command', $conn);
-
-        return $command->execute();
-    }
-
-    /**
-     * Convenience method for pinging the Connection
-     *
-     * @param  string|null $conn The alias of the connection to use
-     * @return null        The command treating the ping will throw an Exception if the connection can not be made
-     */
-    public function ping($conn = null)
-    {
-        $command = $this->invoke('neo.ping_command', $conn);
-
-        return $command->execute();
-    }
-
-    /**
-     * Convenience method that invoke the GetLabelsCommand
-     *
-     * @param  string|null $conn The alias of the connection to use
-     * @return mixed
-     */
-    public function getLabels($conn = null)
-    {
-        $command = $this->invoke('neo.get_labels_command', $conn);
-
-        return $command->execute();
-    }
-
-    /**
-     * Returns the registered constraints
-     *
-     * @param  string|null $conn
-     * @return mixed
-     */
-    public function getConstraints($conn = null)
-    {
-        $command = $this->invoke('neo.get_constraints_command', $conn);
-
-        return $command->execute();
-    }
 
     /**
      * Returns the list of indexed properties for a given Label
@@ -554,32 +484,7 @@ class Client
         return $command->execute();
     }
 
-    /**
-     * Convenience method that invoke the sendCypherQueryCommand
-     * and passes given query and parameters arguments
-     *
-     * @param  string      $query              The query to send
-     * @param  array       $parameters         Map of query parameters
-     * @param  string|null $conn               The alias of the connection to use
-     * @param  array       $resultDataContents
-     * @return mixed
-     */
-    public function sendCypherQuery($query, array $parameters = array(), $conn = null, array $resultDataContents = array(), $writeMode = true)
-    {
-        $command = $this->invoke('neo.send_cypher_query', $conn);
-        $response_format = $this->getServiceContainer()->getParameter('neoclient.response_format');
-        if ('custom' === $response_format) {
-            $formatter = $this->getServiceContainer()->get('neoclient.response_formatter');
-            $requiredRDC = $formatter::getDefaultResultDataContents();
-        }
-        $rdc = !(empty($resultDataContents)) ? $resultDataContents : $this->getServiceContainer()->getParameter('neoclient.default_result_data_content');
-        if (isset($requiredRDC)) {
-            $rdc = array_merge($rdc, $requiredRDC);
-        }
 
-        return $command->setArguments($query, $parameters, $rdc)
-            ->execute();
-    }
 
     /**
      * Convenience method that invoke the OpenTransactionCommand
@@ -1002,6 +907,12 @@ class Client
         $q .= ' RETURN p';
 
         return $this->sendCypherQuery($q, $parameters, $conn, array('graph', 'row'));
+    }
+
+    public function __call($method, $attributes)
+    {
+        $extManager = $this->getServiceContainer()->get('neoclient.extension_manager');
+        return $extManager->execute($method, $attributes);
     }
 
     private function checkPathNode(array $node)
