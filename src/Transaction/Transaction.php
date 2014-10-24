@@ -22,7 +22,7 @@ class Transaction
     {
         $this->conn = $conn;
         $this->client = $client;
-        $response = $this->client->openTransaction($this->conn);
+        $response = json_decode($this->client->openTransaction($this->conn), true);
         $this->commitUrl = $response['commit'];
         $this->parseTransactionId();
         $this->active = true;
@@ -33,7 +33,7 @@ class Transaction
     public function pushQuery($query, array $parameters = array(), array $resultDataContents = array())
     {
         $this->checkIfOpened();
-        $response = $this->client->pushToTransaction($this->transactionId, $query, $parameters, $this->conn, $resultDataContents);
+        $response = json_decode($this->client->pushToTransaction($this->transactionId, $query, $parameters, $this->conn, $resultDataContents), true);
         $this->checkResultErrors($response);
         $this->results[] = $response['results'];
 
@@ -43,7 +43,7 @@ class Transaction
     public function commit()
     {
         $this->checkIfOpened();
-        $response = $this->client->commitTransaction($this->transactionId);
+        $response = json_decode($this->client->commitTransaction($this->transactionId), true);
         $this->active = false;
 
         return $response;
@@ -52,7 +52,7 @@ class Transaction
     public function rollback()
     {
         $this->checkIfOpened();
-        $response = $this->client->rollBackTransaction($this->transactionId);
+        $response = json_decode($this->client->rollBackTransaction($this->transactionId), true);
         $this->active = false;
 
         return $response;

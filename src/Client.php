@@ -767,16 +767,24 @@ class Client
      * Creates an index on a label
      *
      * @param  string $label
-     * @param  string $property
+     * @param  string|array $property
      * @return bool
      */
     public function createIndex($label, $property)
     {
-        $query = 'CREATE INDEX ON :'.$label.'('.$property.')';
-        $response = $this->sendCypherQuery($query);
-        if (!empty($response['errors'])) {
-            throw new CommandException($response['errors'][0]['message']);
+        $statements = [];
+        if (is_array($property)){
+            foreach ($property as $prop){
+                $statements[] = 'CREATE INDEX ON :'.$label.'('.$prop.')';
+            }
+        } else {
+            $statements[] = 'CREATE INDEX ON :'.$label.'('.$property.')';
         }
+        $tx = $this->createTransaction();
+        foreach ($statements as $statement){
+            $tx->pushQuery($statement);
+        }
+        $tx->commit();
 
         return true;
     }
@@ -790,11 +798,19 @@ class Client
      */
     public function dropIndex($label, $property)
     {
-        $query = 'DROP INDEX ON :'.$label.'('.$property.')';
-        $response = $this->sendCypherQuery($query);
-        if (!empty($response['errors'])) {
-            throw new CommandException($response['errors'][0]['message']);
+        $statements = [];
+        if (is_array($property)){
+            foreach ($property as $prop){
+                $statements[] = 'DROP INDEX ON :'.$label.'('.$prop.')';
+            }
+        } else {
+            $statements[] = 'DROP INDEX ON :'.$label.'('.$property.')';
         }
+        $tx = $this->createTransaction();
+        foreach ($statements as $statement){
+            $tx->pushQuery($statement);
+        }
+        $tx->commit();
 
         return true;
     }
@@ -803,18 +819,25 @@ class Client
      * Create a unique constraint on a label
      *
      * @param  string $label
-     * @param  string $property
+     * @param  string|array $property
      * @return bool
      */
     public function createConstraint($label, $property)
     {
+        $statements = [];
         $identifier = strtolower($label);
-        $query = 'CREATE CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$property.' IS UNIQUE';
-        $response = $this->sendCypherQuery($query);
-
-        if (!empty($response['errors'])) {
-            throw new CommandException($response['errors'][0]['message']);
+        if (is_array($property)){
+            foreach ($property as $prop){
+                $statements[] = 'CREATE CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$prop.' IS UNIQUE';
+            }
+        } else {
+            $statements[] = 'CREATE CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$property.' IS UNIQUE';
         }
+        $tx = $this->createTransaction();
+        foreach ($statements as $statement){
+            $tx->pushQuery($statement);
+        }
+        $tx->commit();
 
         return true;
     }
@@ -823,18 +846,25 @@ class Client
      * Drops a unique constraint on a label
      *
      * @param  string $label
-     * @param  string $property
+     * @param  string|array $property
      * @return bool
      */
     public function dropConstraint($label, $property)
     {
+        $statements = [];
         $identifier = strtolower($label);
-        $query = 'DROP CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$property.' IS UNIQUE';
-        $response = $this->sendCypherQuery($query);
-
-        if (!empty($response['errors'])) {
-            throw new CommandException($response['errors'][0]['message']);
+        if (is_array($property)){
+            foreach ($property as $prop){
+                $statements[] = 'DROP CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$prop.' IS UNIQUE';
+            }
+        } else {
+            $statements[] = 'DROP CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$property.' IS UNIQUE';
         }
+        $tx = $this->createTransaction();
+        foreach ($statements as $statement){
+            $tx->pushQuery($statement);
+        }
+        $tx->commit();
 
         return true;
     }
