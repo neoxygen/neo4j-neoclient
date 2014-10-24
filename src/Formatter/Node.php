@@ -116,7 +116,7 @@ class Node
 
         $properties = [];
         foreach ($props as $key) {
-            $properties[$key] = isset($this->properties[$key]) ?: null;
+            $properties[$key] = isset($this->properties[$key]) ? $this->properties[$key] : null;
         }
 
         return $properties;
