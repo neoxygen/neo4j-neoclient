@@ -987,7 +987,19 @@ class Client
             default:
                 throw new \InvalidArgumentException('The direction must be IN, OUT or ALL');
         }
-        $q = 'MATCH p='.$startNPattern.$in.$rel.$out.$endNPattern.' RETURN p';
+        $q = 'MATCH p='.$startNPattern.$in.$rel.$out.$endNPattern;
+        if (isset($startNodeProperties['id'])){
+            $q .= ' WHERE id(start) = '.$startNodeProperties['id'];
+        }
+
+        if (isset($endNodeProperties['id'])){
+            if (isset($startNodeProperties['id'])){
+                $q .= ' AND ';
+            }
+            $q .= ' WHERE id(end) = '.$endNodeProperties['id'];
+        }
+
+        $q .= ' RETURN p';
 
         return $this->sendCypherQuery($q, $parameters, $conn, array('graph', 'row'));
     }
