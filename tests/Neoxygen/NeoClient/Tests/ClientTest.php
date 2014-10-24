@@ -250,7 +250,7 @@ class ClientTest extends NeoClientTestCase
                 'id' => 5
             ]
         ];
-        $response = $client->getPathBetween($start, $end, 3);
+        $response = $client->getPathBetween($start, $end, null, 3);
         $formatter = new ResponseFormatter();
         $result = $formatter->format($response);
         $this->assertEquals(0, $result->getRelationshipsCount());

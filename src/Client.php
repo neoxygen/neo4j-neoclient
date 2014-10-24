@@ -994,7 +994,9 @@ class Client
 
     private function checkPathNode(array $node)
     {
-        if ( (!isset($node['label']) || empty($node['label'])) && (!isset($node['properties']) || empty($node['properties']))) {
+        if ((!isset($node['label']) || empty($node['label']))
+            && (!isset($node['properties']) || empty($node['properties']))
+            && (!isset($node['id']) || empty($node['id']))) {
             throw new \InvalidArgumentException('The node must contain a label or properties');
         }
     }
