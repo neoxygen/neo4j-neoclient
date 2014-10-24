@@ -905,7 +905,7 @@ class Client
      * @param  string|null $conn
      * @return mixed
      */
-    public function getPathBetween(array $startNodeProperties, array $endNodeProperties, $depth = null, $direction = null, $conn = null)
+    public function getPathBetween(array $startNodeProperties, array $endNodeProperties, $direction = null, $depth = null, $conn = null)
     {
         $this->checkPathNode($startNodeProperties);
         $this->checkPathNode($endNodeProperties);
