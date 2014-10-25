@@ -504,8 +504,23 @@ class Client
     {
         $command = $this->invoke('neo.list_index_command', $conn);
         $command->setArguments($label);
+        $response = $command->execute();
+        if (!is_array($response)){
+            $indexes = json_decode($response, true);
+        } else {
+            $indexes = $response;
+        }
 
-        return $command->execute();
+        $propertiesIndexed = [];
+        foreach ($indexes as $index){
+            foreach ($index['property_keys'] as $key){
+                $propertiesIndexed[] = $key;
+            }
+        }
+
+        return [
+            $label => $propertiesIndexed
+        ];
     }
 
     /**
@@ -518,11 +533,9 @@ class Client
      */
     public function isIndexed($label, $propertyKey, $conn = null)
     {
-        $indexes = json_decode($this->listIndex($label, $conn), true);
-        foreach ($indexes as $index) {
-            if (in_array($propertyKey, $index['property_keys'])) {
-                return true;
-            }
+        $indexes = $this->listIndex($label, $conn);
+        if (in_array($propertyKey, $indexes[$label])) {
+            return true;
         }
 
         return false;
@@ -767,16 +780,24 @@ class Client
      * Creates an index on a label
      *
      * @param  string $label
-     * @param  string $property
+     * @param  string|array $property
      * @return bool
      */
     public function createIndex($label, $property)
     {
-        $query = 'CREATE INDEX ON :'.$label.'('.$property.')';
-        $response = $this->sendCypherQuery($query);
-        if (!empty($response['errors'])) {
-            throw new CommandException($response['errors'][0]['message']);
+        $statements = [];
+        if (is_array($property)){
+            foreach ($property as $prop){
+                $statements[] = 'CREATE INDEX ON :'.$label.'('.$prop.')';
+            }
+        } else {
+            $statements[] = 'CREATE INDEX ON :'.$label.'('.$property.')';
         }
+        $tx = $this->createTransaction();
+        foreach ($statements as $statement){
+            $tx->pushQuery($statement);
+        }
+        $tx->commit();
 
         return true;
     }
@@ -790,11 +811,19 @@ class Client
      */
     public function dropIndex($label, $property)
     {
-        $query = 'DROP INDEX ON :'.$label.'('.$property.')';
-        $response = $this->sendCypherQuery($query);
-        if (!empty($response['errors'])) {
-            throw new CommandException($response['errors'][0]['message']);
+        $statements = [];
+        if (is_array($property)){
+            foreach ($property as $prop){
+                $statements[] = 'DROP INDEX ON :'.$label.'('.$prop.')';
+            }
+        } else {
+            $statements[] = 'DROP INDEX ON :'.$label.'('.$property.')';
         }
+        $tx = $this->createTransaction();
+        foreach ($statements as $statement){
+            $tx->pushQuery($statement);
+        }
+        $tx->commit();
 
         return true;
     }
@@ -803,18 +832,25 @@ class Client
      * Create a unique constraint on a label
      *
      * @param  string $label
-     * @param  string $property
+     * @param  string|array $property
      * @return bool
      */
     public function createConstraint($label, $property)
     {
+        $statements = [];
         $identifier = strtolower($label);
-        $query = 'CREATE CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$property.' IS UNIQUE';
-        $response = $this->sendCypherQuery($query);
-
-        if (!empty($response['errors'])) {
-            throw new CommandException($response['errors'][0]['message']);
+        if (is_array($property)){
+            foreach ($property as $prop){
+                $statements[] = 'CREATE CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$prop.' IS UNIQUE';
+            }
+        } else {
+            $statements[] = 'CREATE CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$property.' IS UNIQUE';
         }
+        $tx = $this->createTransaction();
+        foreach ($statements as $statement){
+            $tx->pushQuery($statement);
+        }
+        $tx->commit();
 
         return true;
     }
@@ -823,18 +859,25 @@ class Client
      * Drops a unique constraint on a label
      *
      * @param  string $label
-     * @param  string $property
+     * @param  string|array $property
      * @return bool
      */
     public function dropConstraint($label, $property)
     {
+        $statements = [];
         $identifier = strtolower($label);
-        $query = 'DROP CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$property.' IS UNIQUE';
-        $response = $this->sendCypherQuery($query);
-
-        if (!empty($response['errors'])) {
-            throw new CommandException($response['errors'][0]['message']);
+        if (is_array($property)){
+            foreach ($property as $prop){
+                $statements[] = 'DROP CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$prop.' IS UNIQUE';
+            }
+        } else {
+            $statements[] = 'DROP CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$property.' IS UNIQUE';
         }
+        $tx = $this->createTransaction();
+        foreach ($statements as $statement){
+            $tx->pushQuery($statement);
+        }
+        $tx->commit();
 
         return true;
     }
@@ -862,7 +905,7 @@ class Client
      * @param  string|null $conn
      * @return mixed
      */
-    public function getPathBetween(array $startNodeProperties, array $endNodeProperties, $depth = null, $direction = null, $conn = null)
+    public function getPathBetween(array $startNodeProperties, array $endNodeProperties, $direction = null, $depth = null, $conn = null)
     {
         $this->checkPathNode($startNodeProperties);
         $this->checkPathNode($endNodeProperties);
@@ -944,14 +987,28 @@ class Client
             default:
                 throw new \InvalidArgumentException('The direction must be IN, OUT or ALL');
         }
-        $q = 'MATCH p='.$startNPattern.$in.$rel.$out.$endNPattern.' RETURN p';
+        $q = 'MATCH p='.$startNPattern.$in.$rel.$out.$endNPattern;
+        if (isset($startNodeProperties['id'])){
+            $q .= ' WHERE id(start) = '.$startNodeProperties['id'];
+        }
+
+        if (isset($endNodeProperties['id'])){
+            if (isset($startNodeProperties['id'])){
+                $q .= ' AND ';
+            }
+            $q .= ' WHERE id(end) = '.$endNodeProperties['id'];
+        }
+
+        $q .= ' RETURN p';
 
         return $this->sendCypherQuery($q, $parameters, $conn, array('graph', 'row'));
     }
 
     private function checkPathNode(array $node)
     {
-        if ( (!isset($node['label']) || empty($node['label'])) && (!isset($node['properties']) || empty($node['properties']))) {
+        if ((!isset($node['label']) || empty($node['label']))
+            && (!isset($node['properties']) || empty($node['properties']))
+            && (!isset($node['id']) || empty($node['id']))) {
             throw new \InvalidArgumentException('The node must contain a label or properties');
         }
     }

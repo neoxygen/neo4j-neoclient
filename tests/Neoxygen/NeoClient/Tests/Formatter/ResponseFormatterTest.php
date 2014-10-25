@@ -73,6 +73,7 @@ class ResponseFormatterTest extends NeoClientTestCase
         // Test multiple properties request
         $props = $movie->getProperties(array('title'));
         $this->assertArrayHasKey('title', $props);
+        $this->assertTrue(in_array($props['title'], array('The Matrix', 'The Matrix Reloaded', 'The Matrix Revolutions')));
         $props2 = $movie->getProperties(array('title', 'year', 'nonExistent'));
         $this->assertNotNull($props2['year']);
         $this->assertNotNull($props2['title']);

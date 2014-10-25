@@ -198,6 +198,17 @@ class ClientTest extends NeoClientTestCase
         $this->assertFalse($client->isIndexed('Person', 'name'));
     }
 
+    public function testCreateMultipleIndexes()
+    {
+        $client = $this->build();
+        $keys = array('lastname', 'firstname', 'cool');
+        $client->createIndex('Person', $keys);
+        $idx = $client->listIndex('Person');
+        $this->assertTrue($client->isIndexed('Person', 'lastname'));
+        $this->assertTrue($client->isIndexed('Person', 'firstname'));
+        $this->assertTrue($client->isIndexed('Person', 'cool'));
+    }
+
     public function testGetPathBetween()
     {
         $client = $this->build();
@@ -239,7 +250,7 @@ class ClientTest extends NeoClientTestCase
                 'id' => 5
             ]
         ];
-        $response = $client->getPathBetween($start, $end, 3);
+        $response = $client->getPathBetween($start, $end, null, 3);
         $formatter = new ResponseFormatter();
         $result = $formatter->format($response);
         $this->assertEquals(0, $result->getRelationshipsCount());

@@ -22,7 +22,7 @@ class Transaction
     {
         $this->conn = $conn;
         $this->client = $client;
-        $response = $this->client->openTransaction($this->conn);
+        $response = $this->handleResponse($this->client->openTransaction($this->conn));
         $this->commitUrl = $response['commit'];
         $this->parseTransactionId();
         $this->active = true;
@@ -33,7 +33,7 @@ class Transaction
     public function pushQuery($query, array $parameters = array(), array $resultDataContents = array())
     {
         $this->checkIfOpened();
-        $response = $this->client->pushToTransaction($this->transactionId, $query, $parameters, $this->conn, $resultDataContents);
+        $response = $this->handleResponse($this->client->pushToTransaction($this->transactionId, $query, $parameters, $this->conn, $resultDataContents));
         $this->checkResultErrors($response);
         $this->results[] = $response['results'];
 
@@ -43,7 +43,7 @@ class Transaction
     public function commit()
     {
         $this->checkIfOpened();
-        $response = $this->client->commitTransaction($this->transactionId);
+        $response = $this->handleResponse($this->client->commitTransaction($this->transactionId));
         $this->active = false;
 
         return $response;
@@ -52,7 +52,7 @@ class Transaction
     public function rollback()
     {
         $this->checkIfOpened();
-        $response = $this->client->rollBackTransaction($this->transactionId);
+        $response = $this->handleResponse($this->client->rollBackTransaction($this->transactionId));
         $this->active = false;
 
         return $response;
@@ -94,5 +94,14 @@ class Transaction
         if (!empty($response['errors'])) {
             throw new \Exception(sprintf('Transaction Error : %s', $response['errors'][0]['message']));
         }
+    }
+
+    private function handleResponse($response)
+    {
+        if (!is_array($response)){
+            $response = json_decode($response, true);
+        }
+
+        return $response;
     }
 }
