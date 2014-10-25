@@ -36,8 +36,12 @@ class Result
         $this->relationships[$relationship->getId()] = $relationship;
     }
 
-    public function getNodes()
+    public function getNodes($label = null, $labelizedKeys = false)
     {
+        if (null !== $label){
+            return $this->getNodesByLabel($label, $labelizedKeys);
+        }
+
         return $this->nodes;
     }
 
@@ -81,12 +85,17 @@ class Result
         return null;
     }
 
-    public function getNodesByLabel($name)
+    public function getNodesByLabel($name, $labelizedKeys = false)
     {
         $collection = array();
         foreach ($this->getNodes() as $node) {
             if ($node->hasLabel($name)) {
-                $collection[] = $node;
+                if ($labelizedKeys){
+                    $collection[$name] = $node;
+                } else {
+                    $collection[] = $node;
+                }
+
             }
         }
 
