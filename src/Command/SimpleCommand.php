@@ -21,6 +21,5 @@ class SimpleCommand extends AbstractCommand
     public function execute()
     {
         return $this->httpClient->send(self::METHOD, self::PATH, null, $this->connection);
-
     }
 }

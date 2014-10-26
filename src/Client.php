@@ -80,29 +80,17 @@ class Client
         }
 
         $this->lastResponse = $responseObject;
-        unset($formatter);
 
-        return $this;
-    }
-
-    public function getResponse()
-    {
-        return $this->lastResponse->getResponse();
+        if ($responseObject->containsResults()){
+            return $responseObject->getResult();
+        } else {
+            return $responseObject->getResponse();
+        }
     }
 
     public function getLastResponse()
     {
         return $this->lastResponse;
-    }
-
-    public function getResults()
-    {
-        return $this->getLastResponse()->getResults();
-    }
-
-    public function getResult()
-    {
-        return $this->getLastResponse()->getResult();
     }
 
     public function getServiceContainer()

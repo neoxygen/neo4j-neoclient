@@ -2,7 +2,6 @@
 
 simple_command:
   class: "Neoxygen\\NeoClient\\Command\\SimpleCommand"
-  disable_default_injector: ~
 
 neo.ping_command:
   class: "Neoxygen\\NeoClient\\Command\\Core\\CorePingCommand"
