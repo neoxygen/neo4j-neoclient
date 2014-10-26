@@ -117,9 +117,7 @@ class NeoClientCoreExtension extends AbstractExtension
             }
         }
 
-        return [
-            $label => $propertiesIndexed
-        ];
+        return $propertiesIndexed;
     }
 
     public function listIndexes(array $labels = array(), $conn = null)
@@ -130,7 +128,7 @@ class NeoClientCoreExtension extends AbstractExtension
         $indexes = [];
         foreach ($labels as $label){
             $indexs = $this->listIndex($label, $conn);
-            $indexes[key($indexs)] = array_values($indexs);
+            $indexes[$label] = $indexs;
         }
 
         return $indexes;
@@ -147,7 +145,7 @@ class NeoClientCoreExtension extends AbstractExtension
     public function isIndexed($label, $propertyKey, $conn = null)
     {
         $indexes = $this->listIndex($label, $conn);
-        if (in_array($propertyKey, $indexes[$label])) {
+        if (in_array($propertyKey, $indexes)) {
             return true;
         }
 
