@@ -15,7 +15,6 @@ class Response
     public function setRawResponse($rawResponse)
     {
         $this->rawResponse = $rawResponse;
-        print_r($rawResponse);
 
         if (isset($rawResponse['errors'])){
             if (!empty($rawResponse['errors'])){
