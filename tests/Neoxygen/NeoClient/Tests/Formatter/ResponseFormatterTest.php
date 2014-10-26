@@ -14,10 +14,7 @@ class ResponseFormatterTest extends NeoClientTestCase
         $this->setUpMovieDb($client);
 
         $q = 'MATCH (n:Actor) RETURN n';
-        $response = $client->sendCypherQuery($q, array(), null, array('graph'));
-
-        $formatter = new ResponseFormatter();
-        $result = $formatter->format($response);
+        $result = $client->sendCypherQuery($q, array(), null, array('graph'));
 
         $this->assertTrue(3 === $result->getNodesCount());
         $this->assertTrue(0 === $result->getRelationshipsCount());
@@ -38,9 +35,7 @@ class ResponseFormatterTest extends NeoClientTestCase
         $this->setUpMovieDb($client);
 
         $q = 'MATCH p=(a:Actor)-[]->(m:Movie) RETURN p';
-        $response = $client->sendCypherQuery($q, array(), null, array('graph'));
-        $formatter = new ResponseFormatter();
-        $result = $formatter->format($response);
+        $result = $client->sendCypherQuery($q, array(), null, array('graph'));
 
         $this->assertCount(3, $result->getNodesByLabel('Actor'));
         $this->assertCount(3, $result->getNodesByLabel('Movie'));

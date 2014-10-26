@@ -21,5 +21,8 @@ class SimpleSetupTest extends \PHPUnit_Framework_TestCase
         $client = ClientBuilder::create()
             ->addDefaultLocalConnection()
             ->build();
+
+        $cm = $client->getConnectionManager();
+        $this->assertTrue($cm->hasConnection('default'));
     }
 }

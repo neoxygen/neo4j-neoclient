@@ -2,7 +2,7 @@
 
 namespace Neoxygen\NeoClient\Tests;
 
-use Neoxygen\NeoClient\Client;
+use Neoxygen\NeoClient\ClientBuilder;
 use Neoxygen\NeoClient\ServiceContainer;
 use Symfony\Component\Yaml\Yaml;
 
@@ -15,9 +15,9 @@ class NeoClientTestCase extends \PHPUnit_Framework_TestCase
 
     public function build()
     {
-        $client = new Client();
-        $client->loadConfigurationFile($this->getDefaultConfig());
-        $client->build();
+        $client = ClientBuilder::create()
+            ->loadConfigurationFile($this->getDefaultConfig())
+            ->build();
 
         return $client;
     }
@@ -30,8 +30,8 @@ class NeoClientTestCase extends \PHPUnit_Framework_TestCase
 
         $config = Yaml::parse($this->getDefaultConfig());
         $connection = array_shift($config['connections']);
-        $client = new Client();
-        $client->addConnection('dummy', 'http', 'notexistinghost.dev', 7479)
+        $client = ClientBuilder::create()
+            ->addConnection('dummy', 'http', 'notexistinghost.dev', 7479)
             ->addConnection('default', $connection['scheme'], $connection['host'], $connection['port'], true, 'ikwattro', 'error')
             ->setFallbackConnection('dummy', 'default')
             ->build();

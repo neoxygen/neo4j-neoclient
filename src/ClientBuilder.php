@@ -54,6 +54,8 @@ class ClientBuilder
      */
     private $loggers = array();
 
+    /**
+     */
     public static function create()
     {
         return new static();
@@ -350,6 +352,8 @@ class ClientBuilder
 
     /**
      * Builds the service definitions and processes the configuration
+     *
+     * @return \Neoxygen\NeoClient\Client
      */
     public function build()
     {

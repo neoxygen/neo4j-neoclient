@@ -73,6 +73,10 @@ class Response
 
     public function containsResults()
     {
-        return isset($this->rawResponse['results']);
+        if (isset($this->rawResponse['results']) && !empty($this->rawResponse['results'])){
+            return true;
+        }
+
+        return false;
     }
 }

@@ -16,6 +16,17 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Neoxygen\NeoClient\Exception\Neo4jException;
 
 /**
+ * @method getRoot($conn = null)
+ * @method ping($conn = null)
+ * @method getLabels($conn = null)
+ * @method getConstraints($conn = null)
+ * @method listIndex($label, $conn = null)
+ * @method listIndexes(array $labels = array(), $conn = null)
+ * @method isIndexed($label, $propertyKey, $conn = null)
+ * @method getVersion($conn = null)
+ * @method openTransaction($conn = null)
+ * @method createTransaction($conn = null)
+ * @method rollbackTransaction($id, $conn = null)
  * @method sendCypherQuery($query, array $parameters = array(), $conn = null, array $resultDataContents = array())
  */
 
@@ -37,7 +48,7 @@ class Client
     /**
      * Returns the ConnectionManager Service
      *
-     * @return Neoxygen\NeoClient\Connection\ConnectionManager
+     * @return \Neoxygen\NeoClient\Connection\ConnectionManager
      */
     public function getConnectionManager()
     {
@@ -48,7 +59,7 @@ class Client
      * Returns the connection bound to the alias, or the default connection if no alias is provided
      *
      * @param  string|null                              $alias
-     * @return Neoxygen\NeoClient\Connection\Connection The connection with alias "$alias"
+     * @return \Neoxygen\NeoClient\Connection\Connection The connection with alias "$alias"
      */
     public function getConnection($alias = null)
     {
@@ -58,7 +69,7 @@ class Client
     /**
      * Returns the CommandManager Service
      *
-     * @return Neoxygen\NeoClient\Command\CommandManager
+     * @return \Neoxygen\NeoClient\Command\CommandManager
      */
     public function getCommandManager()
     {
@@ -88,11 +99,17 @@ class Client
         }
     }
 
+    /**
+     * @return \Neoxygen\NeoClient\Formatter\Response
+     */
     public function getLastResponse()
     {
         return $this->lastResponse;
     }
 
+    /**
+     * @return ContainerInterface
+     */
     public function getServiceContainer()
     {
         return $this->serviceContainer;

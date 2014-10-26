@@ -5,41 +5,13 @@ namespace Neoxygen\NeoClient\Tests;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
 use Neoxygen\NeoClient\Client;
+use Neoxygen\NeoClient\ClientBuilder;
 use Neoxygen\NeoClient\Formatter\ResponseFormatter;
 use Symfony\Component\Yaml\Yaml;
 
 class ClientTest extends NeoClientTestCase
 {
-
-    public function testContainerIsNotFrozenOnConstruct()
-    {
-        $client = new Client();
-        $sc = $client->getServiceContainer();
-
-        $this->assertFalse($sc->isFrozen());
-    }
-
-    public function testDefaultAttributes()
-    {
-        $client = new Client();
-        $this->assertInternalType('array', $client->getConfiguration());
-    }
-
-    public function testAddingANewConnection()
-    {
-        $client = new Client();
-        $client->addConnection('default', 'http', 'localhost', 7474);
-
-        $this->assertArrayHasKey('default', $client->getConfiguration()['connections']);
-        $client->addConnection('second', 'https', 'localhost', 7575);
-        $this->assertArrayHasKey('second', $client->getConfiguration()['connections']);
-        $this->assertCount(2, $client->getConfiguration()['connections']);
-
-        $client->build();
-
-        $con1 = $client->getConnection('default');
-        $con2 = $client->getConnection('second');
-    }
+    /**
 
     public function testEventListenerIsAdded()
     {
@@ -136,42 +108,32 @@ class ClientTest extends NeoClientTestCase
         $client->build();
         $this->assertTrue($client->isFrozen());
     }
-
-    public function testInvokeCommand()
-    {
-        $client = new Client();
-        $config = $this->getDefaultConfig();
-        $client->loadConfigurationFile($config);
-        $client->build();
-        $command = $client->invoke('simple_command');
-
-        $this->assertInstanceOf('Neoxygen\NeoClient\Command\SimpleCommand', $command);
-
-    }
+     **/
 
     public function testConvenienceMethods()
     {
-        $client = new Client();
         $config = $this->getDefaultConfig();
-        $client->loadConfigurationFile($config);
-        $client->build();
+        $client = ClientBuilder::create()
+            ->loadConfigurationFile($config)
+            ->build();
 
-        $root = json_decode($client->getRoot(), true);
+        $root = $client->getRoot();
         $this->assertArrayHasKey('data', $root);
 
     }
 
     public function testAuthConnection()
     {
-        $client = new Client();
-        $client->loadConfigurationFile($this->getDefaultConfig());
-        $client->build();
+        $config = $this->getDefaultConfig();
+        $client = ClientBuilder::create()
+            ->loadConfigurationFile($config)
+            ->build();
     }
 
     public function testFallbackConnection()
     {
         $client = $this->buildMultiple();
-        $root = json_decode($client->getRoot(), true);
+        $root = $client->getRoot();
         $this->assertArrayHasKey('data', $root);
     }
 
@@ -232,9 +194,7 @@ class ClientTest extends NeoClientTestCase
                 'id' => 5
             ]
         ];
-        $response = $client->getPathBetween($start, $end);
-        $formatter = new ResponseFormatter();
-        $result = $formatter->format($response);
+        $result = $client->getPathBetween($start, $end);
         $this->assertEquals(4, $result->getRelationshipsCount());
 
         $start = [
@@ -250,9 +210,7 @@ class ClientTest extends NeoClientTestCase
                 'id' => 5
             ]
         ];
-        $response = $client->getPathBetween($start, $end, null, 3);
-        $formatter = new ResponseFormatter();
-        $result = $formatter->format($response);
+        $result = $client->getPathBetween($start, $end, null, 3);
         $this->assertEquals(0, $result->getRelationshipsCount());
     }
 }
