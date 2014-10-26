@@ -2,7 +2,7 @@
 
 namespace Neoxygen\NeoClient\Transaction;
 
-use Neoxygen\NeoClient\Client;
+use Neoxygen\NeoClient\Extension\NeoClientCoreExtension;
 
 class Transaction
 {
@@ -18,10 +18,10 @@ class Transaction
 
     private $results = [];
 
-    public function __construct($conn = null, Client $client)
+    public function __construct($conn = null, NeoClientCoreExtension $extension)
     {
         $this->conn = $conn;
-        $this->client = $client;
+        $this->client = $extension;
         $response = $this->handleResponse($this->client->openTransaction($this->conn));
         $this->commitUrl = $response['commit'];
         $this->parseTransactionId();
