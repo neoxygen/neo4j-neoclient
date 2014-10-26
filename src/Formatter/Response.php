@@ -2,8 +2,6 @@
 
 namespace Neoxygen\NeoClient\Formatter;
 
-use Neoxygen\NeoClient\Formatter\Result;
-
 class Response
 {
     private $rawResponse;
@@ -16,8 +14,8 @@ class Response
     {
         $this->rawResponse = $rawResponse;
 
-        if (isset($rawResponse['errors'])){
-            if (!empty($rawResponse['errors'])){
+        if (isset($rawResponse['errors'])) {
+            if (!empty($rawResponse['errors'])) {
                 $this->errors = $rawResponse['errors'][0];
             }
         }
@@ -42,7 +40,7 @@ class Response
 
     public function getResult()
     {
-        if (null !== $this->results && !$this->results instanceof Result){
+        if (null !== $this->results && !$this->results instanceof Result) {
             reset($this->results);
 
             return $this->results[0];
@@ -73,7 +71,7 @@ class Response
 
     public function containsResults()
     {
-        if (isset($this->rawResponse['results']) && !empty($this->rawResponse['results'])){
+        if (isset($this->rawResponse['results']) && !empty($this->rawResponse['results'])) {
             return true;
         }
 

@@ -38,10 +38,10 @@ class Result
 
     public function getNodes($label = null, $labelizedKeys = false)
     {
-        if (null !== $label){
-
+        if (null !== $label) {
             return $this->getNodesByLabel($label, $labelizedKeys);
         }
+
         return $this->nodes;
     }
 
@@ -90,7 +90,7 @@ class Result
         $collection = array();
         foreach ($this->getNodes() as $node) {
             if ($node->hasLabel($name)) {
-                if ($labelizedKeys){
+                if ($labelizedKeys) {
                     $collection[$name] = $node;
                 } else {
                     $collection[] = $node;
@@ -107,8 +107,8 @@ class Result
         $nodes = [];
         foreach ($labels as $label) {
             $lnodes = $this->getNodesByLabel($label);
-            foreach ($lnodes as $node){
-                if ($labelizedKeys){
+            foreach ($lnodes as $node) {
+                if ($labelizedKeys) {
                     $nodes[$label] = $node;
                 } else {
                     $nodes[] = $node;

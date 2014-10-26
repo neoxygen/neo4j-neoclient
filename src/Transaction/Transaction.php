@@ -98,7 +98,7 @@ class Transaction
 
     private function handleResponse($response)
     {
-        if (!is_array($response)){
+        if (!is_array($response)) {
             $response = json_decode($response, true);
         }
 

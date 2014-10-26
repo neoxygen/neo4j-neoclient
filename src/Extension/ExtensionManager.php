@@ -30,11 +30,11 @@ class ExtensionManager
 
     public function getExecution($method)
     {
-        if (isset($this->execs[$method], $this->execs)){
+        if (isset($this->execs[$method], $this->execs)) {
             return $this->execs[$method];
         }
-        foreach ($this->extensions as $extension){
-            if (method_exists($extension, $method)){
+        foreach ($this->extensions as $extension) {
+            if (method_exists($extension, $method)) {
                 $this->execs[$method] = array($extension, $method);
 
                 return $this->execs[$method];

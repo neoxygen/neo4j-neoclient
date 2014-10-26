@@ -7,7 +7,7 @@ use Neoxygen\NeoClient\Extension\NeoClientExtensionInterface,
 
 abstract class AbstractExtension implements NeoClientExtensionInterface
 {
-    protected  $commandManager;
+    protected $commandManager;
 
     public function __construct(CommandManager $commandManager)
     {

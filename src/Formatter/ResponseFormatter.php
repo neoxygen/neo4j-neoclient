@@ -47,7 +47,7 @@ class ResponseFormatter implements ResponseFormatterInterface
         $responseObject = new Response();
         $responseObject->setRawResponse($response);
 
-        if ($responseObject->containsResults()){
+        if ($responseObject->containsResults()) {
             $resultSet = $response;
 
             foreach ($resultSet['results'] as $result) {

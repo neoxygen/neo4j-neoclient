@@ -104,15 +104,15 @@ class NeoClientCoreExtension extends AbstractExtension
         $command = $this->invoke('neo.list_index_command', $conn);
         $command->setArguments($label);
         $response = $command->execute();
-        if (!is_array($response)){
+        if (!is_array($response)) {
             $indexes = json_decode($response, true);
         } else {
             $indexes = $response;
         }
 
         $propertiesIndexed = [];
-        foreach ($indexes as $index){
-            foreach ($index['property_keys'] as $key){
+        foreach ($indexes as $index) {
+            foreach ($index['property_keys'] as $key) {
                 $propertiesIndexed[] = $key;
             }
         }
@@ -122,11 +122,11 @@ class NeoClientCoreExtension extends AbstractExtension
 
     public function listIndexes(array $labels = array(), $conn = null)
     {
-        if (empty($labels)){
+        if (empty($labels)) {
             $labels = $this->getLabels($conn);
         }
         $indexes = [];
-        foreach ($labels as $label){
+        foreach ($labels as $label) {
             $indexs = $this->listIndex($label, $conn);
             $indexes[$label] = $indexs;
         }
@@ -164,8 +164,6 @@ class NeoClientCoreExtension extends AbstractExtension
 
         return $command->execute();
     }
-
-
 
     /**
      * Convenience method that invoke the OpenTransactionCommand
@@ -378,22 +376,22 @@ class NeoClientCoreExtension extends AbstractExtension
     /**
      * Creates an index on a label
      *
-     * @param  string $label
+     * @param  string       $label
      * @param  string|array $property
      * @return bool
      */
     public function createIndex($label, $property)
     {
         $statements = [];
-        if (is_array($property)){
-            foreach ($property as $prop){
+        if (is_array($property)) {
+            foreach ($property as $prop) {
                 $statements[] = 'CREATE INDEX ON :'.$label.'('.$prop.')';
             }
         } else {
             $statements[] = 'CREATE INDEX ON :'.$label.'('.$property.')';
         }
         $tx = $this->createTransaction();
-        foreach ($statements as $statement){
+        foreach ($statements as $statement) {
             $tx->pushQuery($statement);
         }
         $tx->commit();
@@ -411,15 +409,15 @@ class NeoClientCoreExtension extends AbstractExtension
     public function dropIndex($label, $property)
     {
         $statements = [];
-        if (is_array($property)){
-            foreach ($property as $prop){
+        if (is_array($property)) {
+            foreach ($property as $prop) {
                 $statements[] = 'DROP INDEX ON :'.$label.'('.$prop.')';
             }
         } else {
             $statements[] = 'DROP INDEX ON :'.$label.'('.$property.')';
         }
         $tx = $this->createTransaction();
-        foreach ($statements as $statement){
+        foreach ($statements as $statement) {
             $tx->pushQuery($statement);
         }
         $tx->commit();
@@ -430,7 +428,7 @@ class NeoClientCoreExtension extends AbstractExtension
     /**
      * Create a unique constraint on a label
      *
-     * @param  string $label
+     * @param  string       $label
      * @param  string|array $property
      * @return bool
      */
@@ -438,15 +436,15 @@ class NeoClientCoreExtension extends AbstractExtension
     {
         $statements = [];
         $identifier = strtolower($label);
-        if (is_array($property)){
-            foreach ($property as $prop){
+        if (is_array($property)) {
+            foreach ($property as $prop) {
                 $statements[] = 'CREATE CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$prop.' IS UNIQUE';
             }
         } else {
             $statements[] = 'CREATE CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$property.' IS UNIQUE';
         }
         $tx = $this->createTransaction();
-        foreach ($statements as $statement){
+        foreach ($statements as $statement) {
             $tx->pushQuery($statement);
         }
         $tx->commit();
@@ -457,7 +455,7 @@ class NeoClientCoreExtension extends AbstractExtension
     /**
      * Drops a unique constraint on a label
      *
-     * @param  string $label
+     * @param  string       $label
      * @param  string|array $property
      * @return bool
      */
@@ -465,23 +463,21 @@ class NeoClientCoreExtension extends AbstractExtension
     {
         $statements = [];
         $identifier = strtolower($label);
-        if (is_array($property)){
-            foreach ($property as $prop){
+        if (is_array($property)) {
+            foreach ($property as $prop) {
                 $statements[] = 'DROP CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$prop.' IS UNIQUE';
             }
         } else {
             $statements[] = 'DROP CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$property.' IS UNIQUE';
         }
         $tx = $this->createTransaction();
-        foreach ($statements as $statement){
+        foreach ($statements as $statement) {
             $tx->pushQuery($statement);
         }
         $tx->commit();
 
         return true;
     }
-
-
 
     /**
      * Retrieve paths between two nodes
@@ -576,12 +572,12 @@ class NeoClientCoreExtension extends AbstractExtension
                 throw new \InvalidArgumentException('The direction must be IN, OUT or ALL');
         }
         $q = 'MATCH p='.$startNPattern.$in.$rel.$out.$endNPattern;
-        if (isset($startNodeProperties['id'])){
+        if (isset($startNodeProperties['id'])) {
             $q .= ' WHERE id(start) = '.$startNodeProperties['id'];
         }
 
-        if (isset($endNodeProperties['id'])){
-            if (isset($startNodeProperties['id'])){
+        if (isset($endNodeProperties['id'])) {
+            if (isset($startNodeProperties['id'])) {
                 $q .= ' AND ';
             }
             $q .= ' WHERE id(end) = '.$endNodeProperties['id'];

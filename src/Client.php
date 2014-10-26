@@ -58,7 +58,7 @@ class Client
     /**
      * Returns the connection bound to the alias, or the default connection if no alias is provided
      *
-     * @param  string|null                              $alias
+     * @param  string|null                               $alias
      * @return \Neoxygen\NeoClient\Connection\Connection The connection with alias "$alias"
      */
     public function getConnection($alias = null)
@@ -86,13 +86,13 @@ class Client
 
         $responseObject = $formatter->format($response);
 
-        if ($responseObject->hasErrors()){
+        if ($responseObject->hasErrors()) {
             throw new Neo4jException(sprintf('Neo4j Http Transaction Exception with code "%s" and with message "%s"', $responseObject->getErrors()['code'], $responseObject->getErrors()['message']));
         }
 
         $this->lastResponse = $responseObject;
 
-        if ($responseObject->containsResults()){
+        if ($responseObject->containsResults()) {
             return $responseObject->getResult();
         } else {
             return $responseObject->getResponse();
