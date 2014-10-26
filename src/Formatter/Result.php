@@ -102,6 +102,23 @@ class Result
         return $collection;
     }
 
+    public function getNodesByLabels(array $labels = array(), $labelizedKeys = false)
+    {
+        $nodes = [];
+        foreach ($labels as $label) {
+            $lnodes = $this->getNodesByLabel($label);
+            foreach ($lnodes as $node){
+                if ($labelizedKeys){
+                    $nodes[$label] = $node;
+                } else {
+                    $nodes[] = $node;
+                }
+            }
+        }
+
+        return $nodes;
+    }
+
     public function getRelationships()
     {
         return $this->relationships;
