@@ -18,7 +18,9 @@ class Response
         print_r($rawResponse);
 
         if (isset($rawResponse['errors'])){
-            $this->errors = $rawResponse['errors'][0];
+            if (!empty($rawResponse['errors'])){
+                $this->errors = $rawResponse['errors'][0];
+            }
         }
     }
 
