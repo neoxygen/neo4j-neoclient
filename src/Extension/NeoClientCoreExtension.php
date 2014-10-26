@@ -122,6 +122,20 @@ class NeoClientCoreExtension extends AbstractExtension
         ];
     }
 
+    public function listIndexes(array $labels = array(), $conn = null)
+    {
+        if (empty($labels)){
+            $labels = $this->getLabels($conn);
+        }
+        $indexes = [];
+        foreach ($labels as $label){
+            $indexs = $this->listIndex($label, $conn);
+            $indexes[key($indexs)] = array_values($indexs);
+        }
+
+        return $indexes;
+    }
+
     /**
      * Checks if a property is indexed for a given label
      *
@@ -587,10 +601,5 @@ class NeoClientCoreExtension extends AbstractExtension
             && (!isset($node['id']) || empty($node['id']))) {
             throw new \InvalidArgumentException('The node must contain a label or properties');
         }
-    }
-
-    public function createSpatialIndex()
-    {
-        print_r('S P A T I A L   I N D E X');
     }
 }
