@@ -21,7 +21,7 @@ use Neoxygen\NeoClient\Exception\Neo4jException;
 
 class Client
 {
-    private $container;
+    private $serviceContainer;
 
     private $responseFormatter;
 
@@ -29,9 +29,40 @@ class Client
 
     public function __construct(ContainerInterface $container)
     {
-        $this->container = $container;
+        $this->serviceContainer = $container;
         $formatterClass = $container->getParameter('response_formatter_class');
         $this->responseFormatter = $formatterClass;
+    }
+
+    /**
+     * Returns the ConnectionManager Service
+     *
+     * @return Neoxygen\NeoClient\Connection\ConnectionManager
+     */
+    public function getConnectionManager()
+    {
+        return $this->serviceContainer->get('neoclient.connection_manager');
+    }
+
+    /**
+     * Returns the connection bound to the alias, or the default connection if no alias is provided
+     *
+     * @param  string|null                              $alias
+     * @return Neoxygen\NeoClient\Connection\Connection The connection with alias "$alias"
+     */
+    public function getConnection($alias = null)
+    {
+        return $this->getConnectionManager()->getConnection($alias);
+    }
+
+    /**
+     * Returns the CommandManager Service
+     *
+     * @return Neoxygen\NeoClient\Command\CommandManager
+     */
+    public function getCommandManager()
+    {
+        return $this->serviceContainer->get('neoclient.command_manager');
     }
 
     public function __call($method, $attributes)
@@ -76,6 +107,6 @@ class Client
 
     public function getServiceContainer()
     {
-        return $this->container;
+        return $this->serviceContainer;
     }
 }

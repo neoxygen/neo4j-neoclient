@@ -121,6 +121,11 @@ class ClientBuilder
         return $this;
     }
 
+    public function addDefaultLocalConnection()
+    {
+        return $this->addConnection('default', 'http', 'localhost', 7474);
+    }
+
     /**
      * Defines a fallback connection for a given connection
      *
@@ -389,37 +394,6 @@ class ClientBuilder
     public function getServiceContainer()
     {
         return $this->serviceContainer;
-    }
-
-    /**
-     * Returns the ConnectionManager Service
-     *
-     * @return Neoxygen\NeoClient\Connection\ConnectionManager
-     */
-    public function getConnectionManager()
-    {
-        return $this->serviceContainer->get('neoclient.connection_manager');
-    }
-
-    /**
-     * Returns the connection bound to the alias, or the default connection if no alias is provided
-     *
-     * @param  string|null                              $alias
-     * @return Neoxygen\NeoClient\Connection\Connection The connection with alias "$alias"
-     */
-    public function getConnection($alias = null)
-    {
-        return $this->getConnectionManager()->getConnection($alias);
-    }
-
-    /**
-     * Returns the CommandManager Service
-     *
-     * @return Neoxygen\NeoClient\Command\CommandManager
-     */
-    public function getCommandManager()
-    {
-        return $this->serviceContainer->get('neoclient.command_manager');
     }
 
     /**
