@@ -15,21 +15,26 @@ namespace Neoxygen\NeoClient\Formatter;
 class ResponseFormatter implements ResponseFormatterInterface
 {
 
-    protected $nodesMap;
+    protected $nodesMap = [];
 
-    protected $relationshipsMap;
+    protected $relationshipsMap = [];
 
-    protected $errors;
+    protected $errors = [];
 
-    protected $nodesByLabel;
+    protected $nodesByLabel = [];
 
-    protected $relsByType;
+    protected $relsByType = [];
 
     protected $result;
 
     public static function getDefaultResultDataContents()
     {
         return array('row', 'graph');
+    }
+
+    public function __construct()
+    {
+        $this->result = new Result();
     }
 
     public function hasErrors()
@@ -39,35 +44,33 @@ class ResponseFormatter implements ResponseFormatterInterface
 
     public function format($response)
     {
-        $this->reset();
-        if (!is_string($response) && !is_array($response)) {
-            throw new \InvalidArgumentException('Invalid Response Format');
-        }
-        if (is_string($response)) {
-            $results = json_decode($response, true);
-        }
-        $resultSet = isset($results) ? $results : $response;
+        $responseObject = new Response();
+        $responseObject->setRawResponse($response);
 
-        foreach ($resultSet['results'] as $result) {
-            foreach ($result['data'] as $data) {
-                if (isset($data['graph'])) {
-                    foreach ($data['graph']['nodes'] as $node) {
-                        $this->nodesMap[$node['id']] = $node;
-                    }
-                    foreach ($data['graph']['relationships'] as $rel) {
-                        $this->relationshipsMap[$rel['id']] = $rel;
+        if ($responseObject->containsResults()){
+            $resultSet = $response;
+
+            foreach ($resultSet['results'] as $result) {
+                foreach ($result['data'] as $data) {
+                    if (isset($data['graph'])) {
+                        foreach ($data['graph']['nodes'] as $node) {
+                            $this->nodesMap[$node['id']] = $node;
+                        }
+                        foreach ($data['graph']['relationships'] as $rel) {
+                            $this->relationshipsMap[$rel['id']] = $rel;
+                        }
                     }
                 }
             }
+
+            $this->prepareResultSet();
+            $this->prepareNodesByLabels();
+            $this->prepareRelationshipsByType();
+
+            $responseObject->setResult($this->result);
         }
 
-        $this->prepareResultSet();
-
-        $this->errors = $resultSet['errors'];
-        $this->prepareNodesByLabels();
-        $this->prepareRelationshipsByType();
-
-        return $this->result;
+        return $responseObject;
     }
 
     public function getNodes()
@@ -145,20 +148,6 @@ class ResponseFormatter implements ResponseFormatterInterface
             $startNode->addOutboundRelationship($r);
             $endNode->addInboundRelationship($r);
         }
-    }
-
-    private function reset()
-    {
-        unset($this->nodesMap);
-        unset($this->relationshipsMap);
-        unset($this->errors);
-        unset($this->nodesByLabel);
-        unset($this->relsByType);
-        unset($this->result);
-        $this->nodesMap = array();
-        $this->relationshipsMap = array();
-        $this->nodesByLabel = array();
-        $this->result = new Result();
     }
 
 }

@@ -21,3 +21,7 @@ services:
   event_dispatcher:
     class: "Symfony\\Component\\EventDispatcher\\ContainerAwareEventDispatcher"
     arguments: ["@service_container"]
+
+  neoclient.client:
+    class: "Neoxygen\\NeoClient\\Client"
+    arguments: ["@service_container"]

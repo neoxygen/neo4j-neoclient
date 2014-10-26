@@ -38,7 +38,7 @@ class GuzzleHttpClient implements HttpClientInterface
     private $connectionManager;
 
     public function __construct(
-        $responseFormat = 'json',
+        $responseFormat = null,
         LoggerInterface $logger = null,
         EventDispatcherInterface $eventDispatcher = null,
         ConnectionManager $connectionManager)
@@ -124,16 +124,11 @@ class GuzzleHttpClient implements HttpClientInterface
         );
 
         if ($response->getBody()) {
-            if (null === $this->responseFormat) {
-                return $this->responseFormatter->format($response);
-            }
+                $resp = (string) $response->getBody();
+                $decoded = \GuzzleHttp\json_decode($resp, true);
 
-            if ('json' === $this->responseFormat) {
-                return (string) $response->getBody();
+                return $decoded;
             }
-
-            return $response->json();
-        }
 
         return null;
     }
