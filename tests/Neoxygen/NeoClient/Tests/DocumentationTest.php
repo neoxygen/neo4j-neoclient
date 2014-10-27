@@ -48,8 +48,6 @@ class DocumentationTest extends \PHPUnit_Framework_TestCase
         $client = $this->buildClient();
         $root = $client->getRoot();
 
-        print_r($root);
-
         $this->assertArrayHasKey('data', $root);
         $this->assertArrayHasKey('management', $root);
 
@@ -95,8 +93,6 @@ class DocumentationTest extends \PHPUnit_Framework_TestCase
         $q = 'MATCH (n) RETURN count(n)';
         $client = $this->buildClient();
         $response = $client->sendCypherQuery($q);
-
-        print_r($response);
     }
 
     public function testRenameLabel()
@@ -106,6 +102,20 @@ class DocumentationTest extends \PHPUnit_Framework_TestCase
         $client->sendCypherQuery($q);
 
         $client->renameLabel('Person', 'User');
+    }
+
+    public function testGetConstraints()
+    {
+        $client = $this->buildClient();
+        $client->createUniqueConstraint('Person', 'email');
+        $client->createUniqueConstraint('User', 'username');
+        $client->createUniqueConstraint('User', 'email');
+        $constraints = $client->getUniqueConstraints();
+        $this->assertArrayHasKey('User', $constraints);
+        $this->assertArrayHasKey('Person', $constraints);
+        $this->assertContains('email', $constraints['Person']);
+        $this->assertContains('username', $constraints['User']);
+        $this->assertContains('email', $constraints['User']);
     }
 
     private function checkVersion($v)

@@ -108,9 +108,15 @@ class NeoClientCoreExtension extends AbstractExtension
         $command = $this->invoke('neo.get_constraints_command', $conn);
 
         $httpResponse = $command->execute();
-        $responseObject = $this->handleHttpResponse($httpResponse);
+        $response = $this->handleHttpResponse($httpResponse);
+        $constraints = [];
+        foreach ($response as $constraint){
+            foreach ($constraint['property_keys'] as $key){
+                $constraints[$constraint['label']][] = $key;
+            }
+        }
 
-        return $responseObject->getResponse();
+        return $constraints;
     }
 
     /**
