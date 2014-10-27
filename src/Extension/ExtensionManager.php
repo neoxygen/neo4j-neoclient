@@ -3,7 +3,8 @@
 namespace Neoxygen\NeoClient\Extension;
 
 use Neoxygen\NeoClient\Command\CommandManager,
-    Neoxygen\NeoClient\Extension\NeoClientExtensionInterface;
+    Neoxygen\NeoClient\Extension\NeoClientExtensionInterface,
+    Neoxygen\NeoClient\Formatter\ResponseFormatterManager;
 
 class ExtensionManager
 {
@@ -13,14 +14,17 @@ class ExtensionManager
 
     private $execs = [];
 
-    public function __construct(CommandManager $commandManager)
+    private $responseFormatter;
+
+    public function __construct(CommandManager $commandManager, ResponseFormatterManager $responseFormatter)
     {
         $this->commandManager = $commandManager;
+        $this->responseFormatter = $responseFormatter;
     }
 
     public function addExtension($extension)
     {
-        array_unshift($this->extensions, new $extension($this->commandManager));
+        array_unshift($this->extensions, new $extension($this->commandManager, $this->responseFormatter));
     }
 
     public function execute($method, $attributes = array())

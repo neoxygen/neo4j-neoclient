@@ -1,3 +1,11 @@
+## 2.0
+
+* The bootstrap process has been changed
+* The `getVersion` method has been replaced by the `getNeo4jVersion()` method.
+* `listIndex` returns now an array of indexed properties for the given label
+* new method `listIndexes` returning an array `label => [$properties]`
+
+
 ## 1.5
 - Added a ResponseFormatter for handling API responses
 

@@ -36,8 +36,10 @@ class NeoClientCoreExtension extends AbstractExtension
     {
         $command = $this->invoke('neo.send_cypher_query', $conn);
 
-        return $command->setArguments($query, $parameters, array('row', 'graph'))
+        $httpResponse = $command->setArguments($query, $parameters, array('row', 'graph'))
             ->execute();
+
+        return $this->formatResponse($httpResponse);
     }
 
     /**
@@ -50,7 +52,10 @@ class NeoClientCoreExtension extends AbstractExtension
     {
         $command = $this->invoke('simple_command', $conn);
 
-        return $command->execute();
+        $httpResponse = $command->execute();
+        $responseObject = $this->formatResponse($httpResponse);
+
+        return $responseObject->getResponse();
     }
 
     /**
@@ -63,7 +68,9 @@ class NeoClientCoreExtension extends AbstractExtension
     {
         $command = $this->invoke('neo.ping_command', $conn);
 
-        return $command->execute();
+        $httpResponse = $command->execute();
+
+        return true;
     }
 
     /**
@@ -76,7 +83,11 @@ class NeoClientCoreExtension extends AbstractExtension
     {
         $command = $this->invoke('neo.get_labels_command', $conn);
 
-        return $command->execute();
+        $httpResponse = $command->execute();
+        $responseObject = $this->formatResponse($httpResponse);
+
+        return $responseObject->getResponse();
+
     }
 
     /**
@@ -89,7 +100,10 @@ class NeoClientCoreExtension extends AbstractExtension
     {
         $command = $this->invoke('neo.get_constraints_command', $conn);
 
-        return $command->execute();
+        $httpResponse = $command->execute();
+        $responseObject = $this->formatResponse($httpResponse);
+
+        return $responseObject->getResponse();
     }
 
     /**
@@ -97,21 +111,16 @@ class NeoClientCoreExtension extends AbstractExtension
      *
      * @param  string      $label
      * @param  string|null $conn
-     * @return mixed
+     * @return array
      */
     public function listIndex($label, $conn = null)
     {
         $command = $this->invoke('neo.list_index_command', $conn);
         $command->setArguments($label);
-        $response = $command->execute();
-        if (!is_array($response)) {
-            $indexes = json_decode($response, true);
-        } else {
-            $indexes = $response;
-        }
-
+        $httpResponse = $command->execute();
+        $response = $this->formatResponse($httpResponse)->getResponse();
         $propertiesIndexed = [];
-        foreach ($indexes as $index) {
+        foreach ($response as $index) {
             foreach ($index['property_keys'] as $key) {
                 $propertiesIndexed[] = $key;
             }
@@ -120,6 +129,11 @@ class NeoClientCoreExtension extends AbstractExtension
         return $propertiesIndexed;
     }
 
+    /**
+     * @param array $labels
+     * @param string|null $conn
+     * @return array
+     */
     public function listIndexes(array $labels = array(), $conn = null)
     {
         if (empty($labels)) {
@@ -146,6 +160,7 @@ class NeoClientCoreExtension extends AbstractExtension
     {
         $indexes = $this->listIndex($label, $conn);
         if (in_array($propertyKey, $indexes)) {
+
             return true;
         }
 
@@ -158,11 +173,12 @@ class NeoClientCoreExtension extends AbstractExtension
      * @param  string|null $conn The alias of the connection to use
      * @return mixed
      */
-    public function getVersion($conn = null)
+    public function getNeo4jVersion($conn = null)
     {
         $command = $this->invoke('neo.get_neo4j_version', $conn);
+        $httpResponse = $command->execute();
 
-        return $command->execute();
+        return $this->formatResponse($httpResponse)->getResponse();
     }
 
     /**
@@ -173,8 +189,12 @@ class NeoClientCoreExtension extends AbstractExtension
      */
     public function openTransaction($conn = null)
     {
-        return $this->invoke('neo.open_transaction', $conn)
-            ->execute();
+        $command = $this->invoke('neo.open_transaction', $conn);
+        $httpResponse = $command->execute();
+
+        $response = $this->formatResponse($httpResponse);
+
+        return $response->getResponse();
     }
 
     /**
@@ -185,7 +205,7 @@ class NeoClientCoreExtension extends AbstractExtension
      */
     public function createTransaction($conn = null)
     {
-        $transaction = new Transaction($conn, $this);
+        $transaction = new Transaction($conn, $this, $this->responseFormatterClass);
 
         return $transaction;
     }
@@ -216,9 +236,11 @@ class NeoClientCoreExtension extends AbstractExtension
      */
     public function pushToTransaction($transactionId, $query, array $parameters = array(), $conn = null, array $resultDataContents = array(), $writeMode = true)
     {
-        return $this->invoke('neo.push_to_transaction', $conn)
+        $httpResponse = $this->invoke('neo.push_to_transaction', $conn)
             ->setArguments($transactionId, $query, $parameters)
             ->execute();
+
+        return $this->formatResponse($httpResponse);
     }
 
     public function pushMultipleToTransaction($transactionId, array $statements, $conn = null, array $resultDataContents = array())
@@ -390,11 +412,9 @@ class NeoClientCoreExtension extends AbstractExtension
         } else {
             $statements[] = 'CREATE INDEX ON :'.$label.'('.$property.')';
         }
-        $tx = $this->createTransaction();
         foreach ($statements as $statement) {
-            $tx->pushQuery($statement);
+            $this->sendCypherQuery($statement);
         }
-        $tx->commit();
 
         return true;
     }
@@ -416,11 +436,9 @@ class NeoClientCoreExtension extends AbstractExtension
         } else {
             $statements[] = 'DROP INDEX ON :'.$label.'('.$property.')';
         }
-        $tx = $this->createTransaction();
         foreach ($statements as $statement) {
-            $tx->pushQuery($statement);
+            $this->sendCypherQuery($statement);
         }
-        $tx->commit();
 
         return true;
     }
@@ -443,11 +461,9 @@ class NeoClientCoreExtension extends AbstractExtension
         } else {
             $statements[] = 'CREATE CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$property.' IS UNIQUE';
         }
-        $tx = $this->createTransaction();
         foreach ($statements as $statement) {
-            $tx->pushQuery($statement);
+            $this->sendCypherQuery($statement);
         }
-        $tx->commit();
 
         return true;
     }
@@ -470,11 +486,9 @@ class NeoClientCoreExtension extends AbstractExtension
         } else {
             $statements[] = 'DROP CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$property.' IS UNIQUE';
         }
-        $tx = $this->createTransaction();
         foreach ($statements as $statement) {
-            $tx->pushQuery($statement);
+            $this->sendCypherQuery($statement);
         }
-        $tx->commit();
 
         return true;
     }
@@ -585,7 +599,9 @@ class NeoClientCoreExtension extends AbstractExtension
 
         $q .= ' RETURN p';
 
-        return $this->sendCypherQuery($q, $parameters, $conn, array('graph', 'row'));
+        $response = $this->sendCypherQuery($q, $parameters, $conn, array('graph', 'row'));
+
+        return $response->getResult();
     }
 
     private function checkPathNode(array $node)

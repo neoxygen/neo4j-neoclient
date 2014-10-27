@@ -14,6 +14,8 @@ namespace Neoxygen\NeoClient;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Neoxygen\NeoClient\Exception\Neo4jException;
+use Neoxygen\NeoClient\Transaction\Transaction;
+use Neoxygen\NeoClient\Formatter\Response;
 
 /**
  * @method getRoot($conn = null)
@@ -25,7 +27,6 @@ use Neoxygen\NeoClient\Exception\Neo4jException;
  * @method isIndexed($label, $propertyKey, $conn = null)
  * @method getVersion($conn = null)
  * @method openTransaction($conn = null)
- * @method createTransaction($conn = null)
  * @method rollbackTransaction($id, $conn = null)
  * @method sendCypherQuery($query, array $parameters = array(), $conn = null, array $resultDataContents = array())
  */
@@ -82,29 +83,30 @@ class Client
 
         $response = $extManager->execute($method, $attributes);
 
-        $formatter = new $this->responseFormatter();
+        $this->lastResponse = $response;
 
-        $responseObject = $formatter->format($response);
-
-        if ($responseObject->hasErrors()) {
-            throw new Neo4jException(sprintf('Neo4j Http Transaction Exception with code "%s" and with message "%s"', $responseObject->getErrors()['code'], $responseObject->getErrors()['message']));
-        }
-
-        $this->lastResponse = $responseObject;
-
-        if ($responseObject->containsResults()) {
-            return $responseObject->getResult();
-        } else {
-            return $responseObject->getResponse();
-        }
+        return $response;
     }
 
     /**
-     * @return \Neoxygen\NeoClient\Formatter\Response
+     * @return mixed
      */
-    public function getLastResponse()
+    public function getResponse()
     {
-        return $this->lastResponse;
+        if ($this->lastResponse instanceof Response){
+            return $this->lastResponse->getResponse();
+        } else {
+            return $this->lastResponse;
+        }
+    }
+
+    public function getResult()
+    {
+        if ($this->lastResponse instanceof Response){
+            return $this->lastResponse->getResult();
+        } else {
+            return $this->lastResponse;
+        }
     }
 
     /**
@@ -113,5 +115,14 @@ class Client
     public function getServiceContainer()
     {
         return $this->serviceContainer;
+    }
+
+    public function handleResponse(Response $response)
+    {
+        if ($response->containsResults()) {
+            return $response->getResult();
+        } else {
+            return $response->getResponse();
+        }
     }
 }

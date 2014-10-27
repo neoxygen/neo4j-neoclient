@@ -12,7 +12,7 @@ class CoreCommandsTest extends NeoClientTestCase
         $client = ClientBuilder::create()
             ->loadConfigurationFile($config)
             ->build();
-        $this->assertNull($client->ping());
+        $this->assertTrue($client->ping());
     }
 
     public function testGetLabelsCommand()
@@ -33,7 +33,7 @@ class CoreCommandsTest extends NeoClientTestCase
     public function testGetVersionCommand()
     {
         $sc = $this->build();
-        $this->assertContains('2.1', $sc->getVersion());
+        $this->assertContains('2.1', $sc->getNeo4jVersion());
     }
 
     public function testOpenTransactionCommand()
@@ -65,8 +65,7 @@ class CoreCommandsTest extends NeoClientTestCase
         $tx_id = $expl[count($expl)-2];
 
         $q = 'MATCH (n) RETURN count(n)';
-        $sc->pushToTransaction($tx_id, $q);
-        $response = $sc->getLastResponse();
+        $response = $sc->pushToTransaction($tx_id, $q);
         $this->assertTrue($response->containsResults());
     }
 
@@ -76,7 +75,7 @@ class CoreCommandsTest extends NeoClientTestCase
         $q = 'MATCH (n) RETURN n';
         $resultFormat = array('row', 'graph');
         $response = $client->sendCypherQuery($q, array(), null, $resultFormat);
-        $result = $client->getLastResponse()->getResponse();
+        $result = $response->getResponse();
         $this->assertArrayHasKey('graph', $result['results'][0]['data'][0]);
     }
 }

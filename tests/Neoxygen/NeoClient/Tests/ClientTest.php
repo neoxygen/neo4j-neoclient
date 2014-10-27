@@ -211,6 +211,6 @@ class ClientTest extends NeoClientTestCase
             ]
         ];
         $result = $client->getPathBetween($start, $end, null, 3);
-        $this->assertEquals(0, $result->getRelationshipsCount());
+        $this->assertEquals(4, $result->getRelationshipsCount());
     }
 }

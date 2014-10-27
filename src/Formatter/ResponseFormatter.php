@@ -27,6 +27,8 @@ class ResponseFormatter implements ResponseFormatterInterface
 
     protected $result;
 
+    protected $isNew = true;
+
     public static function getDefaultResultDataContents()
     {
         return array('row', 'graph');
@@ -44,6 +46,7 @@ class ResponseFormatter implements ResponseFormatterInterface
 
     public function format($response)
     {
+        $this->isNew = false;
         $responseObject = new Response();
         $responseObject->setRawResponse($response);
 
@@ -148,6 +151,26 @@ class ResponseFormatter implements ResponseFormatterInterface
             $startNode->addOutboundRelationship($r);
             $endNode->addInboundRelationship($r);
         }
+    }
+
+    public function reset()
+    {
+        unset($this->nodesMap);
+        unset($this->relationshipsMap);
+        unset($this->errors);
+        unset($this->nodesByLabel);
+        unset($this->relsByType);
+        unset($this->result);
+        $this->isNew = true;
+        $this->nodesMap = array();
+        $this->relationshipsMap = array();
+        $this->nodesByLabel = array();
+        $this->result = new Result();
+    }
+
+    public function isNew()
+    {
+        return $this->isNew;
     }
 
 }

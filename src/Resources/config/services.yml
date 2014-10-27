@@ -16,7 +16,11 @@ services:
 
   neoclient.extension_manager:
     class: "Neoxygen\\NeoClient\\Extension\\ExtensionManager"
-    arguments: ["@neoclient.command_manager"]
+    arguments: ["@neoclient.command_manager","@neoclient.response_formatter"]
+
+  neoclient.response_formatter:
+    class: "Neoxygen\\NeoClient\\Formatter\\ResponseFormatterManager"
+    arguments: ["%response_formatter_class%"]
 
   event_dispatcher:
     class: "Symfony\\Component\\EventDispatcher\\ContainerAwareEventDispatcher"

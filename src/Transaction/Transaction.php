@@ -3,6 +3,7 @@
 namespace Neoxygen\NeoClient\Transaction;
 
 use Neoxygen\NeoClient\Extension\NeoClientCoreExtension;
+use Neoxygen\NeoClient\Exception\Neo4jException;
 
 class Transaction
 {
@@ -18,12 +19,15 @@ class Transaction
 
     private $results = [];
 
-    public function __construct($conn = null, NeoClientCoreExtension $extension)
+    private $responseFormatter;
+
+    public function __construct($conn = null, NeoClientCoreExtension $extension, $responseFormatter)
     {
         $this->conn = $conn;
         $this->client = $extension;
+        $this->responseFormatter = $responseFormatter;
         $response = $this->handleResponse($this->client->openTransaction($this->conn));
-        $this->commitUrl = $response['commit'];
+        $this->commitUrl = $response->getResponse()['commit'];
         $this->parseTransactionId();
         $this->active = true;
 
@@ -34,8 +38,6 @@ class Transaction
     {
         $this->checkIfOpened();
         $response = $this->handleResponse($this->client->pushToTransaction($this->transactionId, $query, $parameters, $this->conn, $resultDataContents));
-        $this->checkResultErrors($response);
-        $this->results[] = $response['results'];
 
         return $this;
     }
@@ -96,10 +98,15 @@ class Transaction
         }
     }
 
-    private function handleResponse($response)
+    private function handleResponse($httpResponse)
     {
-        if (!is_array($response)) {
-            $response = json_decode($response, true);
+        if (!$this->responseFormatter->isNew()){
+            $this->responseFormatter->reset();
+        }
+        $response = $this->responseFormatter->format($httpResponse);
+
+        if ($response->hasErrors()){
+            throw new Neo4jException($response->getErrors()['message']);
         }
 
         return $response;
