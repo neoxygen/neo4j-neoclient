@@ -141,7 +141,7 @@ To get the pretty format :
 
 ```php
 
-$q = 'MATCH (n:Actor), (m:Movie) RETURN n.name as Actor, m.title as Movie';
+$q = 'MATCH (n:Actor) RETURN n.name';
 $client->sendCypherQuery($q);
 
 $result = $client->getRows();
@@ -150,33 +150,15 @@ $result = $client->getRows();
 ```
 Array
 (
-    [Actor] => Array
+    [n.name] => Array
         (
             [0] => Keanu Reeves
-            [1] => Keanu Reeves
-            [2] => Keanu Reeves
-            [3] => Laurence Fishburne
-            [4] => Laurence Fishburne
-            [5] => Laurence Fishburne
-            [6] => Carrie-Anne Moss
-            [7] => Carrie-Anne Moss
-            [8] => Carrie-Anne Moss
-        )
-
-    [Movie] => Array
-        (
-            [0] => The Matrix
-            [1] => The Matrix Reloaded
-            [2] => The Matrix Revolutions
-            [3] => The Matrix
-            [4] => The Matrix Reloaded
-            [5] => The Matrix Revolutions
-            [6] => The Matrix
-            [7] => The Matrix Reloaded
-            [8] => The Matrix Revolutions
+            [1] => Laurence Fishburne
+            [2] => Carrie-Anne Moss
         )
 
 )
+
 ```
 
 
