@@ -16,15 +16,18 @@ class ExtensionManager
 
     private $responseFormatter;
 
-    public function __construct(CommandManager $commandManager, ResponseFormatterManager $responseFormatter)
+    private $autoFormatResponse;
+
+    public function __construct(CommandManager $commandManager, ResponseFormatterManager $responseFormatter, $autoFormatResponse)
     {
         $this->commandManager = $commandManager;
         $this->responseFormatter = $responseFormatter;
+        $this->autoFormatResponse = $autoFormatResponse;
     }
 
     public function addExtension($extension)
     {
-        array_unshift($this->extensions, new $extension($this->commandManager, $this->responseFormatter));
+        array_unshift($this->extensions, new $extension($this->commandManager, $this->responseFormatter, $this->autoFormatResponse));
     }
 
     public function execute($method, $attributes = array())

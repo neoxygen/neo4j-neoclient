@@ -53,6 +53,7 @@ class NeoClientExtension implements  ExtensionInterface
         $container->setParameter('response_formatter_class', $formatterClass);
         $resultDataContent = $formatterClass::getDefaultResultDataContents();
         $container->setParameter('neoclient.response_format', $resultDataContent);
+        $container->setParameter('neoclient.auto_format_response', $config['auto_format_response']);
 
     }
 

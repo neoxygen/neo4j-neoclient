@@ -107,7 +107,7 @@ class ClientBuilder
      * @param string|null Authentication login
      * @param string|null Authentication password
      *
-     * @return Neoxygen\NeoClient\Client
+     * @return \Neoxygen\NeoClient\ClientBuilder
      */
     public function addConnection($alias, $scheme, $host, $port, $authMode = false, $authUser = null, $authPassword = null)
     {
@@ -123,6 +123,11 @@ class ClientBuilder
         return $this;
     }
 
+    /**
+     * Add a default local connection running at http://localhost:7474
+     *
+     * @return ClientBuilder
+     */
     public function addDefaultLocalConnection()
     {
         return $this->addConnection('default', 'http', 'localhost', 7474);

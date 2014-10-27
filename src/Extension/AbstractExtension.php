@@ -13,12 +13,16 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
 
     protected $responseFormatter;
 
+    protected $autoFormatResponse;
+
     public function __construct(
         CommandManager $commandManager,
-        ResponseFormatterManager $responseFormatter)
+        ResponseFormatterManager $responseFormatter,
+        $autoFormatResponse)
     {
         $this->commandManager = $commandManager;
         $this->responseFormatter = $responseFormatter->getResponseFormatter();
+        $this->autoFormatResponse = $autoFormatResponse;
     }
 
     public function invoke($commandAlias, $connectionAlias = null)
@@ -37,11 +41,28 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
     {
         $formatted = $this->responseFormatter->format($response);
 
-        if ($formatted->hasErrors()){
-            $errors = $formatted->getErrors();
-            throw new Neo4jException(sprintf('NeoClient Exception with code "%s" and message "%s"', $errors['code'], $errors['message']));
-        }
-
         return $formatted;
+    }
+
+    /**
+     * @param mixed $response
+     * @return string|array|\Neoxygen\NeoClient\Formatter\Response
+     * @throws Neo4jException
+     */
+    public function handleHttpResponse($response)
+    {
+        $this->checkResponseErrors($response);
+        if ($this->autoFormatResponse){
+            return $this->formatResponse($response);
+        } else {
+            return $response;
+        }
+    }
+
+    public function checkResponseErrors($response)
+    {
+        if (isset($response['errors']) && !empty($response['errors'])){
+            throw new Neo4jException(sprintf('Neo4j Exception with code "%s" and message "%s"', $response['errors']['code'], $response['errors']['message']));
+        }
     }
 }

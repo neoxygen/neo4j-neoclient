@@ -35,40 +35,35 @@ Add the library to your `composer.json` file :
 ```json
 {
     "require": {
-        "neoxygen/neoclient": "~1.6"
+        "neoxygen/neoclient": "~2.0.*"
     }
 }
 ```
-### Configuration
 
-Configuration can be done with a `yaml` configuration file, if you want to configure the library with proceduaral PHP,
-check the [Configuration Reference](https://github.com/neoxygen/neo4j-neoclient#configuration-reference) section.
-
-Create for e.g. a `neoconfig.yml` file at the root of your project and start defining your connection settings :
-
-```yaml
-connections:
-  default_db:
-    scheme: http
-    host: localhost
-    port: 7474
-```
-
-Require the composer autoloader and load your configuration file:
+Require the composer autoloader and load your configuration file and build your connection by providing a connection alias and your connection
+settings :
 
 ```php
 <?php
 
 require_once 'vendor/autoload.php';
 
-use Neoxygen\NeoClient\Client;
+use Neoxygen\NeoClient\ClientBuilder;
 
-$client = new Client()
-    ->loadConfigurationFile('/path/to/your_project/neoclient.yml')
+$client = ClientBuilder::create()
+    ->addConnection('default','http','localhost',7474)
     ->build();
 ```
 
 You're now ready to connect to your database.
+
+If you use default database settings in a local environment (meaning _http://localhost:7474_), you can use the handy `addDefaultLocalConnection` method :
+
+```php
+$client = ClientBuilder::create()
+    ->addDefaultLocalConnection()
+    ->build();
+```
 
 ### Usage
 

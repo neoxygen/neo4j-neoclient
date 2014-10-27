@@ -16,7 +16,7 @@ services:
 
   neoclient.extension_manager:
     class: "Neoxygen\\NeoClient\\Extension\\ExtensionManager"
-    arguments: ["@neoclient.command_manager","@neoclient.response_formatter"]
+    arguments: ["@neoclient.command_manager","@neoclient.response_formatter", "%neoclient.auto_format_response%"]
 
   neoclient.response_formatter:
     class: "Neoxygen\\NeoClient\\Formatter\\ResponseFormatterManager"

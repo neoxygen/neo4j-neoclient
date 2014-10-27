@@ -39,7 +39,7 @@ class NeoClientCoreExtension extends AbstractExtension
         $httpResponse = $command->setArguments($query, $parameters, array('row', 'graph'))
             ->execute();
 
-        return $this->formatResponse($httpResponse);
+        return $this->handleHttpResponse($httpResponse);
     }
 
     /**
@@ -51,11 +51,9 @@ class NeoClientCoreExtension extends AbstractExtension
     public function getRoot($conn = null)
     {
         $command = $this->invoke('simple_command', $conn);
-
         $httpResponse = $command->execute();
-        $responseObject = $this->formatResponse($httpResponse);
 
-        return $responseObject->getResponse();
+        return $this->handleHttpResponse($httpResponse);
     }
 
     /**
@@ -70,7 +68,7 @@ class NeoClientCoreExtension extends AbstractExtension
 
         $httpResponse = $command->execute();
 
-        return true;
+        return $this->handleHttpResponse($httpResponse);
     }
 
     /**
@@ -84,7 +82,7 @@ class NeoClientCoreExtension extends AbstractExtension
         $command = $this->invoke('neo.get_labels_command', $conn);
 
         $httpResponse = $command->execute();
-        $responseObject = $this->formatResponse($httpResponse);
+        $responseObject = $this->handleHttpResponse($httpResponse);
 
         return $responseObject->getResponse();
 
@@ -101,7 +99,7 @@ class NeoClientCoreExtension extends AbstractExtension
         $command = $this->invoke('neo.get_constraints_command', $conn);
 
         $httpResponse = $command->execute();
-        $responseObject = $this->formatResponse($httpResponse);
+        $responseObject = $this->handleHttpResponse($httpResponse);
 
         return $responseObject->getResponse();
     }
@@ -118,7 +116,7 @@ class NeoClientCoreExtension extends AbstractExtension
         $command = $this->invoke('neo.list_index_command', $conn);
         $command->setArguments($label);
         $httpResponse = $command->execute();
-        $response = $this->formatResponse($httpResponse)->getResponse();
+        $response = $this->handleHttpResponse($httpResponse)->getResponse();
         $propertiesIndexed = [];
         foreach ($response as $index) {
             foreach ($index['property_keys'] as $key) {
@@ -178,7 +176,7 @@ class NeoClientCoreExtension extends AbstractExtension
         $command = $this->invoke('neo.get_neo4j_version', $conn);
         $httpResponse = $command->execute();
 
-        return $this->formatResponse($httpResponse)->getResponse();
+        return $this->handleHttpResponse($httpResponse);
     }
 
     /**
@@ -192,7 +190,7 @@ class NeoClientCoreExtension extends AbstractExtension
         $command = $this->invoke('neo.open_transaction', $conn);
         $httpResponse = $command->execute();
 
-        $response = $this->formatResponse($httpResponse);
+        $response = $this->handleHttpResponse($httpResponse);
 
         return $response->getResponse();
     }
@@ -240,7 +238,7 @@ class NeoClientCoreExtension extends AbstractExtension
             ->setArguments($transactionId, $query, $parameters)
             ->execute();
 
-        return $this->formatResponse($httpResponse);
+        return $this->handleHttpResponse($httpResponse);
     }
 
     public function pushMultipleToTransaction($transactionId, array $statements, $conn = null, array $resultDataContents = array())
