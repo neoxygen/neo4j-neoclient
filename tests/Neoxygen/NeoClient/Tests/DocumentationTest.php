@@ -92,9 +92,20 @@ class DocumentationTest extends \PHPUnit_Framework_TestCase
      */
     public function testSendQuery()
     {
-        $q = 'CREATE (n:User {name:"Christophe Willemsen", _id:1234}) RETURN n';
+        $q = 'MATCH (n) RETURN count(n)';
         $client = $this->buildClient();
         $response = $client->sendCypherQuery($q);
+
+        print_r($response);
+    }
+
+    public function testRenameLabel()
+    {
+        $client = $this->buildClient();
+        $q = 'FOREACH (i IN range(0,10) | CREATE (n:Person) )';
+        $client->sendCypherQuery($q);
+
+        $client->renameLabel('Person', 'User');
     }
 
     private function checkVersion($v)

@@ -161,6 +161,19 @@ class ClientBuilder
     }
 
     /**
+     * Sets whether or not the response from the API should be formatted by the ResponseFormatter
+     *
+     * @param bool $auto
+     * @return $this
+     */
+    public function setAutoFormatResponse($auto = false)
+    {
+        $this->configuration['auto_format_response'] = $auto;
+
+        return $this;
+    }
+
+    /**
      * Adds an event listener to an event
      *
      * @param  string          $event    The Event to listen to

@@ -88,13 +88,22 @@ class NeoClientCoreExtension extends AbstractExtension
 
     }
 
+    public function renameLabel($oldLabel, $newLabel, $conn = null)
+    {
+        $q = 'MATCH (old:'.$oldLabel.')
+        REMOVE old:'.$oldLabel.'
+        SET old :'.$newLabel.';';
+
+        return $this->sendCypherQuery($q);
+    }
+
     /**
      * Returns the registered constraints
      *
      * @param  string|null $conn
      * @return mixed
      */
-    public function getConstraints($conn = null)
+    public function getUniqueConstraints($conn = null)
     {
         $command = $this->invoke('neo.get_constraints_command', $conn);
 
@@ -448,7 +457,7 @@ class NeoClientCoreExtension extends AbstractExtension
      * @param  string|array $property
      * @return bool
      */
-    public function createConstraint($label, $property)
+    public function createUniqueConstraint($label, $property)
     {
         $statements = [];
         $identifier = strtolower($label);
@@ -473,7 +482,7 @@ class NeoClientCoreExtension extends AbstractExtension
      * @param  string|array $property
      * @return bool
      */
-    public function dropConstraint($label, $property)
+    public function dropUniqueConstraint($label, $property)
     {
         $statements = [];
         $identifier = strtolower($label);

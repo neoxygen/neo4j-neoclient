@@ -65,9 +65,12 @@ $client = ClientBuilder::create()
     ->build();
 ```
 
+The build method will process configuration settings and return you a `Client` instance.
+
 ### Usage
 
-The library use the Command pattern, there are core basic commands available :
+You have now full access to the database.
+
 
 #### getRoot | Returns the root endpoint
 
@@ -75,22 +78,12 @@ The library use the Command pattern, there are core basic commands available :
 $root = $client->getRoot();
 ```
 
-```json
-
- {
-    "management" : "http://localhost:7474/db/manage/",
-    "data" : "http://localhost:7474/db/data/"
- }
-```
-
-#### getLabels | Returns the labels indexed in the database
-
 ```php
-$labels = $client->getLabels();
-```
-
-```json
-[ "UriahHeep", "MyLabel", "Version", "Customer", "TestLabel" ]
+Array
+    (
+        [management] => http://localhost:7474/db/manage/
+        [data] => http://localhost:7474/db/data/
+    )
 ```
 
 #### getVersion | Returns the Neo4j version of the current connection
@@ -98,73 +91,154 @@ $labels = $client->getLabels();
 ```php
 $version = $client->getVersion();
 
-// Returns (string) 2.1.4
+// Returns (string) 2.1.5
 ```
 
-#### openTransaction | Opens a new http transaction
-```php
-$transaction = $client->openTransaction();
-```
+#### Sending a Cypher Query to your database
 
-```json
-{"commit":"http://localhost:7474/db/data/transaction/32/commit","results":[],"transaction":{"expires":"Tue, 16 Sep 2014 21:56:29 +0000"},"errors":[]}
-```
-
-#### rollBackTransaction | Roll backs a transaction
-```php
-$transactionId = 59;
-$rollback = $client->rollbackTransaction($transactionId);
-```
-
-```json
-{"results":[],"errors":[]}
-```
-
-#### pushToTransaction | Add a statement to a given transaction
+In order to send a Cypher Query, you need to pass the query as a string, and an optional array of paramaters as arguments :
 
 ```php
-$transactionId = 60;
-$query = 'MATCH (n) RETURN count(n)';
-$result = $client->pushToTransaction($transactionId, $query);
+
+$q = 'MATCH (n) RETURN count(n)';
+$response = $client->sendCypherQuery($q);
 ```
 
-```json
-{"results":[{"columns":["count(n)"],"data":[{"row":[24]}]}],"errors":[]}
+````php
+Array
+(
+    [results] => Array
+        (
+            [0] => Array
+                (
+                    [columns] => Array
+                        (
+                            [0] => count(n)
+                        )
+
+                    [data] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [row] => Array
+                                        (
+                                            [0] => 1
+                                        )
+......                                        
 ```
 
-#### commitTransaction | Add a statement to a given transaction
-
-Query is here optional, as you can commit a transaction without adding a cypher statement.
+Handling such response format is not really practical and boring. You can ask the client to format the response in a pretty way :
 
 ```php
-$transactionId = 60;
-$query = 'MATCH (n) RETURN count(n)';
-$result = $client->commitTransaction($transactionId, $query);
+$results = $client->formatResponse($response);
 ```
 
-```json
-{"results":[{"columns":["count(n)"],"data":[{"row":[24]}]}],"errors":[]}
+```
+Array
+(
+    [count(n)] => 1
+)
 ```
 
-### Using the Transaction Manager
+Having to tell the client to format the response for each call, is also not developer friendly, you can tell the client to always format the response 
+when you build it :
 
-The library comes with a Transaction Manager removing you the burden of parsing commit urls and transaction ids.
+```
+$client = ClientBuilder::create()
+    ->addDefaultLocalConnection()
+    ->setAutoFormatResponse(true)
+    ->build();
+```
 
-Usage is straightforward :
+### Managing labels
+
+The library provide handy methods for managing your labels :
+
+
+#### getLabels | Returns the labels indexed in the database
 
 ```php
-$transaction = $client->createTransaction();
-$transaction->pushQuery('MERGE (n:User {id: 123}) RETURN n');
-$transaction->pushQuery('MATCH (n) RETURN count(n)');
-$transaction->commit();
-
-// Other methods :
-$transaction->rollback();
-$transaction->getLastResult // Returns the result of the last transaction statements
-$transaction->getResults() // Returns the results of all the statements
+$labels = $client->getLabels();
 ```
 
-Note that a commited or a rolled back transaction will not accept pushQuery calls anymore.
+```php
+[ "UriahHeep", "MyLabel", "Version", "Customer", "TestLabel" ]
+```
+
+#### renameLabel | Fetch all nodes for that label and rename the label of the nodes
+
+Note that depending on the amount of nodes for the given label, this can take some time.
+
+Call the `renameLabel` method and pass the old label name and the new label name as arguments :
+
+```php
+$client->renameLabel('Person', 'User');
+```
+
+### Managing Indexes and Constraints
+
+Indexes and Constraints management is also an easy task
+
+#### createIndex | Creates an index for a label/property pair
+
+```php
+$client->createIndex('Person', 'email');
+```
+
+#### listIndex | List indexed properties for a given label
+
+```php
+$client->listIndex('Person');
+```
+
+Returns you an array of indexed properties for the given label
+
+#### listIndexes | List indexed properties for given labels or all labels
+
+```php
+$personAndUserIndexes = $client->listIndexes(['Person','User']);
+
+$allIndexes = $client->listIndexes();
+```
+
+Returns you an array of indexed properties by the form `['Label' => ['prop1','prop2']]`.
+
+#### dropIndex | Drop an index for a given label/property pair
+
+```php
+$client->dropIndex('Person','email');
+```
+
+#### isIndexed | Checks whether or not a given label/property pair is indexed
+
+```php
+$client->isIndexed('User','username');
+```
+
+Returns true or false
+
+#### createUniqueConstraint | Create a uniqueness constraint for a given label/property pair
+
+```php
+$client->createUniqueConstraint('User','username');
+```
+
+#### dropUniqueConstraint | Drop a uniqueness constraint for a given label/property pair
+
+```php
+$client->dropUniqueConstraint('User','username');
+```
+
+#### getUniqueConstraints | Returns all the uniqueness constraints by label
+
+```php
+$constraints = $client->getConstraints();
+```
+
+Returns `['User' => ['username','email'], 'Movie' => ['imdb_id']]`
+
+
+
 
 ### The Response Formatter
 
@@ -579,6 +653,71 @@ Run `vendor/bin/phpunit`
 Unit tests:
 
 Run `vendor/bin/phpspec -f`
+
+#### openTransaction | Opens a new http transaction
+```php
+$transaction = $client->openTransaction();
+```
+
+```json
+{"commit":"http://localhost:7474/db/data/transaction/32/commit","results":[],"transaction":{"expires":"Tue, 16 Sep 2014 21:56:29 +0000"},"errors":[]}
+```
+
+#### rollBackTransaction | Roll backs a transaction
+```php
+$transactionId = 59;
+$rollback = $client->rollbackTransaction($transactionId);
+```
+
+```json
+{"results":[],"errors":[]}
+```
+
+#### pushToTransaction | Add a statement to a given transaction
+
+```php
+$transactionId = 60;
+$query = 'MATCH (n) RETURN count(n)';
+$result = $client->pushToTransaction($transactionId, $query);
+```
+
+```json
+{"results":[{"columns":["count(n)"],"data":[{"row":[24]}]}],"errors":[]}
+```
+
+#### commitTransaction | Add a statement to a given transaction
+
+Query is here optional, as you can commit a transaction without adding a cypher statement.
+
+```php
+$transactionId = 60;
+$query = 'MATCH (n) RETURN count(n)';
+$result = $client->commitTransaction($transactionId, $query);
+```
+
+```json
+{"results":[{"columns":["count(n)"],"data":[{"row":[24]}]}],"errors":[]}
+```
+
+### Using the Transaction Manager
+
+The library comes with a Transaction Manager removing you the burden of parsing commit urls and transaction ids.
+
+Usage is straightforward :
+
+```php
+$transaction = $client->createTransaction();
+$transaction->pushQuery('MERGE (n:User {id: 123}) RETURN n');
+$transaction->pushQuery('MATCH (n) RETURN count(n)');
+$transaction->commit();
+
+// Other methods :
+$transaction->rollback();
+$transaction->getLastResult // Returns the result of the last transaction statements
+$transaction->getResults() // Returns the results of all the statements
+```
+
+Note that a commited or a rolled back transaction will not accept pushQuery calls anymore.
 
 
 
