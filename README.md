@@ -11,22 +11,10 @@
 
 +[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/neoxygen/neo4j-neoclient?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-## Documentation
+### Requirements
 
-* [Installation](https://github.com/neoxygen/neo4j-neoclient#installation)
-* [Configuration](https://github.com/neoxygen/neo4j-neoclient#configuration)
-* [Usage](https://github.com/neoxygen/neo4j-neoclient#usage)
-* [The Response formatter](https://github.com/neoxygen/neo4j-neoclient#the-response-formatter)
-* [Authenticated Connection](https://github.com/neoxygen/neo4j-neoclient#authenticated-connection)
-* [Working with multiple connections](https://github.com/neoxygen/neo4j-neoclient#working-with-multiple-connections)
-* [Fallback connections](https://github.com/neoxygen/neo4j-neoclient#fallback-connections)
-* [Event Listeners](https://github.com/neoxygen/neo4j-neoclient#event-listeners)
-* [Logging](https://github.com/neoxygen/neo4j-neoclient#logging)
-* [Creating your own commands](https://github.com/neoxygen/neo4j-neoclient#creating-your-own-commands)
-* [Creating a Commands Extension](https://github.com/neoxygen/neo4j-neoclient#creating-a-commands-extension)
-* [Production settings](https://github.com/neoxygen/neo4j-neoclient#production-settings)
-* [Extra commands](https://github.com/neoxygen/neo4j-neoclient#extra-commands)
-* [Configuration Reference](https://github.com/neoxygen/neo4j-neoclient#configuration-reference)
+* PHP 5.4+
+* A running Neo4j database
 
 ### Installation
 
@@ -94,7 +82,7 @@ $version = $client->getVersion();
 // Returns (string) 2.1.5
 ```
 
-#### Sending a Cypher Query to your database
+#### Sending a Cypher Query
 
 In order to send a Cypher Query, you need to pass the query as a string, and an optional array of paramaters as arguments :
 
