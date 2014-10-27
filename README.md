@@ -28,8 +28,7 @@ Add the library to your `composer.json` file :
 }
 ```
 
-Require the composer autoloader and load your configuration file and build your connection by providing a connection alias and your connection
-settings :
+Require the composer autoloader, configure your connection by providing a connection alias and your connection settings :
 
 ```php
 <?php
