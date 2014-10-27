@@ -73,6 +73,11 @@ class ResponseFormatter implements ResponseFormatterInterface
             $responseObject->setResult($this->result);
         }
 
+        if ($responseObject->containsRows()){
+            $rows = $this->formatRows($response);
+            $responseObject->setRows($rows);
+        }
+
         return $responseObject;
     }
 
@@ -151,6 +156,27 @@ class ResponseFormatter implements ResponseFormatterInterface
             $startNode->addOutboundRelationship($r);
             $endNode->addInboundRelationship($r);
         }
+    }
+
+    private function formatRows($response)
+    {
+        $rows = [];
+        foreach ($response['results'] as $result) {
+            $columns = $result['columns'];
+            $tmpColumns = [];
+            foreach ($result['data'] as $dat) {
+                $i = 0;
+                foreach ($dat['row'] as $row){
+                    $tmpColumns[$i][] = $row;
+                    $i++;
+                }
+            }
+            foreach ($columns as $k => $col) {
+                $rows[$col] = $tmpColumns[$k];
+            }
+        }
+        return $rows;
+
     }
 
     public function reset()

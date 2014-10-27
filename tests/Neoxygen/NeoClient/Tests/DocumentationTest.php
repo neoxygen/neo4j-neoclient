@@ -118,6 +118,19 @@ class DocumentationTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('email', $constraints['User']);
     }
 
+    public function testRowFormatter()
+    {
+        $this->setUpMovieDb();
+        $client = ClientBuilder::create()
+            ->setAutoFormatResponse(true)
+            ->addDefaultLocalConnection()
+            ->build();
+        $q = 'MATCH (n:Actor), (m:Movie) RETURN n.name as Actor, m.title as Movie';
+        $client->sendCypherQuery($q);
+
+        print_r($client->getResponse());
+    }
+
     public function testFormatter()
     {
         $this->setUpMovieDb();

@@ -8,6 +8,8 @@ class Response
 
     private $results;
 
+    private $rows;
+
     private $errors = [];
 
     public function setRawResponse($rawResponse)
@@ -76,5 +78,25 @@ class Response
         }
 
         return false;
+    }
+
+    public function containsRows()
+    {
+        if (isset($this->rawResponse['results'][0]['columns']) && !empty($this->rawResponse['results']['0']['columns'])){
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function setRows(array $rows)
+    {
+        $this->rows = $rows;
+    }
+
+    public function geRows()
+    {
+        return $this->rows;
     }
 }

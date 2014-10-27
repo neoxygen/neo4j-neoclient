@@ -109,6 +109,15 @@ class Client
         }
     }
 
+    public function getRows()
+    {
+        if ($this->lastResponse instanceof Response){
+            return $this->lastResponse->geRows();
+        } else {
+            return $this->lastResponse;
+        }
+    }
+
     /**
      * @return ContainerInterface
      */

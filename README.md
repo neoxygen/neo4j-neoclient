@@ -127,21 +127,8 @@ Array
 ......                                        
 ```
 
-Handling such response format is not really practical and boring. You can ask the client to format the response in a pretty way :
-
-```php
-$results = $client->formatResponse($response);
-```
-
-```
-Array
-(
-    [count(n)] => 1
-)
-```
-
-Having to tell the client to format the response for each call, is also not developer friendly, you can tell the client to always format the response 
-when you build it :
+Handling such response format is not really practical and boring. You can ask the client to format the response in a pretty way and have
+this format available to you :
 
 ```
 $client = ClientBuilder::create()
@@ -149,6 +136,49 @@ $client = ClientBuilder::create()
     ->setAutoFormatResponse(true)
     ->build();
 ```
+
+To get the pretty format :
+
+```php
+
+$q = 'MATCH (n:Actor), (m:Movie) RETURN n.name as Actor, m.title as Movie';
+$client->sendCypherQuery($q);
+
+$result = $client->getRows();
+```
+
+```
+Array
+(
+    [Actor] => Array
+        (
+            [0] => Keanu Reeves
+            [1] => Keanu Reeves
+            [2] => Keanu Reeves
+            [3] => Laurence Fishburne
+            [4] => Laurence Fishburne
+            [5] => Laurence Fishburne
+            [6] => Carrie-Anne Moss
+            [7] => Carrie-Anne Moss
+            [8] => Carrie-Anne Moss
+        )
+
+    [Movie] => Array
+        (
+            [0] => The Matrix
+            [1] => The Matrix Reloaded
+            [2] => The Matrix Revolutions
+            [3] => The Matrix
+            [4] => The Matrix Reloaded
+            [5] => The Matrix Revolutions
+            [6] => The Matrix
+            [7] => The Matrix Reloaded
+            [8] => The Matrix Revolutions
+        )
+
+)
+```
+
 
 ### Managing labels
 
