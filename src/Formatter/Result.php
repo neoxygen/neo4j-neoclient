@@ -39,13 +39,21 @@ class Result
     public function getNodes($label = null, $labelizedKeys = false)
     {
         if (null !== $label) {
+            if (is_array($label)){
+                $nodes = [];
+                foreach ($label as $lbl){
+                    $nodes[$lbl] = $this->getNodesByLabel($lbl);
+                }
+
+                return $nodes;
+            }
             return $this->getNodesByLabel($label, $labelizedKeys);
         }
 
         return $this->nodes;
     }
 
-    public function getNode($id)
+    public function getNodeById($id)
     {
         if ($this->nodes[$id]) {
             return $this->nodes[$id];

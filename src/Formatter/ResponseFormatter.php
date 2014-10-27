@@ -144,8 +144,8 @@ class ResponseFormatter implements ResponseFormatterInterface
         }
 
         foreach ($this->relationshipsMap as $relationship) {
-            $startNode = $this->result->getNode($relationship['startNode']);
-            $endNode = $this->result->getNode($relationship['endNode']);
+            $startNode = $this->result->getNodeById($relationship['startNode']);
+            $endNode = $this->result->getNodeById($relationship['endNode']);
             $r = new Relationship($relationship['id'], $relationship['type'], $startNode, $endNode, $relationship['properties']);
             $this->result->addRelationship($r);
             $startNode->addOutboundRelationship($r);

@@ -238,41 +238,43 @@ $constraints = $client->getConstraints();
 Returns `['User' => ['username','email'], 'Movie' => ['imdb_id']]`
 
 
+### Handling Graph Results
 
+The Response Formatter will format graph results in a pretty format of nodes and relationships objects.
 
-### The Response Formatter
-
-The library comes with a handy response formatter, using it is currently optional, in the future the choice will have
-to be made in the configuration.
-
-The formatter works with the graph resultDataContent, so don't forget to specify it when doing your queries.
-
-The following examples are based on the Neo4j movie database example :
+If you've setup the `autoFormatResponse` configuration value, when a graph result is available, a graph representation
+is available for you :
 
 ```php
-use Neoxygen\NeoClient\Formatter\ResponseFormatter as Formatter;
+$query = 'MATCH (a:Actor)-[r]-(m:Movie) RETURN *';
+$client->sendCypherQuery($query);
 
-$formatter = new Formatter();
-$query = 'MATCH p=(a:Actor)-[]-(m:Movie) RETURN p';
-$response = $client->sendCypherQuery($q, array(), null, array('graph'));
+// Getting the graph Result
+$result = $client->getResult();
 
-$result = $formatter->format($response);
+// The raw response is still available :
+$response = $client->getResponse();
 
 // Getting all nodes
 
 $nodes = $result->getNodes();
 
-// Getting all movie nodes from the respone
-$movies = $result->getNodesByLabel('Movie');
+// Getting all movie nodes from the result
+$movies = $result->getNodes('Movie');
+
+// Getting all movie and Actor nodes from the result
+
+$moviesAndActors = $result->getNodes(['Movie','Actor']);
+// Returns you a collection of nodes objects
+
+// If you want to group the nodes by labels, you can pass true as second argument to the getNodes method
+
+$moviesAndActors = $result->getNodes(['Movie','Actor'], true);
+// Returns an array with labels as keys ['Movie' => ['NodeObject1', 'NodeObject2']]
+
 
 // Getting only one movie (returns in fact the first element of an array, but is handy when you expect only one node
 $movie = $result->getSingleNode('Movie');
-
-// Checking for errors
-
-if ($result->hasErrors() {
-    // ...
-}
 
 // Working with the relationships
 
@@ -283,6 +285,31 @@ $actors = $movie->getRelationships('ACTS_IN', 'IN');
 
 // If you need only one relationship :
 $actor = $movie->getSingleRelationship('ACTS_IN');
+
+// Getting node/relationships properties
+
+// Getting one property
+$actor = $result->getSingleNode('Actor');
+$name = $actor->getProperty('name');
+
+// Getting all properties
+$props = $actor->getProperties();
+
+// Getting a set of properties
+$props = $actor->getProperties(['name', 'date_of_birh']);
+
+// Getting the node internal Id (Id of the Neo4j database)
+
+$id = $actor->getId();
+
+// Getting a node by id in the Result set
+
+$node = $result->getNodeById(34);
+
+// Counting Nodes And Relationships
+
+$nbNodes = $result->getNodesCount();
+$nbRels = $result->getRelationshipsCount();
 ```
 
 ### Authenticated connection
