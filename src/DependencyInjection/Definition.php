@@ -59,6 +59,7 @@ class Definition implements ConfigurationInterface
         ->arrayNode('loggers')
             ->prototype('array')
                 ->children()
+                    ->scalarNode('channel')->canNotBeEmpty()->end()
                     ->scalarNode('type')->canNotBeEmpty()->end()
                     ->scalarNode('path')->end()
                     ->scalarNode('level')->canNotBeEmpty()->end()

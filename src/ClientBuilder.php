@@ -384,13 +384,20 @@ class ClientBuilder
                 return true;
             }
         }
-        //$this->serviceContainer->setParameter('neoclient.response_format', 'array');
         $extension = new NeoClientExtension();
         $this->serviceContainer->registerExtension($extension);
         $this->serviceContainer->addCompilerPass(new ConnectionRegistryCompilerPass());
         $this->serviceContainer->addCompilerPass(new NeoClientExtensionsCompilerPass());
         $this->serviceContainer->loadFromExtension($extension->getAlias(), $this->getConfiguration());
         $this->serviceContainer->compile();
+        if ($this->serviceContainer->hasParameter('loggers')){
+            foreach ($this->serviceContainer->getParameter('loggers') as $channel => $logger){
+                switch($logger['type']){
+                    case 'stream':
+                        $this->createDefaultStreamLogger($channel, $logger['path'], $logger['level']);
+                }
+            }
+        }
 
         foreach ($this->listeners as $event => $callback) {
             $this->serviceContainer->get('event_dispatcher')->addListener($event, $callback);

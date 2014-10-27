@@ -48,6 +48,7 @@ class NeoClientExtension implements  ExtensionInterface
         $this->addRegisteredExtensionsDefinitions($config, $container);
         $this->addListeners($config);
         $this->registerCustomCommands($config);
+        $container->setParameter('loggers', $config['loggers']);
 
         $formatterClass = $config['response_formatter_class'];
         $container->setParameter('response_formatter_class', $formatterClass);
