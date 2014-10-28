@@ -172,7 +172,10 @@ class ResponseFormatter implements ResponseFormatterInterface
                 }
             }
             foreach ($columns as $k => $col) {
-                $rows[$col] = $tmpColumns[$k];
+                if (!empty($tmpColumns)){
+                    $rows[$col] = $tmpColumns[$k];
+                }
+
             }
         }
         return $rows;

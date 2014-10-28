@@ -15,6 +15,7 @@ namespace Neoxygen\NeoClient;
 use Monolog\Logger;
 use Neoxygen\NeoClient\Exception\CommandException,
     Neoxygen\NeoClient\Transaction\Transaction;
+use Neoxygen\NeoClient\Exception\Neo4jException;
 use Psr\Log\NullLogger,
     Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface,
@@ -133,6 +134,24 @@ class ClientBuilder
         return $this->addConnection('default', 'http', 'localhost', 7474);
     }
 
+    public function setMasterConnection($connectionAlias)
+    {
+        $this->checkConnection($connectionAlias);
+
+        $this->configuration['ha_mode']['master'] = $connectionAlias;
+
+        return $this;
+    }
+
+    public function setSlaveConnection($connectionAlias)
+    {
+        $this->checkConnection($connectionAlias);
+
+        $this->configuration['ha_mode']['slaves'][] = $connectionAlias;
+
+        return $this;
+    }
+
     /**
      * Defines a fallback connection for a given connection
      *
@@ -143,19 +162,6 @@ class ClientBuilder
     public function setFallbackConnection($connectionAlias, $fallbackConnectionAlias)
     {
         $this->configuration['fallback'][$connectionAlias] = $fallbackConnectionAlias;
-
-        return $this;
-    }
-
-    /**
-     * Sets the default result data content for the http transactional cypher
-     *
-     * @param  array $defaultResultDataContent array containing values of "graph", "rest" or "row"
-     * @return $this
-     */
-    public function setDefaultResultDataContent(array $defaultResultDataContent = array('row'))
-    {
-        $this->configuration['default_result_data_content'] = $defaultResultDataContent;
 
         return $this;
     }
@@ -431,6 +437,15 @@ class ClientBuilder
     public function isFrozen()
     {
         return true === $this->getServiceContainer()->isFrozen();
+    }
+
+    private function checkConnection($alias)
+    {
+        if (!array_key_exists($alias, $this->configuration['connections'])){
+            throw new Neo4jException(sprintf('The connection "%s" has not been registered', "%s"));
+        }
+
+        return true;
     }
 
 }

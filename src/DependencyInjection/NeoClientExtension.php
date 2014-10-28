@@ -83,6 +83,12 @@ class NeoClientExtension implements  ExtensionInterface
             if ($fallbackOf = $this->isFallbackConnection($config, $connectionAlias)) {
                 $definition->addTag('neoclient.fallback_connection', array('fallback_of' => $fallbackOf, 'connection_alias' => $connectionAlias));
             }
+            if (isset($config['ha_mode']['master']) && $config['ha_mode']['master'] == $connectionAlias){
+                $definition->addTag('neoclient.ha_master');
+            }
+            if (isset($config['ha_mode']['slaves']) && in_array($connectionAlias, $config['ha_mode']['slaves'])){
+                $definition->addTag('neoclient.ha_slave');
+            }
             $container->setDefinition(sprintf('neoclient.connection.%s', $connectionAlias), $definition);
         }
     }

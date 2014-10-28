@@ -33,6 +33,10 @@ class ConnectionManager
      */
     private $fallbacks;
 
+    private $master;
+
+    private $slaves = [];
+
     /**
      * Initialize connections array
      */
@@ -87,8 +91,8 @@ class ConnectionManager
     }
 
     /**
-     * @return Neoxygen\NeoClient\Connection\Connection                The default Connection if defined, the first connection in the connections array otherwise
-     * @throws Neoxygen\NeoClient\Exception\InvalidConnectionException If no connections are configured
+     * @return \Neoxygen\NeoClient\Connection\Connection                The default Connection if defined, the first connection in the connections array otherwise
+     * @throws \Neoxygen\NeoClient\Exception\InvalidConnectionException If no connections are configured
      */
     public function getDefaultConnection()
     {
@@ -133,7 +137,7 @@ class ConnectionManager
      *
      * @param  string The connection alias to have a fallback
      * @param  string The fallback connection alias
-     * @throws Neoxygen\NeoClient\Exception\InvalidConnectionException If one of the connections is not defined
+     * @throws \Neoxygen\NeoClient\Exception\InvalidConnectionException If one of the connections is not defined
      */
     public function setFallbackConnection($connectionAlias, $fallbackAlias)
     {
@@ -159,8 +163,8 @@ class ConnectionManager
      * Returns the fallback connection for a given connection alias
      *
      * @param  string The connection alias
-     * @return Neoxygen\NeoClient\Connection\Connection
-     * @throws Neoxygen\NeoClient\Exception\InvalidConnectionException If the connection has no fallback
+     * @return \Neoxygen\NeoClient\Connection\Connection
+     * @throws \Neoxygen\NeoClient\Exception\InvalidConnectionException If the connection has no fallback
      */
     public function getFallbackConnection($connectionAlias)
     {
@@ -169,6 +173,53 @@ class ConnectionManager
         }
 
         return $this->getConnection($this->fallbacks[$connectionAlias]);
+    }
+
+    public function setMasterConnection($connectionAlias)
+    {
+        if (!array_key_exists($connectionAlias, $this->connections)) {
+            throw new InvalidConnectionException(sprintf('The connection "%s" is not configured', $alias));
+        }
+
+        $this->master = $connectionAlias;
+    }
+
+    public function setSlaveConnections(array $slaves)
+    {
+        foreach ($slaves as $connectionAlias){
+            if (!array_key_exists($connectionAlias, $this->connections)) {
+                throw new InvalidConnectionException(sprintf('The connection "%s" is not configured', $alias));
+            }
+            $this->slaves[] = $connectionAlias;
+        }
+    }
+
+    public function getWriteConnection()
+    {
+        if (null !== $this->master){
+
+            return $this->getMasterConnection();
+        }
+
+        return $this->getConnection();
+    }
+
+    public function getReadConnection()
+    {
+        if (null !== $this->master && !empty($this->slaves)){
+            return $this->getConnection(current($this->slaves));
+        }
+
+        return $this->getConnection();
+    }
+
+    public function getMasterConnection()
+    {
+        if (null !== $this->master){
+            return $this->getConnection($this->master);
+        }
+
+        return null;
     }
 
 }

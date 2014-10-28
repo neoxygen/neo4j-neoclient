@@ -4,13 +4,16 @@ namespace Neoxygen\NeoClient\Extension;
 
 use Neoxygen\NeoClient\Command\CommandManager,
     Neoxygen\NeoClient\Extension\NeoClientExtensionInterface,
-    Neoxygen\NeoClient\Formatter\ResponseFormatterManager;
+    Neoxygen\NeoClient\Formatter\ResponseFormatterManager,
+    Neoxygen\NeoClient\Connection\ConnectionManager;
 
 class ExtensionManager
 {
     private $extensions = [];
 
     private $commandManager;
+
+    private $connectionManager;
 
     private $execs = [];
 
@@ -20,9 +23,10 @@ class ExtensionManager
 
     private $resultDataContent;
 
-    public function __construct(CommandManager $commandManager, ResponseFormatterManager $responseFormatter, $autoFormatResponse, $resultDataContent)
+    public function __construct(CommandManager $commandManager, ConnectionManager $connectionManager, ResponseFormatterManager $responseFormatter, $autoFormatResponse, $resultDataContent)
     {
         $this->commandManager = $commandManager;
+        $this->connectionManager = $connectionManager;
         $this->responseFormatter = $responseFormatter;
         $this->autoFormatResponse = $autoFormatResponse;
         $this->resultDataContent = $resultDataContent;
@@ -30,7 +34,15 @@ class ExtensionManager
 
     public function addExtension($extension)
     {
-        array_unshift($this->extensions, new $extension($this->commandManager, $this->responseFormatter, $this->autoFormatResponse, $this->resultDataContent));
+        array_unshift(
+            $this->extensions,
+            new $extension(
+                $this->commandManager,
+                $this->connectionManager,
+                $this->responseFormatter,
+                $this->autoFormatResponse,
+                $this->resultDataContent)
+        );
     }
 
     public function execute($method, $attributes = array())

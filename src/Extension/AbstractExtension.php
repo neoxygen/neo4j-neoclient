@@ -2,14 +2,18 @@
 
 namespace Neoxygen\NeoClient\Extension;
 
+use Neoxygen\NeoClient\Connection\Connection;
 use Neoxygen\NeoClient\Extension\NeoClientExtensionInterface,
     Neoxygen\NeoClient\Command\CommandManager,
     Neoxygen\NeoClient\Formatter\ResponseFormatterManager,
-    Neoxygen\NeoClient\Exception\Neo4jException;
+    Neoxygen\NeoClient\Exception\Neo4jException,
+    Neoxygen\NeoClient\Connection\ConnectionManager;
 
 abstract class AbstractExtension implements NeoClientExtensionInterface
 {
     protected $commandManager;
+
+    protected $connectionManager;
 
     protected $responseFormatter;
 
@@ -19,11 +23,13 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
 
     public function __construct(
         CommandManager $commandManager,
+        ConnectionManager $connectionManager,
         ResponseFormatterManager $responseFormatter,
         $autoFormatResponse,
         $resultDataContent)
     {
         $this->commandManager = $commandManager;
+        $this->connectionManager = $connectionManager;
         $this->responseFormatter = $responseFormatter->getResponseFormatter();
         $this->autoFormatResponse = $autoFormatResponse;
         $this->resultDataContent = $resultDataContent;
@@ -68,5 +74,15 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
         if (isset($response['errors']) && !empty($response['errors'])){
             throw new Neo4jException(sprintf('Neo4j Exception with code "%s" and message "%s"', $response['errors'][0]['code'], $response['errors'][0]['message']));
         }
+    }
+
+    protected function getWriteConnection()
+    {
+        return $this->connectionManager->getWriteConnection();
+    }
+
+    protected function getReadConnection()
+    {
+        return $this->connectionManager->getReadConnection();
     }
 }

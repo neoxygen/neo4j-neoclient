@@ -17,6 +17,10 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
 class ConnectionRegistryCompilerPass implements CompilerPassInterface
 {
+    private $master;
+
+    private $slaves = [];
+
     public function process(ContainerBuilder $container)
     {
         $connections = $container->findTaggedServiceIds('neoclient.registered_connection');
@@ -24,6 +28,16 @@ class ConnectionRegistryCompilerPass implements CompilerPassInterface
         $fallbacks = $container->findTaggedServiceIds('neoclient.fallback_connection');
 
         foreach ($connections as $id => $params) {
+            $def = $container->getDefinition($id);
+            if ($def->hasTag('neoclient.ha_master')){
+                if (null !== $this->master){
+                    throw new \RuntimeException('Having two connections registered as master is not permitted');
+                }
+                $this->master = $def->getArgument(0);
+            }
+            if ($def->hasTag('neoclient.ha_slave')){
+                $this->slaves[] = $def->getArgument(0);
+            }
             $connectionManager
                 ->addMethodCall(
                     'registerConnection',
@@ -36,6 +50,21 @@ class ConnectionRegistryCompilerPass implements CompilerPassInterface
                 ->addMethodCall(
                     'setFallbackConnection',
                     array($params[0]['fallback_of'], $params[0]['connection_alias'])
+                );
+        }
+        if (null !== $this->master){
+            $connectionManager
+                ->addMethodCall(
+                    'setMasterConnection',
+                    array($this->master)
+                );
+        }
+
+        if (!empty($this->slaves)){
+            $connectionManager
+                ->addMethodCall(
+                    'setSlaveConnections',
+                    array($this->slaves)
                 );
         }
     }

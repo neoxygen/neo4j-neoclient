@@ -346,7 +346,7 @@ class NeoClientCoreExtension extends AbstractExtension
      * @param  array       $resultDataContents
      * @return mixed
      */
-    public function sendReadQuery($query, array $parameters = array(), $connectionAlias = null)
+    public function sendReadQuery($query, array $parameters = array())
     {
         foreach (array('MERGE', 'CREATE') as $pattern) {
             if (preg_match('/'.$pattern.'/i', $query)) {
@@ -354,7 +354,7 @@ class NeoClientCoreExtension extends AbstractExtension
             }
         }
 
-        return $this->sendCypherQuery($query, $parameters, $connectionAlias, $this->resultDataContent, false);
+        return $this->sendCypherQuery($query, $parameters, $this->getReadConnection()->getAlias(), $this->resultDataContent, false);
     }
 
     /**
@@ -366,9 +366,9 @@ class NeoClientCoreExtension extends AbstractExtension
      * @param  array       $resultDataContents
      * @return mixed
      */
-    public function sendWriteQuery($query, array $parameters = array(), $connectionAlias = null)
+    public function sendWriteQuery($query, array $parameters = array())
     {
-        return $this->sendCypherQuery($query, $parameters, $connectionAlias, $this->resultDataContent, true);
+        return $this->sendCypherQuery($query, $parameters, $this->getWriteConnection()->getAlias(), $this->resultDataContent, true);
     }
 
     /**
