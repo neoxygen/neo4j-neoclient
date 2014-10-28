@@ -218,7 +218,7 @@ class NeoClientCoreExtension extends AbstractExtension
      */
     public function createTransaction($conn = null)
     {
-        $transaction = new Transaction($conn, $this, $this->responseFormatterClass);
+        $transaction = new Transaction($conn, $this);
 
         return $transaction;
     }
