@@ -11,6 +11,9 @@
 
 +[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/neoxygen/neo4j-neoclient?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+
+This is the documentation for the upcoming 2.0 branch. For the doc of the 1.6.*, checkout the 1.6 branch.
+
 ### Requirements
 
 * PHP 5.4+
@@ -23,7 +26,7 @@ Add the library to your `composer.json` file :
 ```json
 {
     "require": {
-        "neoxygen/neoclient": "~2.0.*"
+        "neoxygen/neoclient": "~2.0@dev"
     }
 }
 ```
