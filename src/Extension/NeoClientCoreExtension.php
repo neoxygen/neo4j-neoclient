@@ -32,11 +32,11 @@ class NeoClientCoreExtension extends AbstractExtension
      * @param  array       $resultDataContents
      * @return mixed
      */
-    public function sendCypherQuery($query, array $parameters = array(), $conn = null, array $resultDataContents = array(), $writeMode = true)
+    public function sendCypherQuery($query, array $parameters = array(), $conn = null, $writeMode = true)
     {
         $command = $this->invoke('neo.send_cypher_query', $conn);
 
-        $httpResponse = $command->setArguments($query, $parameters, array('row', 'graph'))
+        $httpResponse = $command->setArguments($query, $parameters, $this->resultDataContent)
             ->execute();
 
         return $this->handleHttpResponse($httpResponse);
@@ -247,7 +247,7 @@ class NeoClientCoreExtension extends AbstractExtension
      * @param  string|null $conn          The alias of the connection to use
      * @return mixed
      */
-    public function pushToTransaction($transactionId, $query, array $parameters = array(), $conn = null, array $resultDataContents = array(), $writeMode = true)
+    public function pushToTransaction($transactionId, $query, array $parameters = array(), $conn = null)
     {
         $httpResponse = $this->invoke('neo.push_to_transaction', $conn)
             ->setArguments($transactionId, $query, $parameters)
@@ -256,10 +256,10 @@ class NeoClientCoreExtension extends AbstractExtension
         return $this->handleHttpResponse($httpResponse);
     }
 
-    public function pushMultipleToTransaction($transactionId, array $statements, $conn = null, array $resultDataContents = array())
+    public function pushMultipleToTransaction($transactionId, array $statements, $conn = null)
     {
         return $this->invoke('neo.push_multiple_to_transaction', $conn)
-            ->setArguments($transactionId, $statements, $resultDataContents)
+            ->setArguments($transactionId, $statements, $this->resultDataContent)
             ->execute();
     }
 
@@ -273,7 +273,7 @@ class NeoClientCoreExtension extends AbstractExtension
      * @param  string|null $conn          The alias of the connection to use
      * @return mixed
      */
-    public function commitTransaction($transactionId, $query = null, array $parameters = array(), $conn = null, array $resultDataContents = array(), $writeMode = true)
+    public function commitTransaction($transactionId, $query = null, array $parameters = array(), $conn = null)
     {
         return $this->invoke('neo.commit_transaction', $conn)
             ->setArguments($transactionId, $query, $parameters)
@@ -346,7 +346,7 @@ class NeoClientCoreExtension extends AbstractExtension
      * @param  array       $resultDataContents
      * @return mixed
      */
-    public function sendReadQuery($query, array $parameters = array(), $connectionAlias = null, array $resultDataContents = array())
+    public function sendReadQuery($query, array $parameters = array(), $connectionAlias = null)
     {
         foreach (array('MERGE', 'CREATE') as $pattern) {
             if (preg_match('/'.$pattern.'/i', $query)) {
@@ -354,7 +354,7 @@ class NeoClientCoreExtension extends AbstractExtension
             }
         }
 
-        return $this->sendCypherQuery($query, $parameters, $connectionAlias, $resultDataContents, false);
+        return $this->sendCypherQuery($query, $parameters, $connectionAlias, $this->resultDataContent, false);
     }
 
     /**
@@ -366,9 +366,9 @@ class NeoClientCoreExtension extends AbstractExtension
      * @param  array       $resultDataContents
      * @return mixed
      */
-    public function sendWriteQuery($query, array $parameters = array(), $connectionAlias = null, array $resultDataContents = array())
+    public function sendWriteQuery($query, array $parameters = array(), $connectionAlias = null)
     {
-        return $this->sendCypherQuery($query, $parameters, $connectionAlias, $resultDataContents, true);
+        return $this->sendCypherQuery($query, $parameters, $connectionAlias, $this->resultDataContent, true);
     }
 
     /**
@@ -382,7 +382,7 @@ class NeoClientCoreExtension extends AbstractExtension
      * @param  array $resultDataContents
      * @return mixed
      */
-    public function pushReadQueryToTransaction($transactionId, $query, array $parameters = array(), $conn = null, array $resultDataContents = array())
+    public function pushReadQueryToTransaction($transactionId, $query, array $parameters = array(), $conn = null)
     {
         foreach (array('MERGE', 'CREATE') as $pattern) {
             if (preg_match('/'.$pattern.'/i', $query)) {
@@ -390,7 +390,7 @@ class NeoClientCoreExtension extends AbstractExtension
             }
         }
 
-        return $this->pushToTransaction($transactionId, $query, $parameters, $conn, $resultDataContents, false);
+        return $this->pushToTransaction($transactionId, $query, $parameters, $conn, $this->resultDataContent, false);
     }
 
     /**
@@ -403,9 +403,9 @@ class NeoClientCoreExtension extends AbstractExtension
      * @param  array $resultDataContents
      * @return mixed
      */
-    public function pushWriteQueryToTransaction($transactionId, $query, array $parameters = array(), $conn = null, array $resultDataContents = array())
+    public function pushWriteQueryToTransaction($transactionId, $query, array $parameters = array(), $conn = null)
     {
-        return $this->pushToTransaction($transactionId, $query, $parameters, $conn, $resultDataContents, true);
+        return $this->pushToTransaction($transactionId, $query, $parameters, $conn, $this->resultDataContent, true);
     }
 
     /**

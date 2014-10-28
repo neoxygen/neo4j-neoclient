@@ -15,14 +15,18 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
 
     protected $autoFormatResponse;
 
+    protected $resultDataContent;
+
     public function __construct(
         CommandManager $commandManager,
         ResponseFormatterManager $responseFormatter,
-        $autoFormatResponse)
+        $autoFormatResponse,
+        $resultDataContent)
     {
         $this->commandManager = $commandManager;
         $this->responseFormatter = $responseFormatter->getResponseFormatter();
         $this->autoFormatResponse = $autoFormatResponse;
+        $this->resultDataContent = $resultDataContent;
     }
 
     public function invoke($commandAlias, $connectionAlias = null)
