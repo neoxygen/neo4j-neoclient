@@ -14,6 +14,12 @@
 
 This is the documentation for the upcoming 2.0 branch. For the doc of the 1.6.*, checkout the 1.6 branch.
 
+### Key features
+
+* Support multiple connections
+* Built-in and automatic support for Neo4j HA Master-Slave Mode
+* Fully extensible
+
 ### Requirements
 
 * PHP 5.4+
