@@ -37,6 +37,8 @@ class GuzzleHttpClient implements HttpClientInterface
 
     private $connectionManager;
 
+    private $slavesUsed = [];
+
     public function __construct(
         $responseFormat = null,
         LoggerInterface $logger = null,
@@ -55,7 +57,7 @@ class GuzzleHttpClient implements HttpClientInterface
         $this->responseFormatter = $responseFormatter;
     }
 
-    public function send($method, $path, $body = null, $connectionAlias = null, $queryString = null)
+    public function send($method, $path, $body = null, $connectionAlias = null, $queryString = null, $slaveConn = false)
     {
         $conn = $this->connectionManager->getConnection($connectionAlias);
         $url = $conn->getBaseUrl() . $path;
@@ -72,6 +74,7 @@ class GuzzleHttpClient implements HttpClientInterface
 
         try {
             $response = $this->client->send($httpRequest);
+            $this->slavesUsed = [];
 
             return $this->getResponse($response);
         } catch (RequestException $e) {
@@ -80,7 +83,15 @@ class GuzzleHttpClient implements HttpClientInterface
                     $fallback = $this->connectionManager->getFallbackConnection($conn->getAlias());
 
                     return $this->send($method, $path, $body, $fallback->getAlias(), $queryString);
-            } else {
+            } elseif ($slaveConn) {
+                    $this->slavesUsed = $connectionAlias;
+                    if ($this->connectionManager->hasNextSlave($this->slavesUsed)){
+                            $nextSlave = $this->connectionManager->getNextSlave($this->slavesUsed);
+
+                            return $this->send($method, $path, $body, $nextSlave, $queryString);
+                    }
+                }
+                else {
                     $message = (string) $e->getRequest() ."\n";
                     if ($e->hasResponse()) {
                         $message .= (string) $e->getResponse() ."\n";

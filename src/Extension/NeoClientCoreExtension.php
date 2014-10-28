@@ -32,11 +32,11 @@ class NeoClientCoreExtension extends AbstractExtension
      * @param  array       $resultDataContents
      * @return mixed
      */
-    public function sendCypherQuery($query, array $parameters = array(), $conn = null, $writeMode = true)
+    public function sendCypherQuery($query, array $parameters = array(), $conn = null, $slaveConn = false)
     {
         $command = $this->invoke('neo.send_cypher_query', $conn);
 
-        $httpResponse = $command->setArguments($query, $parameters, $this->resultDataContent)
+        $httpResponse = $command->setArguments($query, $parameters, $this->resultDataContent, $slaveConn)
             ->execute();
 
         return $this->handleHttpResponse($httpResponse);
@@ -354,7 +354,7 @@ class NeoClientCoreExtension extends AbstractExtension
             }
         }
 
-        return $this->sendCypherQuery($query, $parameters, $this->getReadConnection()->getAlias(), $this->resultDataContent, false);
+        return $this->sendCypherQuery($query, $parameters, $this->getReadConnection()->getAlias(), $this->resultDataContent, true);
     }
 
     /**

@@ -222,4 +222,22 @@ class ConnectionManager
         return null;
     }
 
+    public function isHA()
+    {
+        if (null !== $this->master && !empty($this->slaves)){
+            return true;
+        }
+
+        return false;
+    }
+
+    public function hasMultipleSlaves()
+    {
+        if (count($this->slaves) > 1){
+            return true;
+        }
+
+        return false;
+    }
+
 }
