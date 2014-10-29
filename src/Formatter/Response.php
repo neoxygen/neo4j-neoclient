@@ -82,8 +82,7 @@ class Response
 
     public function containsRows()
     {
-        if (isset($this->rawResponse['results'][0]['columns']) && !empty($this->rawResponse['results']['0']['columns'])){
-
+        if (isset($this->rawResponse['results'][0]['columns']) && !empty($this->rawResponse['results']['0']['columns'])) {
             return true;
         }
 

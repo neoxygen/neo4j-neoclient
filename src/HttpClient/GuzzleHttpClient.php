@@ -68,7 +68,7 @@ class GuzzleHttpClient implements HttpClientInterface
 
             return $this->getResponse($response);
         } catch (RequestException $e) {
-            if ($slaveConn === false){
+            if ($slaveConn === false) {
             }
                 if ($this->connectionManager->hasFallbackConnection($conn->getAlias())) {
                     $this->logger->log('alert', sprintf('Connection "%s" unreachable, using fallback connection', $conn->getAlias()));
@@ -77,7 +77,7 @@ class GuzzleHttpClient implements HttpClientInterface
                     return $this->send($method, $path, $body, $fallback->getAlias(), $queryString);
             } elseif ($slaveConn) {
                     $this->slavesUsed[] = $connectionAlias;
-                    if ($this->connectionManager->hasNextSlave($this->slavesUsed)){
+                    if ($this->connectionManager->hasNextSlave($this->slavesUsed)) {
                             $nextSlave = $this->connectionManager->getNextSlave($this->slavesUsed);
                             $this->logger->log(
                                 'alert',
@@ -89,8 +89,7 @@ class GuzzleHttpClient implements HttpClientInterface
 
                             return $this->send($method, $path, $body, $nextSlave, $queryString, $slaveConn);
                     }
-                }
-                else {
+                } else {
                     $message = (string) $e->getRequest() ."\n";
                     if ($e->hasResponse()) {
                         $message .= (string) $e->getResponse() ."\n";

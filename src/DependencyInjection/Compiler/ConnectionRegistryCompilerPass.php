@@ -29,13 +29,13 @@ class ConnectionRegistryCompilerPass implements CompilerPassInterface
 
         foreach ($connections as $id => $params) {
             $def = $container->getDefinition($id);
-            if ($def->hasTag('neoclient.ha_master')){
-                if (null !== $this->master){
+            if ($def->hasTag('neoclient.ha_master')) {
+                if (null !== $this->master) {
                     throw new \RuntimeException('Having two connections registered as master is not permitted');
                 }
                 $this->master = $def->getArgument(0);
             }
-            if ($def->hasTag('neoclient.ha_slave')){
+            if ($def->hasTag('neoclient.ha_slave')) {
                 $this->slaves[] = $def->getArgument(0);
             }
             $connectionManager
@@ -52,7 +52,7 @@ class ConnectionRegistryCompilerPass implements CompilerPassInterface
                     array($params[0]['fallback_of'], $params[0]['connection_alias'])
                 );
         }
-        if (null !== $this->master){
+        if (null !== $this->master) {
             $connectionManager
                 ->addMethodCall(
                     'setMasterConnection',
@@ -60,7 +60,7 @@ class ConnectionRegistryCompilerPass implements CompilerPassInterface
                 );
         }
 
-        if (!empty($this->slaves)){
+        if (!empty($this->slaves)) {
             $connectionManager
                 ->addMethodCall(
                     'setSlaveConnections',

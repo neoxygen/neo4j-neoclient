@@ -169,7 +169,7 @@ class ClientBuilder
     /**
      * Sets whether or not the response from the API should be formatted by the ResponseFormatter
      *
-     * @param bool $auto
+     * @param  bool  $auto
      * @return $this
      */
     public function setAutoFormatResponse($auto = false)
@@ -396,9 +396,9 @@ class ClientBuilder
         $this->serviceContainer->addCompilerPass(new NeoClientExtensionsCompilerPass());
         $this->serviceContainer->loadFromExtension($extension->getAlias(), $this->getConfiguration());
         $this->serviceContainer->compile();
-        if ($this->serviceContainer->hasParameter('loggers')){
-            foreach ($this->serviceContainer->getParameter('loggers') as $channel => $logger){
-                switch($logger['type']){
+        if ($this->serviceContainer->hasParameter('loggers')) {
+            foreach ($this->serviceContainer->getParameter('loggers') as $channel => $logger) {
+                switch ($logger['type']) {
                     case 'stream':
                         $this->createDefaultStreamLogger($channel, $logger['path'], $logger['level']);
                 }
@@ -441,7 +441,7 @@ class ClientBuilder
 
     private function checkConnection($alias)
     {
-        if (!array_key_exists($alias, $this->configuration['connections'])){
+        if (!array_key_exists($alias, $this->configuration['connections'])) {
             throw new Neo4jException(sprintf('The connection "%s" has not been registered', "%s"));
         }
 

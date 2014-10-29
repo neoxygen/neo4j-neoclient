@@ -37,7 +37,7 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
 
     /**
      * @param $commandAlias
-     * @param null $connectionAlias
+     * @param  null                                        $connectionAlias
      * @return \Neoxygen\NeoClient\Command\AbstractCommand
      */
     public function invoke($commandAlias, $connectionAlias = null)
@@ -49,7 +49,7 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
     }
 
     /**
-     * @param mixed $response
+     * @param  mixed                                  $response
      * @return \Neoxygen\NeoClient\Formatter\Response
      */
     public function formatResponse($response)
@@ -60,14 +60,14 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
     }
 
     /**
-     * @param mixed $response
+     * @param  mixed                                               $response
      * @return string|array|\Neoxygen\NeoClient\Formatter\Response
      * @throws Neo4jException
      */
     public function handleHttpResponse($response)
     {
         $this->checkResponseErrors($response);
-        if ($this->autoFormatResponse){
+        if ($this->autoFormatResponse) {
             return $this->formatResponse($response);
         } else {
             return $response;
@@ -76,7 +76,7 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
 
     public function checkResponseErrors($response)
     {
-        if (isset($response['errors']) && !empty($response['errors'])){
+        if (isset($response['errors']) && !empty($response['errors'])) {
             throw new Neo4jException(sprintf('Neo4j Exception with code "%s" and message "%s"', $response['errors'][0]['code'], $response['errors'][0]['message']));
         }
     }

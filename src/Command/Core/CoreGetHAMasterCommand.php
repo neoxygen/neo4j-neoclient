@@ -24,11 +24,9 @@ class CoreGetHAMasterCommand extends AbstractCommand
     public function execute()
     {
         try {
-
             return $this->httpClient->send(self::METHOD, self::PATH, null, $this->connection);
 
-        } catch (HttpException $e){
-
+        } catch (HttpException $e) {
             return false;
         }
 

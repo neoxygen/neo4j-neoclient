@@ -13,8 +13,6 @@
 namespace Neoxygen\NeoClient;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Neoxygen\NeoClient\Exception\Neo4jException;
-use Neoxygen\NeoClient\Transaction\Transaction;
 use Neoxygen\NeoClient\Formatter\Response;
 
 /**
@@ -95,7 +93,7 @@ class Client
      */
     public function getResponse()
     {
-        if ($this->lastResponse instanceof Response){
+        if ($this->lastResponse instanceof Response) {
             return $this->lastResponse->getResponse();
         } else {
             return $this->lastResponse;
@@ -104,7 +102,7 @@ class Client
 
     public function getResult()
     {
-        if ($this->lastResponse instanceof Response){
+        if ($this->lastResponse instanceof Response) {
             return $this->lastResponse->getResult();
         } else {
             return $this->lastResponse;
@@ -113,7 +111,7 @@ class Client
 
     public function getRows()
     {
-        if ($this->lastResponse instanceof Response){
+        if ($this->lastResponse instanceof Response) {
             return $this->lastResponse->geRows();
         } else {
             return $this->lastResponse;

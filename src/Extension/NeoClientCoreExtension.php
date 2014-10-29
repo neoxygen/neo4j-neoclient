@@ -110,8 +110,8 @@ class NeoClientCoreExtension extends AbstractExtension
         $httpResponse = $command->execute();
         $response = $this->handleHttpResponse($httpResponse);
         $constraints = [];
-        foreach ($response as $constraint){
-            foreach ($constraint['property_keys'] as $key){
+        foreach ($response as $constraint) {
+            foreach ($constraint['property_keys'] as $key) {
                 $constraints[$constraint['label']][] = $key;
             }
         }
@@ -143,8 +143,8 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * @param array $labels
-     * @param string|null $conn
+     * @param  array       $labels
+     * @param  string|null $conn
      * @return array
      */
     public function listIndexes(array $labels = array(), $conn = null)
@@ -173,7 +173,6 @@ class NeoClientCoreExtension extends AbstractExtension
     {
         $indexes = $this->listIndex($label, $conn);
         if (in_array($propertyKey, $indexes)) {
-
             return true;
         }
 
@@ -340,29 +339,26 @@ class NeoClientCoreExtension extends AbstractExtension
      * Convenience method for working with replication
      * Sends a read only query
      *
-     * @param  string      $query
-     * @param  array       $parameters
+     * @param  string $query
+     * @param  array  $parameters
      * @return mixed
      */
     public function sendReadQuery($query, array $parameters = array())
     {
-
         return $this->sendCypherQuery($query, $parameters, $this->getReadConnection()->getAlias(), true);
     }
 
     /**
      * Convenience method for working with replication
      *
-     * @param  string      $query
-     * @param  array       $parameters
+     * @param  string $query
+     * @param  array  $parameters
      * @return mixed
      */
     public function sendWriteQuery($query, array $parameters = array())
     {
-
         return $this->sendCypherQuery($query, $parameters, $this->getWriteConnection()->getAlias());
     }
-
 
     /**
      * Create a unique constraint on a label
@@ -546,7 +542,7 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * @param string|null $conn
+     * @param  string|null $conn
      * @return mixed
      */
     public function checkHAMaster($conn = null)
@@ -558,7 +554,7 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * @param string|null $conn
+     * @param  string|null $conn
      * @return mixed
      */
     public function checkHASlave($conn = null)
@@ -570,7 +566,7 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * @param string|null $conn
+     * @param  string|null $conn
      * @return mixed
      */
     public function checkHAAvailable($conn = null)

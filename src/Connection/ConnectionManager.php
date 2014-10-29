@@ -67,9 +67,9 @@ class ConnectionManager
     }
 
     /**
-     * @param  string|null                              $alias The connection's alias
+     * @param  string|null                               $alias The connection's alias
      * @return \Neoxygen\NeoClient\Connection\Connection The requested connection
-     * @throws InvalidConnectionException               When the connection does not exist
+     * @throws InvalidConnectionException                When the connection does not exist
      */
     public function getConnection($alias = null)
     {
@@ -187,7 +187,7 @@ class ConnectionManager
 
     public function setSlaveConnections(array $slaves)
     {
-        foreach ($slaves as $connectionAlias){
+        foreach ($slaves as $connectionAlias) {
             if (!array_key_exists($connectionAlias, $this->connections)) {
                 throw new InvalidConnectionException(sprintf('The connection "%s" is not configured', $alias));
             }
@@ -197,8 +197,7 @@ class ConnectionManager
 
     public function getWriteConnection()
     {
-        if (null !== $this->master){
-
+        if (null !== $this->master) {
             return $this->getMasterConnection();
         }
 
@@ -207,7 +206,7 @@ class ConnectionManager
 
     public function getReadConnection()
     {
-        if (null !== $this->master && !empty($this->slaves)){
+        if (null !== $this->master && !empty($this->slaves)) {
             return $this->getConnection(current($this->slaves));
         }
 
@@ -216,7 +215,7 @@ class ConnectionManager
 
     public function getMasterConnection()
     {
-        if (null !== $this->master){
+        if (null !== $this->master) {
             return $this->getConnection($this->master);
         }
 
@@ -225,7 +224,7 @@ class ConnectionManager
 
     public function isHA()
     {
-        if (null !== $this->master && !empty($this->slaves)){
+        if (null !== $this->master && !empty($this->slaves)) {
             return true;
         }
 
@@ -234,7 +233,7 @@ class ConnectionManager
 
     public function hasNextSlave(array $usedSlaves)
     {
-        if (count($this->slaves) > count($usedSlaves)){
+        if (count($this->slaves) > count($usedSlaves)) {
             return true;
         }
 
@@ -243,8 +242,8 @@ class ConnectionManager
 
     public function getNextSlave(array $usedSlaves)
     {
-        foreach ($this->slaves as $slave){
-            if (!in_array($slave, $usedSlaves)){
+        foreach ($this->slaves as $slave) {
+            if (!in_array($slave, $usedSlaves)) {
                 return $slave;
             }
         }
@@ -254,7 +253,7 @@ class ConnectionManager
 
     public function getHAConfig()
     {
-        if (null !== $this->master && !empty($this->slaves)){
+        if (null !== $this->master && !empty($this->slaves)) {
             return array(
                 'master' => $this->master,
                 'slaves' => $this->slaves

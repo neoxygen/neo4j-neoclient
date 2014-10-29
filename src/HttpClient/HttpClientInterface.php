@@ -12,8 +12,6 @@
 
 namespace Neoxygen\NeoClient\HttpClient;
 
-use Neoxygen\NeoClient\Request\RequestInterface;
-
 interface HttpClientInterface
 {
 }
