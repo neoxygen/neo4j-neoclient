@@ -254,7 +254,7 @@ $client->dropUniqueConstraint('User','username');
 #### getUniqueConstraints | Returns all the uniqueness constraints by label
 
 ```php
-$constraints = $client->getConstraints();
+$constraints = $client->getUniqueConstraints();
 ```
 
 Returns `['User' => ['username','email'], 'Movie' => ['imdb_id']]`
