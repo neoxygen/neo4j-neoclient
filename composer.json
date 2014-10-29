@@ -1,13 +1,13 @@
 {
     "name": "neoxygen/neoclient",
     "type": "library",
-    "description": "NeoClient is a PHP HttpClient for the Neo4j ReST API",
+    "description": "NeoClient is the most advanced Http Client for Neo4j",
     "keywords": [
         "graph",
         "neo4j",
-        "api",
+        "cluster",
         "client",
-        "http"
+        "high-availibility"
     ],
     "homepage": "http://neoxygen.io",
     "license": "MIT",
@@ -44,12 +44,9 @@
             "Neoxygen\\NeoClient\\Tests\\": "tests/Neoxygen/NeoClient/Tests"
         }
     },
-    "config": {
-        "bin-dir": "bin"
-    },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.6-dev"
+            "dev-master": "2.0-dev"
         }
     }
 }
