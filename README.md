@@ -360,23 +360,19 @@ Note that a commited or a rolled back transaction will not accept pushQuery call
 
 You can work with as many connections you want :
 
-```yaml
-connections:
-  default:
-    scheme: http
-    host: localhost
-    port: 7474
-  testdb:
-    scheme: http
-    host: testserver.dev
-    port: 7475
+```php
+$client = ClientBuilder::create()
+    ->addConnection('default', 'http', 'localhost', 7474)
+    ->addConnection('testserver1', 'http', 'testserver.local', 7474)
+    ->addConnection('testserver2', 'http', 'testserver2.local',7474)
+    ->build();
 ```
 
 When calling commands, you can specify to which connection the command has to be executed by passing the connection alias as argument :
 
 ```php
 $client->getRoot('default');
-$client->sendCypherQuery('MATCH (n) RETURN count(n) as total', array(), 'testdb');
+$client->sendCypherQuery('MATCH (n) RETURN count(n) as total', array(), 'testserver1');
 ```
 
 ## HA (High-Availibilty) Mode for Neo4j Enterprise
@@ -406,6 +402,8 @@ Automatically, write queries will be executed against the `master` connection, w
 
 If a slave is no more reachable, it will automatically check if other slaves are configured. If yes it will attempt to send the query again 
 to the other slave connections.
+
+If you have loggers settled up, an `alert` entry will be logged to inform you of slave connection failure.
 
 ```php
 
@@ -445,18 +443,13 @@ $client->checkHAAvailable('serverxxx'); // Returns master|slave|false
 If you are using the `authenticated-extension` or using [GrapheneDB](http://graphenedb.com) instance, you can specify to use the authMode for the connection and provide your username
 and password :
 
-```yaml
-connections:
-  default:
-    scheme: http
-    host: localhost
-    port: 7474
-    auth: true
-    user: user
-    password: s3Cr3T
+```php
+$client = ClientBuilder::create()
+    ->addConnection('default', 'http', 'myserver.dev', 7474, true, 'username', 'password')
+    ->build();
 ```
 
-Your password will automatically encoded in base64 for the Authorization.
+Your password will automatically be encoded in base64 for the Authorization.
 
 ### Convenience methods for the `Authentication extension`
 
@@ -511,22 +504,15 @@ we recommend that you set up the built-in `HA Mode` feature of this library.
 When working with multiple connections, you may work with a main db and a backup db, and define the backup db as
 a fallback in case of connection failure with the main db.
 
-Configuring a fallback connection in your config file (define a connection key with the fallback connection to use as
+Configuring a fallback connection (define a connection key with the fallback connection to use as
 value :
 
-```yaml
-connections:
-  default:
-    scheme: http
-    host: localhost
-    port: 7474
-  testdb:
-    scheme: http
-    host: testserver.dev
-    port: 7475
-
-fallback:
-  default: testdb
+```php
+$client = ClientBuilder::create()
+    ->addDefaultLocalConnection()
+    ->addConnection('backupdb', 'http', 'backupserver.dev', 7474)
+    ->setFallbackConnection('default', 'backupdb')
+    ->build();
 ```
 
 For each command, in case of connection failure, the http client will check if a fallback is defined and use it.
@@ -546,9 +532,10 @@ a string representing a function, or an array representing an object method or a
 Event listeners are currently not configurable with the yaml file, it will come soon...
 
 ```php
-$client
-    ->loadConfiguration('file')
-    ->addEventListener('foo.action', function (Event $event));
+$client = ClientBuilder::create()
+    ->addDefaultLocalConnection()
+    ->addEventListener('foo.action', function (Event $event))
+    ->build();
 ```
 
 ### Logging
@@ -560,12 +547,21 @@ If you integrate your own logging, he must be compatible with the PSR-3 standard
 
 ```php
 // Adding your own logging
-$client->setLogger('app', MyLogger); // My Logger must implement Psr\Log\LoggerInterface
+$client = ClientBuilder::create()
+    ->addDefaultLocalConnection()
+    ->setLogger('app', MyLogger) // My Logger must implement Psr\Log\LoggerInterface
+    ->build();
+```
 
-// asking the default
+The library is shipped with two default Monolog handlers that you can use : Stream and ChromePHP. Registering them is straightforward :
 
-$client->createDefaultStreamLogger('name', '/path/to/your/log/file.log', 'debug');
-$client->createDefaultChromePHPLogger('app', 'debug');
+```php
+
+$client = ClientBuilder::create()
+    ->addDefaultLocalConnection()
+    ->createDefaultStreamLogger('name', '/path/to/your/log/file.log', 'debug')
+    ->createDefaultChromePHPLogger('app', 'debug');
+    ->build();
 ```
 
 ## Extending NeoClient
@@ -609,22 +605,13 @@ class MyCommand extends AbstractCommand
 }
 ```
 
-Then you have to register your command when building the client by passing an alias for your command and the class name :
+Then you have to register your command when building the client by passing an alias for your command and the class FQDN :
 
-```yaml
-connections:
-  default:
-    scheme: http
-    host: localhost
-    port: 7474
-  testdb:
-    scheme: http
-    host: testserver.dev
-    port: 7475
-
-custom_commands:
-    custom_get_extensions:
-        class: My\Custom\Command\Class
+```php
+$client = ClientBuilder::create()
+    ->addDefaultLocalConnection()
+    ->registerCommand('my_super_command', 'My\Command\Class\Namespace')
+    ->build();
 ```
 
 Then to use your command, just use the invoke method of the client :
@@ -639,7 +626,7 @@ print_r($extensions);
 
 When you have a lot of commands, it may be good to create a command extension. Creating a command extension is quite simple :
 
-You need to create a class that implements the `Neoxygen\NeoClient\Extension\NeoClientExtensionInterface`, and you have to
+You need to create a class that extends the `Neoxygen\NeoClient\Extension\AbsractExtension`, and you have to
 implement the `getAvailableCommands` method that return an array of command aliases bounded to command classes :
 
 ```php
@@ -658,22 +645,13 @@ class MyExtension implements NeoClientExtensionInterface
 }
 ```
 
-And then register your extension when building the client by giving an alias and the class of your extension :
+And then register your extension when building the client by giving an alias and the class FQDN of your extension :
 
-```yaml
-connections:
-  default:
-    scheme: http
-    host: localhost
-    port: 7474
-  testdb:
-    scheme: http
-    host: testserver.dev
-    port: 7475
-
-extensions:
-  my_extension:
-    class: My\Extension\Clas
+```php
+$client = ClientBuilder::create()
+    ->addDefaultLocalConnection()
+    ->registerExtension('my_extension_alias', 'My\Extension\Class\Namespace')
+    ->build();
 ```
 
 ## Production settings
