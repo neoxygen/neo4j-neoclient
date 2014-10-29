@@ -342,17 +342,10 @@ class NeoClientCoreExtension extends AbstractExtension
      *
      * @param  string      $query
      * @param  array       $parameters
-     * @param  string|null $connectionAlias
-     * @param  array       $resultDataContents
      * @return mixed
      */
     public function sendReadQuery($query, array $parameters = array())
     {
-        foreach (array('MERGE', 'CREATE') as $pattern) {
-            if (preg_match('/'.$pattern.'/i', $query)) {
-                throw new \InvalidArgumentException(sprintf('The query "%s" contains cypher write clauses', $query));
-            }
-        }
 
         return $this->sendCypherQuery($query, $parameters, $this->getReadConnection()->getAlias(), true);
     }
@@ -362,99 +355,14 @@ class NeoClientCoreExtension extends AbstractExtension
      *
      * @param  string      $query
      * @param  array       $parameters
-     * @param  string|null $connectionAlias
-     * @param  array       $resultDataContents
      * @return mixed
      */
     public function sendWriteQuery($query, array $parameters = array())
     {
+
         return $this->sendCypherQuery($query, $parameters, $this->getWriteConnection()->getAlias());
     }
 
-    /**
-     * Convenience method for the replication mode
-     * Push a read only query to the transaction
-     *
-     * @param $transactionId
-     * @param $query
-     * @param  array $parameters
-     * @param  null  $conn
-     * @param  array $resultDataContents
-     * @return mixed
-     */
-    public function pushReadQueryToTransaction($transactionId, $query, array $parameters = array(), $conn = null)
-    {
-        foreach (array('MERGE', 'CREATE') as $pattern) {
-            if (preg_match('/'.$pattern.'/i', $query)) {
-                throw new \InvalidArgumentException(sprintf('The query "%s" contains cypher write clauses', $query));
-            }
-        }
-
-        return $this->pushToTransaction($transactionId, $query, $parameters, $conn, $this->resultDataContent, false);
-    }
-
-    /**
-     * Convenience method for working with the replication mode
-     *
-     * @param $transactionId
-     * @param $query
-     * @param  array $parameters
-     * @param  null  $conn
-     * @param  array $resultDataContents
-     * @return mixed
-     */
-    public function pushWriteQueryToTransaction($transactionId, $query, array $parameters = array(), $conn = null)
-    {
-        return $this->pushToTransaction($transactionId, $query, $parameters, $conn, $this->resultDataContent, true);
-    }
-
-    /**
-     * Creates an index on a label
-     *
-     * @param  string       $label
-     * @param  string|array $property
-     * @return bool
-     */
-    public function createIndex($label, $property)
-    {
-        $statements = [];
-        if (is_array($property)) {
-            foreach ($property as $prop) {
-                $statements[] = 'CREATE INDEX ON :'.$label.'('.$prop.')';
-            }
-        } else {
-            $statements[] = 'CREATE INDEX ON :'.$label.'('.$property.')';
-        }
-        foreach ($statements as $statement) {
-            $this->sendCypherQuery($statement);
-        }
-
-        return true;
-    }
-
-    /**
-     * Drops an index on a label
-     *
-     * @param  string $label
-     * @param  string $property
-     * @return bool
-     */
-    public function dropIndex($label, $property)
-    {
-        $statements = [];
-        if (is_array($property)) {
-            foreach ($property as $prop) {
-                $statements[] = 'DROP INDEX ON :'.$label.'('.$prop.')';
-            }
-        } else {
-            $statements[] = 'DROP INDEX ON :'.$label.'('.$property.')';
-        }
-        foreach ($statements as $statement) {
-            $this->sendCypherQuery($statement);
-        }
-
-        return true;
-    }
 
     /**
      * Create a unique constraint on a label
@@ -615,6 +523,62 @@ class NeoClientCoreExtension extends AbstractExtension
         $response = $this->sendCypherQuery($q, $parameters, $conn, array('graph', 'row'));
 
         return $response->getResult();
+    }
+
+    /**
+     * Get the connection alias of the Master Connection
+     *
+     * @return string
+     */
+    public function getWriteConnectionAlias()
+    {
+        return $this->getWriteConnection()->getAlias();
+    }
+
+    /**
+     * Get the connection alias of the first Slave connection
+     *
+     * @return string
+     */
+    public function getReadConnectionAlias()
+    {
+        return $this->getReadConnection()->getAlias();
+    }
+
+    /**
+     * @param string|null $conn
+     * @return mixed
+     */
+    public function checkHAMaster($conn = null)
+    {
+        $response = $this->invoke('neo.core_get_ha_master', $conn)
+            ->execute();
+
+        return $response;
+    }
+
+    /**
+     * @param string|null $conn
+     * @return mixed
+     */
+    public function checkHASlave($conn = null)
+    {
+        $response = $this->invoke('neo.core_get_ha_slave', $conn)
+            ->execute();
+
+        return $response;
+    }
+
+    /**
+     * @param string|null $conn
+     * @return mixed
+     */
+    public function checkHAAvailable($conn = null)
+    {
+        $response = $this->invoke('neo.core_get_ha_available', $conn)
+            ->execute();
+
+        return $response;
     }
 
     private function checkPathNode(array $node)

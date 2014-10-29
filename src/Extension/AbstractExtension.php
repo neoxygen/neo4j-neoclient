@@ -35,6 +35,11 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
         $this->resultDataContent = $resultDataContent;
     }
 
+    /**
+     * @param $commandAlias
+     * @param null $connectionAlias
+     * @return \Neoxygen\NeoClient\Command\AbstractCommand
+     */
     public function invoke($commandAlias, $connectionAlias = null)
     {
         $command = $this->commandManager->getCommand($commandAlias);

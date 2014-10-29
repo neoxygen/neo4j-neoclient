@@ -35,3 +35,12 @@ neo.commit_transaction:
 
 neo.push_multiple_to_transaction:
   class: "Neoxygen\\NeoClient\\Command\\Core\\CorePushMultipleToTransactionCommand"
+
+neo.core_get_ha_master:
+  class: "Neoxygen\\NeoClient\\Command\\Core\\CoreGetHAMasterCommand"
+
+neo.core_get_ha_slave:
+  class: "Neoxygen\\NeoClient\\Command\\Core\\CoreGetHASlaveCommand"
+
+neo.core_get_ha_available:
+  class: "Neoxygen\\NeoClient\\Command\\Core\\CoreGetHAAvailableCommand"

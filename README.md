@@ -467,6 +467,18 @@ $client->sendReadQuery('MATCH (n:User) RETURN n'); // Will be sent to the "serve
 ```
 
 NB: The above methods do not take the `$conn` argument as the choice of the connection is done in the library internals.
+
+Note: You can always retrieve the Master and the first Slave connection alias from the client if you want to specify them when using other commands :
+
+```php
+
+$client->getRoot($client->getWriteConnectionAlias()); // Will be run against the master connection
+
+$client->listLabels($client->getReadConnectionAlias()); // Will be run agains the first found slave connection
+```
+
+Please also note, that when using the *Transaction Manager*, all queries will be run against the same connection. *Transaction*  instances 
+are bounded to one and only connection.
     
 
 
