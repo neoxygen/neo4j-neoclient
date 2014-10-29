@@ -140,7 +140,7 @@ Array
 Handling such response format is not really practical and boring. You can ask the client to format the response in a pretty way and have
 this format available to you :
 
-```
+```php
 $client = ClientBuilder::create()
     ->addDefaultLocalConnection()
     ->setAutoFormatResponse(true)
@@ -427,6 +427,16 @@ $client->listLabels($client->getReadConnectionAlias()); // Will be run agains th
 
 Please also note, that when using the *Transaction Manager*, all queries will be run against the same connection. *Transaction*  instances 
 are bounded to one and only connection.
+
+### Checking your Master/Slave Configuration
+
+You can check that your defined master and slaves connections are running and setup correctly :
+
+```php
+$client->checkHAMaster('server1');      // Returns true|false
+$client->checkHASlave('server2');       // Returns true|false
+$client->checkHAAvailable('serverxxx'); // Returns master|slave|false
+```
 
 ## Secured connections
 
