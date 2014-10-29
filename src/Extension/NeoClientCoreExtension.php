@@ -354,7 +354,7 @@ class NeoClientCoreExtension extends AbstractExtension
             }
         }
 
-        return $this->sendCypherQuery($query, $parameters, $this->getReadConnection()->getAlias(), $this->resultDataContent, true);
+        return $this->sendCypherQuery($query, $parameters, $this->getReadConnection()->getAlias(), true);
     }
 
     /**
@@ -368,7 +368,7 @@ class NeoClientCoreExtension extends AbstractExtension
      */
     public function sendWriteQuery($query, array $parameters = array())
     {
-        return $this->sendCypherQuery($query, $parameters, $this->getWriteConnection()->getAlias(), $this->resultDataContent, true);
+        return $this->sendCypherQuery($query, $parameters, $this->getWriteConnection()->getAlias());
     }
 
     /**

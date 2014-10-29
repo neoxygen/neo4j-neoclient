@@ -16,5 +16,4 @@ use Neoxygen\NeoClient\Request\RequestInterface;
 
 interface HttpClientInterface
 {
-    public function sendRequest(RequestInterface $request);
 }

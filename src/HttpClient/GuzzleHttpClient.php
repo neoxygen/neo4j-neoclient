@@ -27,10 +27,6 @@ class GuzzleHttpClient implements HttpClientInterface
 {
     private $client;
 
-    private $responseFormat;
-
-    private $responseFormatter;
-
     private $logger;
 
     private $eventDispatcher;
@@ -40,7 +36,6 @@ class GuzzleHttpClient implements HttpClientInterface
     private $slavesUsed = [];
 
     public function __construct(
-        $responseFormat = null,
         LoggerInterface $logger = null,
         EventDispatcherInterface $eventDispatcher = null,
         ConnectionManager $connectionManager)
@@ -49,12 +44,6 @@ class GuzzleHttpClient implements HttpClientInterface
         $this->logger = $logger;
         $this->eventDispatcher = $eventDispatcher;
         $this->connectionManager = $connectionManager;
-        $this->responseFormat = $responseFormat;
-    }
-
-    public function setResponseFormatter(ResponseFormatterInterface $responseFormatter)
-    {
-        $this->responseFormatter = $responseFormatter;
     }
 
     public function send($method, $path, $body = null, $connectionAlias = null, $queryString = null, $slaveConn = false)
@@ -62,7 +51,8 @@ class GuzzleHttpClient implements HttpClientInterface
         $conn = $this->connectionManager->getConnection($connectionAlias);
         $url = $conn->getBaseUrl() . $path;
         $defaults = array(
-            'body' => $body
+            'body' => $body,
+            'timeout' => 1
         );
         if ($queryString) {
             $defaults['query'] = $queryString;
@@ -78,17 +68,26 @@ class GuzzleHttpClient implements HttpClientInterface
 
             return $this->getResponse($response);
         } catch (RequestException $e) {
+            if ($slaveConn === false){
+            }
                 if ($this->connectionManager->hasFallbackConnection($conn->getAlias())) {
-                    $this->logger->log('alert', sprintf('Connection "%s" unreacheable, using fallback connection', $conn->getAlias()));
+                    $this->logger->log('alert', sprintf('Connection "%s" unreachable, using fallback connection', $conn->getAlias()));
                     $fallback = $this->connectionManager->getFallbackConnection($conn->getAlias());
 
                     return $this->send($method, $path, $body, $fallback->getAlias(), $queryString);
             } elseif ($slaveConn) {
-                    $this->slavesUsed = $connectionAlias;
+                    $this->slavesUsed[] = $connectionAlias;
                     if ($this->connectionManager->hasNextSlave($this->slavesUsed)){
                             $nextSlave = $this->connectionManager->getNextSlave($this->slavesUsed);
+                            $this->logger->log(
+                                'alert',
+                                sprintf(
+                                    'Slave Connection "%s" unreacheable, auto fallback to slave "%s"',
+                                    $conn->getAlias(),
+                                    $nextSlave)
+                                );
 
-                            return $this->send($method, $path, $body, $nextSlave, $queryString);
+                            return $this->send($method, $path, $body, $nextSlave, $queryString, $slaveConn);
                     }
                 }
                 else {
@@ -100,29 +99,6 @@ class GuzzleHttpClient implements HttpClientInterface
                     throw new HttpException($message, $e->getCode());
                 }
         }
-
-    }
-
-    public function sendRequest(RequestInterface $request)
-    {
-        $body = ($request->getBody()) ? $request->getBody() : null;
-        $defaults = array(
-            'body' => $body
-        );
-
-        $httpRequest = $this->client->createRequest($request->getMethod(), $request->getUrl(), $defaults);
-        $httpRequest->setHeaders($request->getHeaders());
-
-        $this->logger->log(
-            'debug',
-            sprintf('Sending http request to %s', $request->getUrl()),
-            array('body' => (string) $request->getBody())
-        );
-        $this->dispatchPreRequest($request);
-
-        $response = $this->client->send($httpRequest);
-
-        return $this->getResponse($response);
 
     }
 

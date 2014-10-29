@@ -14,6 +14,7 @@ namespace Neoxygen\NeoClient\Connection;
 
 use Neoxygen\NeoClient\Connection\Connection,
     Neoxygen\NeoClient\Exception\InvalidConnectionException;
+use Neoxygen\NeoClient\Exception\HttpException;
 
 class ConnectionManager
 {
@@ -67,7 +68,7 @@ class ConnectionManager
 
     /**
      * @param  string|null                              $alias The connection's alias
-     * @return Neoxygen\NeoClient\Connection\Connection The requested connection
+     * @return \Neoxygen\NeoClient\Connection\Connection The requested connection
      * @throws InvalidConnectionException               When the connection does not exist
      */
     public function getConnection($alias = null)
@@ -231,13 +232,36 @@ class ConnectionManager
         return false;
     }
 
-    public function hasMultipleSlaves()
+    public function hasNextSlave(array $usedSlaves)
     {
-        if (count($this->slaves) > 1){
+        if (count($this->slaves) > count($usedSlaves)){
             return true;
         }
 
         return false;
+    }
+
+    public function getNextSlave(array $usedSlaves)
+    {
+        foreach ($this->slaves as $slave){
+            if (!in_array($slave, $usedSlaves)){
+                return $slave;
+            }
+        }
+
+        throw new HttpException('There are no more slaves to process');
+    }
+
+    public function getHAConfig()
+    {
+        if (null !== $this->master && !empty($this->slaves)){
+            return array(
+                'master' => $this->master,
+                'slaves' => $this->slaves
+            );
+        }
+
+        return null;
     }
 
 }
