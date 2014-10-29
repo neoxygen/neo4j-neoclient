@@ -14,16 +14,23 @@
 
 This is the documentation for the upcoming 2.0 branch. For the doc of the 1.6.*, checkout the 1.6 branch.
 
+## Introduction
+
+NeoClient is the most advanced and flexible [Neo4j](http://neo4j.com) Client for PHP. 
+
 ### Key features
 
 * Support multiple connections
-* Built-in and automatic support for Neo4j HA Master-Slave Mode
-* Fully extensible
+* Built-in and automatic support for *Neo4j Enterprise HA Master-Slave Mode* with auto slaves fallback
+* Built-in mini HA Mode for Neo4j Community Edition
+* Fully extensible (You can create your own extensions)
 
 ### Requirements
 
 * PHP 5.4+
-* A running Neo4j database
+* A Neo4j database
+
+## Installation and basic usage
 
 ### Installation
 
@@ -97,7 +104,7 @@ $version = $client->getVersion();
 // Returns (string) 2.1.5
 ```
 
-#### Sending a Cypher Query
+## Sending Cypher Queries
 
 In order to send a Cypher Query, you need to pass the query as a string, and an optional array of paramaters as arguments :
 
@@ -163,7 +170,7 @@ Array
 )
 
 ```
-
+## Labels, Indexes and Constraints Management
 
 ### Managing labels
 
@@ -253,7 +260,7 @@ $constraints = $client->getConstraints();
 Returns `['User' => ['username','email'], 'Movie' => ['imdb_id']]`
 
 
-### Handling Graph Results
+## Handling Graph Results
 
 The Response Formatter will format graph results in a pretty format of nodes and relationships objects.
 
@@ -327,7 +334,7 @@ $nbNodes = $result->getNodesCount();
 $nbRels = $result->getRelationshipsCount();
 ```
 
-### Transaction Management
+## Transaction Management
 
 The library comes with a Transaction Manager removing you the burden of parsing commit urls and transaction ids.
 
@@ -347,9 +354,85 @@ $transaction->getResults() // Returns the results of all the statements
 
 Note that a commited or a rolled back transaction will not accept pushQuery calls anymore.
 
+## Working with multiple connections
+
+### Define multiple connections
+
+You can work with as many connections you want :
+
+```yaml
+connections:
+  default:
+    scheme: http
+    host: localhost
+    port: 7474
+  testdb:
+    scheme: http
+    host: testserver.dev
+    port: 7475
+```
+
+When calling commands, you can specify to which connection the command has to be executed by passing the connection alias as argument :
+
+```php
+$client->getRoot('default');
+$client->sendCypherQuery('MATCH (n) RETURN count(n) as total', array(), 'testdb');
+```
+
+## HA (High-Availibilty) Mode for Neo4j Enterprise
+
+The library provide a powerful system for handling the HA Mode of Neo4j available in Neo4j Enterprise.
+
+The convention is to send write queries to the master, and read queries to slaves.
+
+To enable the HA Mode and defining which connections are master or slave, you need to add some method call during the build process of the
+client :
+
+```php
+
+$client = ClientBuilder::create()
+    ->addConnection('server1', 'http', '193.147.213.3', 7474)
+    ->addConnection('server2', 'http', '193.147.213.4', 7474)
+    ->addConnection('server3', 'http', '193.147.213.7', 7474)
+    ->setMasterConnection('server1') // Define the Master Connection by providing the connection alias
+    ->setSlaveConnection('server2') // Idem for slave connections
+    ->setSlaveConnection('server3')
+    ->build();
+```
+
+Your configuration is now set. The client has convenience methods for HA usage, respectively `sendReadQuery` and `sendWriteQuery`.
+
+Automatically, write queries will be executed against the `master` connection, while `read` queries against slave connections.
+
+If a slave is no more reachable, it will automatically check if other slaves are configured. If yes it will attempt to send the query again 
+to the other slave connections.
+
+```php
+
+$client->sendWriteQuery('MERGE (n:User {firstname: "Chris"})'); // Will be sent to the "server1" connection
+
+$client->sendReadQuery('MATCH (n:User) RETURN n'); // Will be sent to the "server2" connection
+```
+
+NB: The above methods do not take the `$conn` argument as the choice of the connection is done in the library internals.
+
+Note: You can always retrieve the Master and the first Slave connection alias from the client if you want to specify them when using other commands :
+
+```php
+
+$client->getRoot($client->getWriteConnectionAlias()); // Will be run against the master connection
+
+$client->listLabels($client->getReadConnectionAlias()); // Will be run agains the first found slave connection
+```
+
+Please also note, that when using the *Transaction Manager*, all queries will be run against the same connection. *Transaction*  instances 
+are bounded to one and only connection.
+
+## Secured connections
+
 ### Authenticated connection
 
-If you are using the `authenticated-extension`, you can specify to use the authMode for the connection and provide your username
+If you are using the `authenticated-extension` or using [GrapheneDB](http://graphenedb.com) instance, you can specify to use the authMode for the connection and provide your username
 and password :
 
 ```yaml
@@ -407,82 +490,10 @@ $client->removeUser('user', 'password');
 ```json
 OK
 ```
-
-### Working with multiple connections
-
-You can work with as many connections you want :
-
-```yaml
-connections:
-  default:
-    scheme: http
-    host: localhost
-    port: 7474
-  testdb:
-    scheme: http
-    host: testserver.dev
-    port: 7475
-```
-
-When calling commands, you can specify to which connection the command has to be executed by passing the connection alias as argument :
-
-```php
-$client->getRoot('default');
-$client->sendCypherQuery('MATCH (n) RETURN count(n) as total', array(), 'testdb');
-```
-
-### Enabling the HA (High-Availibilty) Mode
-
-The library provide a powerful system for handling the HA Mode of Neo4j available in Neo4j Enterprise.
-
-The convention is to send write queries to the master, and read queries to slaves.
-
-To enable the HA Mode and defining which connections are master or slave, you need to add some method call during the build process of the
-client :
-
-```php
-
-$client = ClientBuilder::create()
-    ->addConnection('server1', 'http', '193.147.213.3', 7474)
-    ->addConnection('server2', 'http', '193.147.213.4', 7474)
-    ->addConnection('server3', 'http', '193.147.213.7', 7474)
-    ->setMasterConnection('server1') // Define the Master Connection by providing the connection alias
-    ->setSlaveConnection('server2') // Idem for slave connections
-    ->setSlaveConnection('server3')
-    ->build();
-```
-
-Your configuration is now set. The client has convenience methods for HA usage, respectively `sendReadQuery` and `sendWriteQuery`.
-
-Automatically, write queries will be executed against the `master` connection, while `read` queries against slave connections.
-
-If a slave is no more reachable, it will automatically check if other slaves are configured. If yes it will attempt to send the query again 
-to the other slave connections.
-
-```php
-
-$client->sendWriteQuery('MERGE (n:User {firstname: "Chris"})'); // Will be sent to the "server1" connection
-
-$client->sendReadQuery('MATCH (n:User) RETURN n'); // Will be sent to the "server2" connection
-```
-
-NB: The above methods do not take the `$conn` argument as the choice of the connection is done in the library internals.
-
-Note: You can always retrieve the Master and the first Slave connection alias from the client if you want to specify them when using other commands :
-
-```php
-
-$client->getRoot($client->getWriteConnectionAlias()); // Will be run against the master connection
-
-$client->listLabels($client->getReadConnectionAlias()); // Will be run agains the first found slave connection
-```
-
-Please also note, that when using the *Transaction Manager*, all queries will be run against the same connection. *Transaction*  instances 
-are bounded to one and only connection.
     
 
 
-### Fallback connections
+## Mini HA for Neo4j Community
 
 Fallback connections feature provide a mini HA mode when you use the Community Edition. If you are using the Enterprise edition 
 we recommend that you set up the built-in `HA Mode` feature of this library.
@@ -511,6 +522,8 @@ fallback:
 For each command, in case of connection failure, the http client will check if a fallback is defined and use it.
 
 If you have loggers settled up, an `alert` entry will be logged to avert you of the connection failure.
+
+## Events & Logging
 
 ### Event Listeners
 
@@ -544,6 +557,9 @@ $client->setLogger('app', MyLogger); // My Logger must implement Psr\Log\LoggerI
 $client->createDefaultStreamLogger('name', '/path/to/your/log/file.log', 'debug');
 $client->createDefaultChromePHPLogger('app', 'debug');
 ```
+
+## Extending NeoClient
+
 
 ### Creating your own commands
 
@@ -609,7 +625,7 @@ $extensions = $command->execute();
 print_r($extensions);
 ```
 
-### Creating a Commands Extension
+### Creating an Extension
 
 When you have a lot of commands, it may be good to create a command extension. Creating a command extension is quite simple :
 
@@ -650,9 +666,9 @@ extensions:
     class: My\Extension\Clas
 ```
 
-### Production settings
+## Production settings
 
-The library uses a Dependency Injenction Container and service files definitions, while this provide flexibilty and
+The library uses a Dependency Injenction Container and service files definitions, while this provide full flexibility and
 robust code, this comes at a price.
 
 By providing a cache path where the container and all the configuration can be dumped, you'll have the best of both worlds.
@@ -678,26 +694,6 @@ cache:
 
 Don't forget to add full permissions to the cache path : `chmod -R 777 your/cache/path` and also to empty the cache dir when
 you do changes to your configuration.
-
-### Extra Commands
-
-#### GraphAware ChangeFeed Module
-
-Details about the module here : https://github.com/graphaware/neo4j-changefeed
-
-#### getChangeFeed | Returns the last tracks of changes made to the graph
-
-```php
-$changes = $client->getChangeFeed();
-
-// Or with parameters (uuid, limit, moduleId, connectionAlias)
-$changes = $client->getChangeFeed(null, 10);
-```
-
-```json
-[{"uuid":"6f166230-3d0b-11e4-8f99-84383559c16e","timestamp":1410808004563,"changes":["Created node (:TestLabel)"]},{"uuid":"86c3d3b0-3ac0-11e4-8f99-84383559c16e","timestamp":1410555929707,"changes":["Created node (:Looob)"]},{"uuid":"93358400-3abf-11e4-8f99-84383559c16e","timestamp":1410555521088,"changes":["Created node (:UriahHeep)"]},{"uuid":"b4e4fa20-398b-11e4-8f99-84383559c16e","timestamp":1410423292610,"changes":["Created node (:Person {type: hello})"]},{"uuid":"8adf60d0-398b-11e4-8f99-84383559c16e","timestamp":1410423222109,"changes":["Created node (:MyLabel {green: yel})","Created relationship (:Product:Track {name: hello})-[:LOVESPRIMES_AT]->(:MyLabel {green: yel})","Created node (:Product:Track {name: hello})"]},{"uuid":"6f10b200-398b-11e4-8f99-84383559c16e","timestamp":1410423175456,"changes":["Created node (:MyLabel {green: yellow})","Created relationship (:Product {name: hello})-[:LOVES_TO]->(:MyLabel {green: yellow})","Created node (:Product {name: hello})"]}]airbook:commandr ikwattro$ php test.php
-[{"uuid":"6f166230-3d0b-11e4-8f99-84383559c16e","timestamp":1410808004563,"changes":["Created node (:TestLabel)"]}]
-```
 
 ### Configuration Reference
 
@@ -762,13 +758,7 @@ The library is released under the MIT License, refer to the LICENSE file.
 To run the test suite, you need to copy the `tests/database_settings.yml.dist` to `tests/database_settings.yml`, as it will
 create nodes to a real database.
 
-Integration Tests :
-
 Run `vendor/bin/phpunit`
-
-Unit tests:
-
-Run `vendor/bin/phpspec -f`
 
 
 
