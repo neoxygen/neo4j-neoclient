@@ -82,6 +82,13 @@ Array
     )
 ```
 
+Note: As the library provide full support for working with multiple databases, each method explained in the documentation can take 
+a `$conn` parameter which you can use to define on which connection you want to execute the method. The default connection will be used when
+the parameter is not set.
+
+For more information on how to set up multiple connections, read the `Multiple connections` section of the documentation.
+
+
 #### getVersion | Returns the Neo4j version of the current connection
 
 ```php
@@ -320,6 +327,26 @@ $nbNodes = $result->getNodesCount();
 $nbRels = $result->getRelationshipsCount();
 ```
 
+### Transaction Management
+
+The library comes with a Transaction Manager removing you the burden of parsing commit urls and transaction ids.
+
+Usage is straightforward :
+
+```php
+$transaction = $client->createTransaction();
+$transaction->pushQuery('MERGE (n:User {id: 123}) RETURN n');
+$transaction->pushQuery('MATCH (n) RETURN count(n)');
+$transaction->commit();
+
+// Other methods :
+$transaction->rollback();
+$transaction->getLastResult // Returns the result of the last transaction statements
+$transaction->getResults() // Returns the results of all the statements
+```
+
+Note that a commited or a rolled back transaction will not accept pushQuery calls anymore.
+
 ### Authenticated connection
 
 If you are using the `authenticated-extension`, you can specify to use the authMode for the connection and provide your username
@@ -338,7 +365,7 @@ connections:
 
 Your password will automatically encoded in base64 for the Authorization.
 
-### Core Commands for the `Authentication extension`
+### Convenience methods for the `Authentication extension`
 
 #### listUsers | List the users registered in the connection authentication extension
 
@@ -347,7 +374,7 @@ $client->listUsers();
 ```
 
 ```json
-{"john:password":"RW"}
+{"john"}
 ```
 
 #### addUser | Adds a user to the extensions
@@ -368,7 +395,7 @@ $client->addUser('john', 'password', true);
 
 ```json
 OK
-{"john:password":"RO"}
+{"john"}
 ```
 
 #### removeUser | Removes a user from the extension
@@ -404,7 +431,49 @@ $client->getRoot('default');
 $client->sendCypherQuery('MATCH (n) RETURN count(n) as total', array(), 'testdb');
 ```
 
+### Enabling the HA (High-Availibilty) Mode
+
+The library provide a powerful system for handling the HA Mode of Neo4j available in Neo4j Enterprise.
+
+The convention is to send write queries to the master, and read queries to slaves.
+
+To enable the HA Mode and defining which connections are master or slave, you need to add some method call during the build process of the
+client :
+
+```php
+
+$client = ClientBuilder::create()
+    ->addConnection('server1', 'http', '193.147.213.3', 7474)
+    ->addConnection('server2', 'http', '193.147.213.4', 7474)
+    ->addConnection('server3', 'http', '193.147.213.7', 7474)
+    ->setMasterConnection('server1') // Define the Master Connection by providing the connection alias
+    ->setSlaveConnection('server2') // Idem for slave connections
+    ->setSlaveConnection('server3')
+    ->build();
+```
+
+Your configuration is now set. The client has convenience methods for HA usage, respectively `sendReadQuery` and `sendWriteQuery`.
+
+Automatically, write queries will be executed against the `master` connection, while `read` queries against slave connections.
+
+If a slave is no more reachable, it will automatically check if other slaves are configured. If yes it will attempt to send the query again 
+to the other slave connections.
+
+```php
+
+$client->sendWriteQuery('MERGE (n:User {firstname: "Chris"})'); // Will be sent to the "server1" connection
+
+$client->sendReadQuery('MATCH (n:User) RETURN n'); // Will be sent to the "server2" connection
+```
+
+NB: The above methods do not take the `$conn` argument as the choice of the connection is done in the library internals.
+    
+
+
 ### Fallback connections
+
+Fallback connections feature provide a mini HA mode when you use the Community Edition. If you are using the Enterprise edition 
+we recommend that you set up the built-in `HA Mode` feature of this library.
 
 When working with multiple connections, you may work with a main db and a backup db, and define the backup db as
 a fallback in case of connection failure with the main db.
@@ -689,70 +758,6 @@ Unit tests:
 
 Run `vendor/bin/phpspec -f`
 
-#### openTransaction | Opens a new http transaction
-```php
-$transaction = $client->openTransaction();
-```
-
-```json
-{"commit":"http://localhost:7474/db/data/transaction/32/commit","results":[],"transaction":{"expires":"Tue, 16 Sep 2014 21:56:29 +0000"},"errors":[]}
-```
-
-#### rollBackTransaction | Roll backs a transaction
-```php
-$transactionId = 59;
-$rollback = $client->rollbackTransaction($transactionId);
-```
-
-```json
-{"results":[],"errors":[]}
-```
-
-#### pushToTransaction | Add a statement to a given transaction
-
-```php
-$transactionId = 60;
-$query = 'MATCH (n) RETURN count(n)';
-$result = $client->pushToTransaction($transactionId, $query);
-```
-
-```json
-{"results":[{"columns":["count(n)"],"data":[{"row":[24]}]}],"errors":[]}
-```
-
-#### commitTransaction | Add a statement to a given transaction
-
-Query is here optional, as you can commit a transaction without adding a cypher statement.
-
-```php
-$transactionId = 60;
-$query = 'MATCH (n) RETURN count(n)';
-$result = $client->commitTransaction($transactionId, $query);
-```
-
-```json
-{"results":[{"columns":["count(n)"],"data":[{"row":[24]}]}],"errors":[]}
-```
-
-### Using the Transaction Manager
-
-The library comes with a Transaction Manager removing you the burden of parsing commit urls and transaction ids.
-
-Usage is straightforward :
-
-```php
-$transaction = $client->createTransaction();
-$transaction->pushQuery('MERGE (n:User {id: 123}) RETURN n');
-$transaction->pushQuery('MATCH (n) RETURN count(n)');
-$transaction->commit();
-
-// Other methods :
-$transaction->rollback();
-$transaction->getLastResult // Returns the result of the last transaction statements
-$transaction->getResults() // Returns the results of all the statements
-```
-
-Note that a commited or a rolled back transaction will not accept pushQuery calls anymore.
 
 
 

@@ -28,7 +28,9 @@ use Neoxygen\NeoClient\Formatter\Response;
  * @method getVersion($conn = null)
  * @method openTransaction($conn = null)
  * @method rollbackTransaction($id, $conn = null)
- * @method sendCypherQuery($query, array $parameters = array(), $conn = null, array $resultDataContents = array())
+ * @method sendCypherQuery($query, array $parameters = array(), $conn = null)
+ * @method sendWriteQuery($query, array $parameters = array())
+ * @method sendReadQuery($query, array $parameters = array())
  */
 
 class Client
