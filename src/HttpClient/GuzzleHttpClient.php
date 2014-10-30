@@ -63,6 +63,7 @@ class GuzzleHttpClient implements HttpClientInterface
         }
 
         try {
+            $this->logger->log('debug', sprintf('Sending query to the "%s" connection', $connectionAlias));
             $response = $this->client->send($httpRequest);
             $this->slavesUsed = [];
 
