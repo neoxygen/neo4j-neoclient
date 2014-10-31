@@ -98,4 +98,9 @@ class Response
     {
         return $this->rows;
     }
+
+    public function hasRows()
+    {
+        return null !== $this->rows;
+    }
 }
