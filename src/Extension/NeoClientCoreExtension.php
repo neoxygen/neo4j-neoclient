@@ -120,6 +120,54 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
+     * Creates an index on a label
+     *
+     * @param  string       $label
+     * @param  string|array $property
+     * @return bool
+     */
+    public function createIndex($label, $property)
+    {
+        $statements = [];
+        if (is_array($property)) {
+            foreach ($property as $prop) {
+                $statements[] = 'CREATE INDEX ON :'.$label.'('.$prop.')';
+            }
+        } else {
+            $statements[] = 'CREATE INDEX ON :'.$label.'('.$property.')';
+        }
+        foreach ($statements as $statement) {
+            $this->sendCypherQuery($statement);
+        }
+
+        return true;
+    }
+
+    /**
+     * Drops an index on a label
+     *
+     * @param  string $label
+     * @param  string $property
+     * @return bool
+     */
+    public function dropIndex($label, $property)
+    {
+        $statements = [];
+        if (is_array($property)) {
+            foreach ($property as $prop) {
+                $statements[] = 'DROP INDEX ON :'.$label.'('.$prop.')';
+            }
+        } else {
+            $statements[] = 'DROP INDEX ON :'.$label.'('.$property.')';
+        }
+        foreach ($statements as $statement) {
+            $this->sendCypherQuery($statement);
+        }
+
+        return true;
+    }
+
+    /**
      * Returns the list of indexed properties for a given Label
      *
      * @param  string      $label
