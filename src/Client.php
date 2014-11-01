@@ -88,8 +88,14 @@ class Client
         if ($this->lastResponse instanceof Response){
             if (!$response->containsResults() && !$response->hasRows()){
                 return $response->getResponse();
+            } elseif ($response->containsResults()){
+                return $response->getResult();
+            } elseif ($response->hasRows()){
+                return $response->getRows();
             }
         }
+
+        return $response;
     }
 
     /**
