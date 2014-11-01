@@ -24,7 +24,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface,
     Symfony\Component\Yaml\Yaml;
 use Neoxygen\NeoClient\DependencyInjection\NeoClientExtension,
     Neoxygen\NeoClient\DependencyInjection\Compiler\ConnectionRegistryCompilerPass,
-    Neoxygen\NeoClient\DependencyInjection\Compiler\NeoClientExtensionsCompilerPass;
+    Neoxygen\NeoClient\DependencyInjection\Compiler\NeoClientExtensionsCompilerPass,
+    Neoxygen\NeoClient\DependencyInjection\Compiler\EventSubscribersCompilerPass;
 
 class ClientBuilder
 {
@@ -394,6 +395,7 @@ class ClientBuilder
         $this->serviceContainer->registerExtension($extension);
         $this->serviceContainer->addCompilerPass(new ConnectionRegistryCompilerPass());
         $this->serviceContainer->addCompilerPass(new NeoClientExtensionsCompilerPass());
+        $this->serviceContainer->addCompilerPass(new EventSubscribersCompilerPass());
         $this->serviceContainer->loadFromExtension($extension->getAlias(), $this->getConfiguration());
         $this->serviceContainer->compile();
         if ($this->serviceContainer->hasParameter('loggers')) {

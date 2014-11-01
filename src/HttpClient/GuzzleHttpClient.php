@@ -18,6 +18,7 @@ use Neoxygen\NeoClient\Connection\ConnectionManager;
 use Neoxygen\NeoClient\Request\RequestInterface,
     Neoxygen\NeoClient\NeoClientEvents,
     Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent,
+    Neoxygen\NeoClient\Event\LoggingEvent,
     Neoxygen\NeoClient\Exception\HttpException,
     Neoxygen\NeoClient\Formatter\ResponseFormatterInterface;
 use Psr\Log\LoggerInterface;
@@ -27,8 +28,6 @@ class GuzzleHttpClient implements HttpClientInterface
 {
     private $client;
 
-    private $logger;
-
     private $eventDispatcher;
 
     private $connectionManager;
@@ -36,12 +35,10 @@ class GuzzleHttpClient implements HttpClientInterface
     private $slavesUsed = [];
 
     public function __construct(
-        LoggerInterface $logger = null,
-        EventDispatcherInterface $eventDispatcher = null,
+        EventDispatcherInterface $eventDispatcher,
         ConnectionManager $connectionManager)
     {
         $this->client = new Client();
-        $this->logger = $logger;
         $this->eventDispatcher = $eventDispatcher;
         $this->connectionManager = $connectionManager;
     }
@@ -63,7 +60,7 @@ class GuzzleHttpClient implements HttpClientInterface
         }
 
         try {
-            $this->logger->log('debug', sprintf('Sending query to the "%s" connection', $connectionAlias));
+            $this->logMessage('debug',sprintf('Sending query to the "%s" connection', $conn->getAlias()));
             $response = $this->client->send($httpRequest);
             $this->slavesUsed = [];
 
@@ -72,7 +69,7 @@ class GuzzleHttpClient implements HttpClientInterface
             if ($slaveConn === false) {
             }
                 if ($this->connectionManager->hasFallbackConnection($conn->getAlias())) {
-                    $this->logger->log('alert', sprintf('Connection "%s" unreachable, using fallback connection', $conn->getAlias()));
+                    $this->logMessage('alert', sprintf('Connection "%s" unreachable, using fallback connection', $conn->getAlias()));
                     $fallback = $this->connectionManager->getFallbackConnection($conn->getAlias());
 
                     return $this->send($method, $path, $body, $fallback->getAlias(), $queryString);
@@ -80,7 +77,7 @@ class GuzzleHttpClient implements HttpClientInterface
                     $this->slavesUsed[] = $connectionAlias;
                     if ($this->connectionManager->hasNextSlave($this->slavesUsed)) {
                             $nextSlave = $this->connectionManager->getNextSlave($this->slavesUsed);
-                            $this->logger->log(
+                            $this->logMessage(
                                 'alert',
                                 sprintf(
                                     'Slave Connection "%s" unreacheable, auto fallback to slave "%s"',
@@ -95,7 +92,7 @@ class GuzzleHttpClient implements HttpClientInterface
                     if ($e->hasResponse()) {
                         $message .= (string) $e->getResponse() ."\n";
                     }
-                    $this->logger->log('emergency', $message);
+                    $this->logMessage('emergency', $message);
                     throw new HttpException($message, $e->getCode());
                 }
         }
@@ -104,7 +101,7 @@ class GuzzleHttpClient implements HttpClientInterface
 
     private function getResponse($response)
     {
-        $this->logger->log(
+        $this->logMessage(
             'debug',
             sprintf('Http Response received'),
             array('response' => (string) $response->getBody())
@@ -120,9 +117,9 @@ class GuzzleHttpClient implements HttpClientInterface
         return null;
     }
 
-    private function dispatchPreRequest(RequestInterface $request)
+    private function logMessage($level = 'DEBUG', $message, $context = null)
     {
-        $event = new HttpClientPreSendRequestEvent($request);
-        $this->eventDispatcher->dispatch(NeoClientEvents::NEO_HTTP_PRE_REQUEST_SEND, $event);
+        $event = new LoggingEvent($level, $message, $context);
+        $this->eventDispatcher->dispatch(NeoClientEvents::NEO_LOG_MESSAGE, $event);
     }
 }

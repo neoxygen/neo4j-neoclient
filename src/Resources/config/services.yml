@@ -9,7 +9,7 @@ services:
 
   neoclient.http_client:
     class: "Neoxygen\\NeoClient\\HttpClient\\GuzzleHttpClient"
-    arguments: ["@?logger","@?event_dispatcher","@neoclient.connection_manager"]
+    arguments: ["@event_dispatcher","@neoclient.connection_manager"]
 
   logger:
     class: "Neoxygen\\NeoClient\\Logger\\LoggerManager"
@@ -29,3 +29,9 @@ services:
   neoclient.client:
     class: "Neoxygen\\NeoClient\\Client"
     arguments: ["@service_container"]
+
+  neoclient.logging_event_subscriber:
+    class: "Neoxygen\\NeoClient\\EventListener\\LoggingEventSubscriber"
+    arguments: ["@logger"]
+    tags:
+      - { name: neoclient.service_event_subscriber }
