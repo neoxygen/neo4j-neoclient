@@ -20,7 +20,7 @@ before_script:
     - mv tests/database_settings.yml.dist tests/database_settings.yml
 
 script:
-    - vendor/phpunit
+    - vendor/bin/phpunit
 
 notifications:
     email: "willemsen.christophe@gmail.com"
