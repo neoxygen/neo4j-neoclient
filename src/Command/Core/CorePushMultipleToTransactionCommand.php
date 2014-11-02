@@ -37,7 +37,7 @@ class CorePushMultipleToTransactionCommand extends AbstractCommand
 
     public function execute()
     {
-        return $this->httpClient->send(self::METHOD, $this->getPath(), $this->prepareBody(), $this->connection);
+        return $this->process(self::METHOD, $this->getPath(), $this->prepareBody(), $this->connection);
     }
 
     public function prepareBody()

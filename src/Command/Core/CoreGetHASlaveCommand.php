@@ -24,7 +24,7 @@ class CoreGetHASlaveCommand extends AbstractCommand
     public function execute()
     {
         try {
-            return $this->httpClient->send(self::METHOD, self::PATH, null, $this->connection);
+            return $this->process(self::METHOD, self::PATH, null, $this->connection);
 
         } catch (HttpException $e) {
             return false;

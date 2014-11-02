@@ -26,7 +26,7 @@ class AuthRemoveUserCommand extends AbstractCommand
 
     public function execute()
     {
-        return $this->httpClient->send(self::METHOD, self::PATH, $this->prepareBody(), $this->connection);
+        return $this->process(self::METHOD, self::PATH, $this->prepareBody(), $this->connection);
     }
 
     public function setUser($user)

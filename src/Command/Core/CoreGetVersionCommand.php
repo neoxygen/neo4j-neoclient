@@ -22,7 +22,7 @@ class CoreGetVersionCommand extends AbstractCommand
 
     public function execute()
     {
-        $data = $this->httpClient->send(self::METHOD, self::PATH, null, $this->connection);
+        $data = $this->process(self::METHOD, self::PATH, null, $this->connection);
 
         if (!is_array($data)) {
             $data = json_decode($data, true);

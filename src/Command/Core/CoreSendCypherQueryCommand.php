@@ -40,7 +40,7 @@ class CoreSendCypherQueryCommand extends AbstractCommand
 
     public function execute()
     {
-        return $this->httpClient->send(self::METHOD, self::PATH, $this->prepareBody(), $this->connection, null, $this->slaveConn);
+        return $this->process(self::METHOD, self::PATH, $this->prepareBody(), $this->connection, null, $this->slaveConn);
     }
 
     public function prepareBody()

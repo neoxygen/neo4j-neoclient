@@ -24,7 +24,7 @@ class CoreRollBackTransactionCommand extends AbstractCommand
 
     public function execute()
     {
-        return $this->httpClient->send(self::METHOD, $this->getPath(), null, $this->connection);
+        return $this->process(self::METHOD, $this->getPath(), null, $this->connection);
     }
 
     public function getPath()

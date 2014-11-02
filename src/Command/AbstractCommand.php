@@ -39,7 +39,7 @@ abstract class AbstractCommand implements CommandInterface
         return $this->connection;
     }
 
-    protected function process($method, $path, $body = null, $queryStrings = null, $conn = null)
+    protected function process($method, $path, $body = null, $conn = null, $queryStrings = null)
     {
         $request = $this->requestBuilder->buildRequest($method, $path, $body, $queryStrings, $conn);
 
