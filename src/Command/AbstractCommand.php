@@ -12,7 +12,8 @@
 
 namespace Neoxygen\NeoClient\Command;
 
-use Neoxygen\NeoClient\HttpClient\HttpClientInterface;
+use Neoxygen\NeoClient\HttpClient\HttpClientInterface,
+    Neoxygen\NeoClient\Request\RequestBuilder;
 
 abstract class AbstractCommand implements CommandInterface
 {
@@ -20,9 +21,12 @@ abstract class AbstractCommand implements CommandInterface
 
     protected $httpClient;
 
-    public function __construct(HttpClientInterface $httpClient)
+    protected $requestBuilder;
+
+    public function __construct(HttpClientInterface $httpClient, RequestBuilder $requestBuilder)
     {
         $this->httpClient = $httpClient;
+        $this->requestBuilder = $requestBuilder;
     }
 
     public function setConnection($connection)
@@ -33,5 +37,12 @@ abstract class AbstractCommand implements CommandInterface
     public function getConnection()
     {
         return $this->connection;
+    }
+
+    protected function process($method, $path, $body = null, $queryStrings = null, $conn = null)
+    {
+        $request = $this->requestBuilder->buildRequest($method, $path, $body, $queryStrings, $conn);
+
+        return $this->httpClient->sendRequest($request);
     }
 }

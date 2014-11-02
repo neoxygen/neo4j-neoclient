@@ -25,6 +25,7 @@ class NeoClientExtensionsCompilerPass implements CompilerPassInterface
         $extensions = $container->findTaggedServiceIds('neoclient.extension_class');
         $commandManager = $container->getDefinition('neoclient.command_manager');
         $httpClient = $container->getDefinition('neoclient.http_client');
+        $requestBuilder = $container->getDefinition('neoclient.request_builder');
         $extManager = $container->getDefinition('neoclient.extension_manager');
 
         foreach ($extensions as $id => $params) {
@@ -44,6 +45,7 @@ class NeoClientExtensionsCompilerPass implements CompilerPassInterface
                 $def = new Definition();
                 $def->setClass($props['class']);
                 $def->addArgument($httpClient);
+                $def->addArgument($requestBuilder);
                 $container->setDefinition(sprintf('neoclient.command.%s', $alias), $def);
                 $commandManager->addMethodCall(
                     'registerCommand',

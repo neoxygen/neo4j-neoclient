@@ -12,25 +12,146 @@
 
 namespace Neoxygen\NeoClient\Request;
 
+use Neoxygen\NeoClient\Connection;
+
 class Request implements RequestInterface
 {
     private $method;
+
+    private $path;
 
     private $url;
 
     private $body;
 
+    private $queryStrings;
+
     private $headers;
 
     private $options;
 
-    public function __construct($method = null, $url = null, $body = null, array $headers = array(), array $options = array())
+    private $connection;
+
+    private $timeout;
+
+    private $authMode;
+
+    private $user;
+
+    private $password;
+
+    private $stream;
+
+    /**
+     * @return mixed
+     */
+    public function getPath()
     {
-        $this->method = $method;
-        $this->url = $url;
-        $this->body = $body;
-        $this->headers = $headers;
-        $this->options = $options;
+        return $this->path;
+    }
+
+    /**
+     * @param mixed $path
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConnection()
+    {
+        return $this->connection;
+    }
+
+    /**
+     * @param mixed $connection
+     */
+    public function setConnection($connection)
+    {
+        $this->connection = $connection;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTimeout()
+    {
+        return $this->timeout;
+    }
+
+    /**
+     * @param mixed $timeout
+     */
+    public function setTimeout($timeout)
+    {
+        $this->timeout = $timeout;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAuthMode()
+    {
+        return $this->authMode;
+    }
+
+    /**
+     * @param mixed $authMode
+     */
+    public function setAuthMode($authMode)
+    {
+        $this->authMode = $authMode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param mixed $user
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param mixed $password
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStream()
+    {
+        return $this->stream;
+    }
+
+    /**
+     * @param mixed $stream
+     */
+    public function setStream($stream)
+    {
+        $this->stream = $stream;
     }
 
     public function getMethod()
@@ -86,5 +207,41 @@ class Request implements RequestInterface
     public function setOption($key, $value)
     {
         $this->options[$key] = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQueryStrings()
+    {
+        return $this->queryStrings;
+    }
+
+    /**
+     * @param mixed $queryStrings
+     */
+    public function setQueryStrings($queryStrings)
+    {
+        $this->queryStrings = $queryStrings;
+    }
+
+    public function hasBody()
+    {
+        return null !== $this->body;
+    }
+
+    public function isStream()
+    {
+        return null !== $this->stream;
+    }
+
+    public function hasQueryStrings()
+    {
+        return null !== $this->queryStrings;
+    }
+
+    public function isSecured()
+    {
+        return null !== $this->authMode;
     }
 }

@@ -12,16 +12,14 @@
 
 namespace Neoxygen\NeoClient\HttpClient;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use Neoxygen\NeoClient\Connection\ConnectionManager;
-use Neoxygen\NeoClient\Request\RequestInterface,
+use GuzzleHttp\Client,
+    GuzzleHttp\Exception\RequestException,
+    GuzzleHttp\Message\Response;
+use Neoxygen\NeoClient\Request\Request,
     Neoxygen\NeoClient\NeoClientEvents,
     Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent,
-    Neoxygen\NeoClient\Event\LoggingEvent,
-    Neoxygen\NeoClient\Exception\HttpException,
-    Neoxygen\NeoClient\Formatter\ResponseFormatterInterface;
-use Psr\Log\LoggerInterface;
+    Neoxygen\NeoClient\Event\PostRequestSendEvent,
+    Neoxygen\NeoClient\Event\HttpExceptionEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class GuzzleHttpClient implements HttpClientInterface
@@ -30,83 +28,45 @@ class GuzzleHttpClient implements HttpClientInterface
 
     private $eventDispatcher;
 
-    private $connectionManager;
-
-    private $slavesUsed = [];
-
-    public function __construct(
-        EventDispatcherInterface $eventDispatcher,
-        ConnectionManager $connectionManager)
+    public function __construct(EventDispatcherInterface $eventDispatcher)
     {
         $this->client = new Client();
         $this->eventDispatcher = $eventDispatcher;
-        $this->connectionManager = $connectionManager;
     }
 
-    public function send($method, $path, $body = null, $connectionAlias = null, $queryString = null, $slaveConn = false)
+    public function sendRequest(Request $request)
     {
-        $conn = $this->connectionManager->getConnection($connectionAlias);
-        $url = $conn->getBaseUrl() . $path;
-        $defaults = array(
-            'body' => $body,
-            'timeout' => 1
-        );
-        if ($queryString) {
-            $defaults['query'] = $queryString;
+        $this->dispatchPreSend($request);
+        $defaults = [];
+        if ($request->hasBody()){
+            $defaults['body'] = $request->getBody();
         }
-        $httpRequest = $this->client->createRequest($method, $url, $defaults);
-        if ($conn->isAuth()) {
-            $httpRequest->setHeader('Authorization', 'Basic '.base64_encode($conn->getAuthUser().':'.$conn->getAuthPassword()));
+        if ($request->hasQueryStrings()) {
+            $defaults['query'] = $request->getQueryStrings();
         }
+        if ($request->isSecured()) {
+            $defaults['auth'] = [$request->getUser(), $request->getPassword()];
+        }
+        $defaults['timeout'] = null !== $request->getTimeout() ? $request->getTimeout() : 1;
+
+        $httpRequest = $this->client->createRequest($request->getMethod(), $request->getUrl(), $defaults);
+        $httpRequest->setHeader('Content-Type', 'application/json');
+        $httpRequest->setHeader('Accept', 'application/json');
+
 
         try {
-            $this->logMessage('debug',sprintf('Sending query to the "%s" connection', $conn->getAlias()));
             $response = $this->client->send($httpRequest);
-            $this->slavesUsed = [];
-
+            $this->dispatchPostRequestSend($request, $response);
             return $this->getResponse($response);
         } catch (RequestException $e) {
-            if ($slaveConn === false) {
-            }
-                if ($this->connectionManager->hasFallbackConnection($conn->getAlias())) {
-                    $this->logMessage('alert', sprintf('Connection "%s" unreachable, using fallback connection', $conn->getAlias()));
-                    $fallback = $this->connectionManager->getFallbackConnection($conn->getAlias());
-
-                    return $this->send($method, $path, $body, $fallback->getAlias(), $queryString);
-            } elseif ($slaveConn) {
-                    $this->slavesUsed[] = $connectionAlias;
-                    if ($this->connectionManager->hasNextSlave($this->slavesUsed)) {
-                            $nextSlave = $this->connectionManager->getNextSlave($this->slavesUsed);
-                            $this->logMessage(
-                                'alert',
-                                sprintf(
-                                    'Slave Connection "%s" unreacheable, auto fallback to slave "%s"',
-                                    $conn->getAlias(),
-                                    $nextSlave)
-                                );
-
-                            return $this->send($method, $path, $body, $nextSlave, $queryString, $slaveConn);
-                    }
-                } else {
-                    $message = (string) $e->getRequest() ."\n";
-                    if ($e->hasResponse()) {
-                        $message .= (string) $e->getResponse() ."\n";
-                    }
-                    $this->logMessage('emergency', $message);
-                    throw new HttpException($message, $e->getCode());
-                }
+            $this->dispatchHttpException($request, $e);
         }
+
 
     }
 
     private function getResponse($response)
     {
-        $this->logMessage(
-            'debug',
-            sprintf('Http Response received'),
-            array('response' => (string) $response->getBody())
-        );
-
         if ($response->getBody()) {
                 $resp = (string) $response->getBody();
                 $decoded = \GuzzleHttp\json_decode($resp, true);
@@ -117,9 +77,21 @@ class GuzzleHttpClient implements HttpClientInterface
         return null;
     }
 
-    private function logMessage($level = 'DEBUG', $message, $context = null)
+    private function dispatchPreSend(Request $request)
     {
-        $event = new LoggingEvent($level, $message, $context);
-        $this->eventDispatcher->dispatch(NeoClientEvents::NEO_LOG_MESSAGE, $event);
+        $event = new HttpClientPreSendRequestEvent($request);
+        $this->eventDispatcher->dispatch(NeoClientEvents::NEO_PRE_REQUEST_SEND, $event);
+    }
+
+    private function dispatchPostRequestSend(Request $request, Response $response)
+    {
+        $event = new PostRequestSendEvent($request, $response);
+        $this->eventDispatcher->dispatch(NeoClientEvents::NEO_POST_REQUEST_SEND, $event);
+    }
+
+    private function dispatchHttpException(Request $request, RequestException $exception)
+    {
+        $event = new HttpExceptionEvent($request, $exception);
+        $this->eventDispatcher->dispatch(NeoClientEvents::NEO_HTTP_EXCEPTION, $event);
     }
 }
