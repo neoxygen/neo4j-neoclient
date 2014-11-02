@@ -3,6 +3,7 @@
 namespace Neoxygen\NeoClient\Extension;
 
 use Neoxygen\NeoClient\Connection\Connection;
+use Neoxygen\NeoClient\Request\Response;
 use Neoxygen\NeoClient\Extension\NeoClientExtensionInterface,
     Neoxygen\NeoClient\Command\CommandManager,
     Neoxygen\NeoClient\Formatter\ResponseFormatterManager,
@@ -11,6 +12,11 @@ use Neoxygen\NeoClient\Extension\NeoClientExtensionInterface,
 
 abstract class AbstractExtension implements NeoClientExtensionInterface
 {
+
+    const WRITE_QUERY = 'WRITE';
+
+    const READ_QUERY = 'READ';
+
     protected $commandManager;
 
     protected $connectionManager;
@@ -64,14 +70,16 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
      * @return string|array|\Neoxygen\NeoClient\Formatter\Response
      * @throws Neo4jException
      */
-    public function handleHttpResponse($response)
+    public function handleHttpResponse(Response $response)
     {
-        $this->checkResponseErrors($response);
+        $this->checkResponseErrors($response->getBody());
         if ($this->autoFormatResponse) {
-            return $this->formatResponse($response);
-        } else {
-            return $response;
+            $formatted = $this->formatResponse($response->getBody());
+            $response->setResult($formatted->getResult());
+            $response->setRows($formatted->geRows());
         }
+
+        return $response;
     }
 
     public function checkResponseErrors($response)

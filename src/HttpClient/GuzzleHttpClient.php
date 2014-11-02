@@ -14,8 +14,9 @@ namespace Neoxygen\NeoClient\HttpClient;
 
 use GuzzleHttp\Client,
     GuzzleHttp\Exception\RequestException,
-    GuzzleHttp\Message\Response;
+    GuzzleHttp\Message\Response as HttpResponse;
 use Neoxygen\NeoClient\Request\Request,
+    Neoxygen\NeoClient\Request\Response,
     Neoxygen\NeoClient\NeoClientEvents,
     Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent,
     Neoxygen\NeoClient\Event\PostRequestSendEvent,
@@ -65,16 +66,17 @@ class GuzzleHttpClient implements HttpClientInterface
 
     }
 
-    private function getResponse($response)
+    private function getResponse(HttpResponse $httpResponse)
     {
-        if ($response->getBody()) {
-                $resp = (string) $response->getBody();
-                $decoded = \GuzzleHttp\json_decode($resp, true);
+        $response = new Response();
 
-                return $decoded;
+        if ($httpResponse->getBody()) {
+            $resp = (string) $httpResponse->getBody();
+            $decoded = \GuzzleHttp\json_decode($resp, true);
+            $response->setBody($decoded);
             }
 
-        return null;
+        return $response;
     }
 
     private function dispatchPreSend(Request $request)
@@ -83,7 +85,7 @@ class GuzzleHttpClient implements HttpClientInterface
         $this->eventDispatcher->dispatch(NeoClientEvents::NEO_PRE_REQUEST_SEND, $event);
     }
 
-    private function dispatchPostRequestSend(Request $request, Response $response)
+    private function dispatchPostRequestSend(Request $request, HttpResponse $response)
     {
         $event = new PostRequestSendEvent($request, $response);
         $this->eventDispatcher->dispatch(NeoClientEvents::NEO_POST_REQUEST_SEND, $event);

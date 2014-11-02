@@ -13,7 +13,7 @@
 namespace Neoxygen\NeoClient;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Neoxygen\NeoClient\Formatter\Response;
+use Neoxygen\NeoClient\Request\Response;
 
 /**
  * @method getRoot($conn = null)
@@ -77,57 +77,6 @@ class Client
         return $this->serviceContainer->get('neoclient.command_manager');
     }
 
-    public function __call($method, $attributes)
-    {
-        $extManager = $this->getServiceContainer()->get('neoclient.extension_manager');
-
-        $response = $extManager->execute($method, $attributes);
-
-        $this->lastResponse = $response;
-
-        if ($this->lastResponse instanceof Response){
-            if (!$response->containsResults() && !$response->hasRows()){
-                return $response->getResponse();
-            } elseif ($response->containsResults()){
-                return $response->getResult();
-            } elseif ($response->hasRows()){
-                return $response->getRows();
-            }
-        }
-
-        return $response;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getResponse()
-    {
-        if ($this->lastResponse instanceof Response) {
-            return $this->lastResponse->getResponse();
-        } else {
-            return $this->lastResponse;
-        }
-    }
-
-    public function getResult()
-    {
-        if ($this->lastResponse instanceof Response) {
-            return $this->lastResponse->getResult();
-        } else {
-            return $this->lastResponse;
-        }
-    }
-
-    public function getRows()
-    {
-        if ($this->lastResponse instanceof Response) {
-            return $this->lastResponse->geRows();
-        } else {
-            return $this->lastResponse;
-        }
-    }
-
     /**
      * @return ContainerInterface
      */
@@ -136,12 +85,43 @@ class Client
         return $this->serviceContainer;
     }
 
-    public function handleResponse(Response $response)
+    /**
+     * @param $method
+     * @param $attributes
+     * @return \Neoxygen\NeoClient\Request\Response
+     */
+    public function __call($method, $attributes)
     {
-        if ($response->containsResults()) {
-            return $response->getResult();
-        } else {
-            return $response->getResponse();
-        }
+        $extManager = $this->getServiceContainer()->get('neoclient.extension_manager');
+
+        $response = $extManager->execute($method, $attributes);
+
+        $this->lastResponse = $response;
+
+        return $response;
+    }
+
+    /**
+     * @return \Neoxygen\NeoClient\Request\Response
+     */
+    public function getResponse()
+    {
+        return $this->lastResponse;
+    }
+
+    /**
+     * @return \Neoxygen\NeoClient\Formatter\Result
+     */
+    public function getResult()
+    {
+        return $this->lastResponse->getResult();
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getRows()
+    {
+        return $this->lastResponse->getRows();
     }
 }

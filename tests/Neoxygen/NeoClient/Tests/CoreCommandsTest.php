@@ -4,79 +4,84 @@ namespace Neoxygen\NeoClient\Tests;
 
 use Neoxygen\NeoClient\ClientBuilder;
 
-class CoreCommandsTest extends NeoClientTestCase
+/**
+ * @group functional
+ */
+class CoreCommandsTest extends \PHPUnit_Framework_TestCase
 {
-    public function testPingCommand()
+    /* var \Neoxygen\NeoClient\Client */
+    protected $client;
+
+    public function setUp()
     {
-        $config = $this->getDefaultConfig();
         $client = ClientBuilder::create()
-            ->loadConfigurationFile($config)
+            ->addDefaultLocalConnection()
             ->build();
-        $this->assertTrue($client->ping());
+
+        $this->client = $client;
     }
 
-    public function testGetLabelsCommand()
+    public function testGetRoot()
     {
-        $config = $this->getDefaultConfig();
-        $client = ClientBuilder::create()
-            ->loadConfigurationFile($config)
-            ->build();
-        $con = $client->getConnection();
+        $response = $this->client->getRoot();
+        $root = $response->getBody();
 
-        $q = 'MERGE (n:TestLabel) RETURN n';
-        $client->sendCypherQuery($q);
-        $labels = $client->getLabels();
-
-        $this->assertContains('TestLabel', $labels);
+        $this->assertArrayHasKey('data', $root);
+        $this->assertArrayHasKey('management', $root);
     }
 
-    public function testGetVersionCommand()
+    public function testGetLabels()
     {
-        $sc = $this->build();
-        $this->assertContains('2.1', $sc->getNeo4jVersion());
+        $response = $this->client->getLabels();
+        $labels = $response->getBody();
+
+        $this->assertInternalType('array', $labels);
     }
 
-    public function testOpenTransactionCommand()
+    public function testCreateAndListIndex()
     {
-        $sc = $this->build();
-        $tx = $sc->openTransaction();
+        $this->client->createIndex('User', 'email');
+        $response = $this->client->listIndex('User');
+        $indexes = $response->getBody();
 
-        $this->assertArrayHasKey('commit', $tx);
-        $this->assertArrayHasKey('transaction', $tx);
+        $this->assertContains('email', $indexes);
     }
 
-    public function testRollBackTransaction()
+    public function testDropIndex()
     {
-        $sc = $this->build();
-        $transaction = $sc->openTransaction();
-        $expl = explode('/', $transaction['commit']);
-        $tx_id = $expl[count($expl)-2];
-
-        $response = $sc->rollbackTransaction($tx_id);
-
-        $this->assertEmpty($response['errors']);
+        $this->client->createIndex('Drop', 'user');
+        $this->assertTrue($this->client->isIndexed('Drop', 'user'));
+        $this->client->dropIndex('Drop', 'user');
+        $this->assertFalse($this->client->isIndexed('Drop', 'user'));
     }
 
-    public function testPushToTransaction()
+    public function testListIndexes()
     {
-        $sc = $this->build();
-        $transaction = $sc->openTransaction();
-        $expl = explode('/', $transaction['commit']);
-        $tx_id = $expl[count($expl)-2];
+        $this->client->createIndex('List1', 'property');
+        $this->client->createIndex('List2', 'property');
+        $response = $this->client->listIndexes();
+        $indexes = $response->getBody();
 
-        $q = 'MATCH (n) RETURN count(n)';
-        $response = $sc->pushToTransaction($tx_id, $q);
-        $this->assertTrue($response->containsResults());
+        $this->assertArrayHasKey('List1', $indexes);
+        $this->assertArrayHasKey('List2', $indexes);
     }
 
-    public function testSendCypher()
+    public function testCreateUniqueConstraint()
     {
-        $client = $this->build();
-        $q = 'MATCH (n) RETURN n';
-        $resultFormat = array('row', 'graph');
-        $response = $client->sendCypherQuery($q, array(), null, $resultFormat);
-        $result = $response->getResponse();
-        $this->assertArrayHasKey('graph', $result['results'][0]['data'][0]);
+        $this->client->createUniqueConstraint('Label', 'uniqueProperty');
+        $constraints = $this->client->getUniqueConstraints()->getBody();
+
+        $this->assertArrayHasKey('Label', $constraints);
+        $this->assertContains('uniqueProperty', $constraints['Label']);
     }
+
+    public function testDropUniqueConstraint()
+    {
+        $this->client->createUniqueConstraint('ToDrop', 'username');
+        $this->assertArrayHasKey('ToDrop', $this->client->getUniqueConstraints()->getBody());
+        $this->client->dropUniqueConstraint('ToDrop', 'username');
+        $this->assertArrayNotHasKey('ToDrop', $this->client->getUniqueConstraints()->getBody());
+    }
+
+
 }
-

@@ -103,4 +103,9 @@ class Response
     {
         return null !== $this->rows;
     }
+
+    public function getBody()
+    {
+        return $this->rawResponse;
+    }
 }

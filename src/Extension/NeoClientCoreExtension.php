@@ -13,33 +13,14 @@
 namespace Neoxygen\NeoClient\Extension;
 
 use Symfony\Component\Yaml\Yaml;
-use Neoxygen\NeoClient\Transaction\Transaction;
+use Neoxygen\NeoClient\Transaction\Transaction,
+    Neoxygen\NeoClient\Request\Response;
 
 class NeoClientCoreExtension extends AbstractExtension
 {
     public static function getAvailableCommands()
     {
         return Yaml::parse(__DIR__.'/../Resources/extensions/core_commands.yml');
-    }
-
-    /**
-     * Convenience method that invoke the sendCypherQueryCommand
-     * and passes given query and parameters arguments
-     *
-     * @param  string      $query              The query to send
-     * @param  array       $parameters         Map of query parameters
-     * @param  string|null $conn               The alias of the connection to use
-     * @param  array       $resultDataContents
-     * @return mixed
-     */
-    public function sendCypherQuery($query, array $parameters = array(), $conn = null, $slaveConn = false)
-    {
-        $command = $this->invoke('neo.send_cypher_query', $conn);
-
-        $httpResponse = $command->setArguments($query, $parameters, $this->resultDataContent, $slaveConn)
-            ->execute();
-
-        return $this->handleHttpResponse($httpResponse);
     }
 
     /**
@@ -57,6 +38,20 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
+     * Convenience method that invoke the GetVersionCommand
+     *
+     * @param  string|null $conn The alias of the connection to use
+     * @return mixed
+     */
+    public function getNeo4jVersion($conn = null)
+    {
+        $command = $this->invoke('neo.get_neo4j_version', $conn);
+        $httpResponse = $command->execute();
+
+        return $this->handleHttpResponse($httpResponse);
+    }
+
+    /**
      * Convenience method for pinging the Connection
      *
      * @param  string|null $conn The alias of the connection to use
@@ -65,8 +60,27 @@ class NeoClientCoreExtension extends AbstractExtension
     public function ping($conn = null)
     {
         $command = $this->invoke('neo.ping_command', $conn);
-
         $httpResponse = $command->execute();
+
+        return $this->handleHttpResponse($httpResponse);
+    }
+
+    /**
+     * Convenience method that invoke the sendCypherQueryCommand
+     * and passes given query and parameters arguments
+     *
+     * @param  string      $query              The query to send
+     * @param  array       $parameters         Map of query parameters
+     * @param  string|null $conn               The alias of the connection to use
+     * @param  string|null $queryMode           The mode of the query, could be WRITE or READ
+     * @return mixed
+     */
+    public function sendCypherQuery($query, array $parameters = array(), $conn = null, $queryMode = null)
+    {
+        $command = $this->invoke('neo.send_cypher_query', $conn);
+
+        $httpResponse = $command->setArguments($query, $parameters, $this->resultDataContent, $queryMode)
+            ->execute();
 
         return $this->handleHttpResponse($httpResponse);
     }
@@ -80,11 +94,9 @@ class NeoClientCoreExtension extends AbstractExtension
     public function getLabels($conn = null)
     {
         $command = $this->invoke('neo.get_labels_command', $conn);
-
         $httpResponse = $command->execute();
-        $responseObject = $this->handleHttpResponse($httpResponse);
 
-        return $responseObject->getResponse();
+        return $this->handleHttpResponse($httpResponse);
 
     }
 
@@ -95,28 +107,6 @@ class NeoClientCoreExtension extends AbstractExtension
         SET old :'.$newLabel.';';
 
         return $this->sendCypherQuery($q);
-    }
-
-    /**
-     * Returns the registered constraints
-     *
-     * @param  string|null $conn
-     * @return mixed
-     */
-    public function getUniqueConstraints($conn = null)
-    {
-        $command = $this->invoke('neo.get_constraints_command', $conn);
-
-        $httpResponse = $command->execute();
-        $response = $this->handleHttpResponse($httpResponse);
-        $constraints = [];
-        foreach ($response as $constraint) {
-            foreach ($constraint['property_keys'] as $key) {
-                $constraints[$constraint['label']][] = $key;
-            }
-        }
-
-        return $constraints;
     }
 
     /**
@@ -144,6 +134,31 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
+     * Returns the list of indexed properties for a given Label
+     *
+     * @param  string      $label
+     * @param  string|null $conn
+     * @return array
+     */
+    public function listIndex($label, $conn = null)
+    {
+        $command = $this->invoke('neo.list_index_command', $conn);
+        $command->setArguments($label);
+        $httpResponse = $command->execute();
+
+        $response = $this->handleHttpResponse($httpResponse);
+        $propertiesIndexed = [];
+        foreach ($response->getBody() as $index) {
+            foreach ($index['property_keys'] as $key) {
+                $propertiesIndexed[] = $key;
+            }
+        }
+        $response->setBody($propertiesIndexed);
+
+        return $response;
+    }
+
+    /**
      * Drops an index on a label
      *
      * @param  string $label
@@ -168,45 +183,25 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Returns the list of indexed properties for a given Label
-     *
-     * @param  string      $label
-     * @param  string|null $conn
-     * @return array
-     */
-    public function listIndex($label, $conn = null)
-    {
-        $command = $this->invoke('neo.list_index_command', $conn);
-        $command->setArguments($label);
-        $httpResponse = $command->execute();
-        $response = $this->handleHttpResponse($httpResponse)->getResponse();
-        $propertiesIndexed = [];
-        foreach ($response as $index) {
-            foreach ($index['property_keys'] as $key) {
-                $propertiesIndexed[] = $key;
-            }
-        }
-
-        return $propertiesIndexed;
-    }
-
-    /**
      * @param  array       $labels
      * @param  string|null $conn
-     * @return array
+     * @return Response
      */
     public function listIndexes(array $labels = array(), $conn = null)
     {
         if (empty($labels)) {
-            $labels = $this->getLabels($conn);
+            $labels = $this->getLabels($conn)->getBody();
         }
         $indexes = [];
         foreach ($labels as $label) {
-            $indexs = $this->listIndex($label, $conn);
+            $indexs = $this->listIndex($label, $conn)->getBody();
             $indexes[$label] = $indexs;
         }
 
-        return $indexes;
+        $response = new Response();
+        $response->setBody($indexes);
+
+        return $response;
     }
 
     /**
@@ -219,7 +214,7 @@ class NeoClientCoreExtension extends AbstractExtension
      */
     public function isIndexed($label, $propertyKey, $conn = null)
     {
-        $indexes = $this->listIndex($label, $conn);
+        $indexes = $this->listIndex($label, $conn)->getBody();
         if (in_array($propertyKey, $indexes)) {
             return true;
         }
@@ -228,184 +223,27 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Convenience method that invoke the GetVersionCommand
+     * Returns the registered constraints
      *
-     * @param  string|null $conn The alias of the connection to use
+     * @param  string|null $conn
      * @return mixed
      */
-    public function getNeo4jVersion($conn = null)
+    public function getUniqueConstraints($conn = null)
     {
-        $command = $this->invoke('neo.get_neo4j_version', $conn);
+        $command = $this->invoke('neo.get_constraints_command', $conn);
         $httpResponse = $command->execute();
 
-        return $this->handleHttpResponse($httpResponse);
-    }
+        $responseO = $this->handleHttpResponse($httpResponse);
+        $response = $responseO->getBody();
+        $constraints = [];
+        foreach ($response as $constraint) {
+            foreach ($constraint['property_keys'] as $key) {
+                $constraints[$constraint['label']][] = $key;
+            }
+        }
+        $responseO->setBody($constraints);
 
-    /**
-     * Convenience method that invoke the OpenTransactionCommand
-     *
-     * @param  string|null $conn The alias of the connection to use
-     * @return mixed
-     */
-    public function openTransaction($conn = null)
-    {
-        $command = $this->invoke('neo.open_transaction', $conn);
-        $httpResponse = $command->execute();
-
-        $response = $this->handleHttpResponse($httpResponse);
-
-        return $response->getResponse();
-    }
-
-    /**
-     * Creates a new Transaction Handler
-     *
-     * @param  string|null $conn The connection alias
-     * @return Transaction
-     */
-    public function createTransaction($conn = null)
-    {
-        $transaction = new Transaction($conn, $this);
-
-        return $transaction;
-    }
-
-    /**
-     * Convenience method that invoke the RollBackTransactionCommand
-     *
-     * @param  int         $id   The id of the transaction
-     * @param  string|null $conn The alias of the connection to use
-     * @return mixed
-     */
-    public function rollBackTransaction($id, $conn = null)
-    {
-        return $this->invoke('neo.rollback_transaction', $conn)
-            ->setTransactionId($id)
-            ->execute();
-    }
-
-    /**
-     * Convenience method that invoke the PushToTransactionCommand
-     * and passes the query and parameters as arguments
-     *
-     * @param  int         $transactionId The transaction id
-     * @param  string      $query         The query to send
-     * @param  array       $parameters    Parameters map of the query
-     * @param  string|null $conn          The alias of the connection to use
-     * @return mixed
-     */
-    public function pushToTransaction($transactionId, $query, array $parameters = array(), $conn = null)
-    {
-        $httpResponse = $this->invoke('neo.push_to_transaction', $conn)
-            ->setArguments($transactionId, $query, $parameters)
-            ->execute();
-
-        return $this->handleHttpResponse($httpResponse);
-    }
-
-    public function pushMultipleToTransaction($transactionId, array $statements, $conn = null)
-    {
-        return $this->invoke('neo.push_multiple_to_transaction', $conn)
-            ->setArguments($transactionId, $statements, $this->resultDataContent)
-            ->execute();
-    }
-
-    /**
-     * Convenience method that commit the transaction
-     * and passes the optional query and parameters as arguments
-     *
-     * @param  int         $transactionId The transaction id
-     * @param  string|null $query         The query to send
-     * @param  array       $parameters    Parameters map of the query
-     * @param  string|null $conn          The alias of the connection to use
-     * @return mixed
-     */
-    public function commitTransaction($transactionId, $query = null, array $parameters = array(), $conn = null)
-    {
-        return $this->invoke('neo.commit_transaction', $conn)
-            ->setArguments($transactionId, $query, $parameters)
-            ->execute();
-    }
-
-    /**
-     * @param  string|null $connectionAlias
-     * @return mixed
-     */
-    public function listUsers($connectionAlias = null)
-    {
-        return $this->invoke('neo.list_users', $connectionAlias)
-            ->execute();
-    }
-
-    /**
-     * @param  string      $user
-     * @param  string      $password
-     * @param  bool        $readOnly
-     * @param  string|null $connectionAlias
-     * @return mixed
-     */
-    public function addUser($user, $password, $readOnly = false, $connectionAlias = null)
-    {
-        return $this->invoke('neo.add_user', $connectionAlias)
-            ->setReadOnly($readOnly)
-            ->setUser($user)
-            ->setPassword($password)
-            ->execute();
-    }
-
-    /**
-     * @param  string      $user
-     * @param  string      $password
-     * @param  string|null $connectionAlias
-     * @return mixed
-     */
-    public function removeUser($user, $password, $connectionAlias = null)
-    {
-        return $this->invoke('neo.remove_user', $connectionAlias)
-            ->setUser($user)
-            ->setPassword($password)
-            ->execute();
-    }
-
-    /**
-     * @param  string|null $uuid
-     * @param  int|null    $limit
-     * @param  int|null    $moduleId
-     * @param  string|null $connectionAlias
-     * @return mixed
-     */
-    public function getChangeFeed($uuid = null, $limit = null, $moduleId = null, $connectionAlias = null)
-    {
-        return $this->invoke('neo.changefeed', $connectionAlias)
-            ->setUuid($uuid)
-            ->setLimit($limit)
-            ->setModuleId($moduleId)
-            ->execute();
-    }
-
-    /**
-     * Convenience method for working with replication
-     * Sends a read only query
-     *
-     * @param  string $query
-     * @param  array  $parameters
-     * @return mixed
-     */
-    public function sendReadQuery($query, array $parameters = array())
-    {
-        return $this->sendCypherQuery($query, $parameters, $this->getReadConnection()->getAlias(), true);
-    }
-
-    /**
-     * Convenience method for working with replication
-     *
-     * @param  string $query
-     * @param  array  $parameters
-     * @return mixed
-     */
-    public function sendWriteQuery($query, array $parameters = array())
-    {
-        return $this->sendCypherQuery($query, $parameters, $this->getWriteConnection()->getAlias());
+        return $responseO;
     }
 
     /**
@@ -457,6 +295,224 @@ class NeoClientCoreExtension extends AbstractExtension
 
         return true;
     }
+
+    /**
+     * Creates a new Transaction Handler
+     *
+     * @param  string|null $conn The connection alias
+     * @return Transaction
+     */
+    public function createTransaction($conn = null)
+    {
+        $transaction = new Transaction($conn, $this);
+
+        return $transaction;
+    }
+
+    /**
+     * Convenience method that invoke the OpenTransactionCommand
+     *
+     * @param  string|null $conn The alias of the connection to use
+     * @return mixed
+     */
+    public function openTransaction($conn = null)
+    {
+        $command = $this->invoke('neo.open_transaction', $conn);
+        $httpResponse = $command->execute();
+
+        return $this->handleHttpResponse($httpResponse);
+    }
+
+    /**
+     * Convenience method that invoke the RollBackTransactionCommand
+     *
+     * @param  int         $id   The id of the transaction
+     * @param  string|null $conn The alias of the connection to use
+     * @return mixed
+     */
+    public function rollBackTransaction($id, $conn = null)
+    {
+        $response = $this->invoke('neo.rollback_transaction', $conn)
+            ->setTransactionId($id)
+            ->execute();
+
+        return $this->handleHttpResponse($response);
+    }
+
+    /**
+     * Convenience method that invoke the PushToTransactionCommand
+     * and passes the query and parameters as arguments
+     *
+     * @param  int         $transactionId The transaction id
+     * @param  string      $query         The query to send
+     * @param  array       $parameters    Parameters map of the query
+     * @param  string|null $conn          The alias of the connection to use
+     * @return mixed
+     */
+    public function pushToTransaction($transactionId, $query, array $parameters = array(), $conn = null)
+    {
+        $httpResponse = $this->invoke('neo.push_to_transaction', $conn)
+            ->setArguments($transactionId, $query, $parameters)
+            ->execute();
+
+        return $this->handleHttpResponse($httpResponse);
+    }
+
+    public function pushMultipleToTransaction($transactionId, array $statements, $conn = null)
+    {
+        $response = $this->invoke('neo.push_multiple_to_transaction', $conn)
+            ->setArguments($transactionId, $statements, $this->resultDataContent)
+            ->execute();
+
+        return $this->handleHttpResponse($response);
+    }
+
+    /**
+     * Convenience method that commit the transaction
+     * and passes the optional query and parameters as arguments
+     *
+     * @param  int         $transactionId The transaction id
+     * @param  string|null $query         The query to send
+     * @param  array       $parameters    Parameters map of the query
+     * @param  string|null $conn          The alias of the connection to use
+     * @return mixed
+     */
+    public function commitTransaction($transactionId, $query = null, array $parameters = array(), $conn = null)
+    {
+        $response = $this->invoke('neo.commit_transaction', $conn)
+            ->setArguments($transactionId, $query, $parameters)
+            ->execute();
+
+        return $this->handleHttpResponse($response);
+    }
+
+    /**
+     * @param  string|null $connectionAlias
+     * @return mixed
+     */
+    public function listUsers($connectionAlias = null)
+    {
+        $response = $this->invoke('neo.list_users', $connectionAlias)
+            ->execute();
+
+        return $this->handleHttpResponse($response);
+    }
+
+    /**
+     * @param  string      $user
+     * @param  string      $password
+     * @param  bool        $readOnly
+     * @param  string|null $connectionAlias
+     * @return mixed
+     */
+    public function addUser($user, $password, $readOnly = false, $connectionAlias = null)
+    {
+        $response = $this->invoke('neo.add_user', $connectionAlias)
+            ->setReadOnly($readOnly)
+            ->setUser($user)
+            ->setPassword($password)
+            ->execute();
+
+        return $this->handleHttpResponse($response);
+    }
+
+    /**
+     * @param  string      $user
+     * @param  string      $password
+     * @param  string|null $connectionAlias
+     * @return mixed
+     */
+    public function removeUser($user, $password, $connectionAlias = null)
+    {
+        $response = $this->invoke('neo.remove_user', $connectionAlias)
+            ->setUser($user)
+            ->setPassword($password)
+            ->execute();
+
+        return $this->handleHttpResponse($response);
+    }
+
+    /**
+     * Convenience method for working with replication
+     * Sends a read only query
+     *
+     * @param  string $query
+     * @param  array  $parameters
+     * @return mixed
+     */
+    public function sendReadQuery($query, array $parameters = array())
+    {
+        return $this->sendCypherQuery($query, $parameters, $this->getReadConnection()->getAlias(), true);
+    }
+
+    /**
+     * Convenience method for working with replication
+     *
+     * @param  string $query
+     * @param  array  $parameters
+     * @return mixed
+     */
+    public function sendWriteQuery($query, array $parameters = array())
+    {
+        return $this->sendCypherQuery($query, $parameters, $this->getWriteConnection()->getAlias());
+    }
+
+    /**
+     * Get the connection alias of the Master Connection
+     *
+     * @return string
+     */
+    public function getWriteConnectionAlias()
+    {
+        return $this->getWriteConnection()->getAlias();
+    }
+
+    /**
+     * Get the connection alias of the first Slave connection
+     *
+     * @return string
+     */
+    public function getReadConnectionAlias()
+    {
+        return $this->getReadConnection()->getAlias();
+    }
+
+    /**
+     * @param  string|null $conn
+     * @return mixed
+     */
+    public function checkHAMaster($conn = null)
+    {
+        $response = $this->invoke('neo.core_get_ha_master', $conn)
+            ->execute();
+
+        return $this->handleHttpResponse($response);
+    }
+
+    /**
+     * @param  string|null $conn
+     * @return mixed
+     */
+    public function checkHASlave($conn = null)
+    {
+        $response = $this->invoke('neo.core_get_ha_slave', $conn)
+            ->execute();
+
+        return $this->handleHttpResponse($response);
+    }
+
+    /**
+     * @param  string|null $conn
+     * @return mixed
+     */
+    public function checkHAAvailable($conn = null)
+    {
+        $response = $this->invoke('neo.core_get_ha_available', $conn)
+            ->execute();
+
+        return $this->handleHttpResponse($response);
+    }
+
 
     /**
      * Retrieve paths between two nodes
@@ -566,63 +622,7 @@ class NeoClientCoreExtension extends AbstractExtension
 
         $response = $this->sendCypherQuery($q, $parameters, $conn, array('graph', 'row'));
 
-        return $response->getResult();
-    }
-
-    /**
-     * Get the connection alias of the Master Connection
-     *
-     * @return string
-     */
-    public function getWriteConnectionAlias()
-    {
-        return $this->getWriteConnection()->getAlias();
-    }
-
-    /**
-     * Get the connection alias of the first Slave connection
-     *
-     * @return string
-     */
-    public function getReadConnectionAlias()
-    {
-        return $this->getReadConnection()->getAlias();
-    }
-
-    /**
-     * @param  string|null $conn
-     * @return mixed
-     */
-    public function checkHAMaster($conn = null)
-    {
-        $response = $this->invoke('neo.core_get_ha_master', $conn)
-            ->execute();
-
-        return $response;
-    }
-
-    /**
-     * @param  string|null $conn
-     * @return mixed
-     */
-    public function checkHASlave($conn = null)
-    {
-        $response = $this->invoke('neo.core_get_ha_slave', $conn)
-            ->execute();
-
-        return $response;
-    }
-
-    /**
-     * @param  string|null $conn
-     * @return mixed
-     */
-    public function checkHAAvailable($conn = null)
-    {
-        $response = $this->invoke('neo.core_get_ha_available', $conn)
-            ->execute();
-
-        return $response;
+        return $this->handleHttpResponse($response);
     }
 
     private function checkPathNode(array $node)
