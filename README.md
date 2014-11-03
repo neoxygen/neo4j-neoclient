@@ -375,7 +375,56 @@ $client->getRoot('default');
 $client->sendCypherQuery('MATCH (n) RETURN count(n) as total', array(), 'testserver1');
 ```
 
-## HA (High-Availibilty) Mode for Neo4j Enterprise
+## HA (High-Availibilty)
+
+### HA Mode at the driver level for the Community Edition
+
+The library provides a HA mode management at the driver level.
+
+You need to define a `master` connection and one or more `slaves` connections.
+
+```yaml
+connections:
+  default:
+    scheme: http
+    host: localhost
+    port: 7474
+  testdb:
+    scheme: http
+    host: testserver.dev
+    port: 7475
+    auth: true
+    user: user
+    password: password
+  testdb2:
+      scheme: http
+      host: testserver2.dev
+      port: 7475
+      auth: true
+      user: user
+      password: password
+
+ha_mode:
+    enabled: true
+    type: community|enterprise
+    master: default
+    slaves:
+        - testdb
+        - testdb2
+```
+
+The library provide two special methods for working with the HA Mode, respectively `sendWriteQuery` and `sendReadQuery`.
+
+Write queries will be automatically first executed on the master connection, when completed it will replicated the writes on the slaves connections.
+
+Read queries are automatically run against the slaves connections. If a slave connection fallback, it tries to rerun the read query on 
+the other slaves and the master.
+
+Note that in case of write query failure, an exception will be thrown, otherwise you loose benefit from replication and have two different graphs.
+
+### HA Mode for Neo4j Enterprise
+
+NB: There are ongoing changes for improving the HA Mode of the Enterprise Edition, stay tuned ;-)
 
 The library provide a powerful system for handling the HA Mode of Neo4j available in Neo4j Enterprise.
 
@@ -493,55 +542,6 @@ $client->removeUser('user', 'password');
 ```json
 OK
 ```
-    
-
-
-## High Availibility
-
-### HA Mode at the driver level for the Community Edition
-
-The library provides a HA mode management at the driver level.
-
-You need to define a `master` connection and one or more `slaves` connections.
-
-```yaml
-connections:
-  default:
-    scheme: http
-    host: localhost
-    port: 7474
-  testdb:
-    scheme: http
-    host: testserver.dev
-    port: 7475
-    auth: true
-    user: user
-    password: password
-  testdb2:
-      scheme: http
-      host: testserver2.dev
-      port: 7475
-      auth: true
-      user: user
-      password: password
-
-ha_mode:
-    enabled: true
-    type: community|enterprise
-    master: default
-    slaves:
-        - testdb
-        - testdb2
-```
-
-The library provide two special methods for working with the HA Mode, respectively `sendWriteQuery` and `sendReadQuery`.
-
-Write queries will be automatically first executed on the master connection, when completed it will replicated the writes on the slaves connections.
-
-Read queries are automatically run against the slaves connections. If a slave connection fallback, it tries to rerun the read query on 
-the other slaves and the master.
-
-Note that in case of write query failure, an exception will be thrown, otherwise you loose benefit from replication and have two different graphs.
 
 ## Events & Logging
 
