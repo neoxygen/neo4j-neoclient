@@ -57,6 +57,35 @@ class NeoClientExtension implements  ExtensionInterface
         $container->setParameter('neoclient.auto_format_response', $config['auto_format_response']);
         $container->setParameter('neoclient.result_data_content', $resultDataContent);
 
+        if (isset($config['ha_mode'])){
+            $logger = $container->getDefinition('logger');
+            $connectionManager = $container->getDefinition('neoclient.connection_manager');
+            $httpClient = $container->getDefinition('neoclient.http_client');
+            $type = $config['ha_mode']['type'];
+            switch($type){
+                case 'enterprise':
+                    $definition = new Definition();
+                    $definition
+                        ->setClass('Neoxygen\NeoClient\HighAvailibility\HAEnterpriseManager')
+                        ->addArgument('@neoclient.connection_manager')
+                        ->addArgument('@logger')
+                        ->addTag('neoclient.service_event_subscriber');
+                    $container->setDefinition('neoclient.ha_manager', $definition);
+                    break;
+                case 'community':
+                    $definition = new Definition();
+                    $definition
+                        ->setClass('Neoxygen\NeoClient\HighAvailibility\HACommunityManager')
+                        ->addArgument($connectionManager)
+                        ->addArgument($httpClient)
+                        ->addArgument($logger)
+                        ->addTag('neoclient.service_event_subscriber');
+                    $container->setDefinition('neoclient.ha_manager', $definition);
+                    break;
+            }
+
+        }
+
     }
 
     private function addConnectionDefinitions($config, $container)

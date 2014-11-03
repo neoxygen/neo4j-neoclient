@@ -442,7 +442,7 @@ class NeoClientCoreExtension extends AbstractExtension
      */
     public function sendReadQuery($query, array $parameters = array())
     {
-        return $this->sendCypherQuery($query, $parameters, $this->getReadConnection()->getAlias(), true);
+        return $this->sendCypherQuery($query, $parameters, $this->getReadConnection()->getAlias(), self::READ_QUERY);
     }
 
     /**
@@ -454,7 +454,7 @@ class NeoClientCoreExtension extends AbstractExtension
      */
     public function sendWriteQuery($query, array $parameters = array())
     {
-        return $this->sendCypherQuery($query, $parameters, $this->getWriteConnection()->getAlias());
+        return $this->sendCypherQuery($query, $parameters, $this->getWriteConnection()->getAlias(), self::WRITE_QUERY);
     }
 
     /**

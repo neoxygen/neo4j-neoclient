@@ -1,6 +1,6 @@
 <?php
 
-namespace Neoxygen\NeoClient\Tests;
+namespace Neoxygen\NeoClient\Tests\Functional;
 
 use Neoxygen\NeoClient\ClientBuilder;
 
@@ -36,6 +36,22 @@ class CoreCommandsTest extends \PHPUnit_Framework_TestCase
         $labels = $response->getBody();
 
         $this->assertInternalType('array', $labels);
+    }
+
+    public function testRenameLabel()
+    {
+        $q = 'MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE r,n';
+        $this->client->sendCypherQuery($q);
+
+        $q = 'CREATE (n:OldLabel)';
+        $this->client->sendCypherQuery($q);
+        $response = $this->client->getLabels();
+        $labels = $response->getBody();
+        $this->assertContains('OldLabel', $labels);
+
+        $this->client->renameLabel('OldLabel', 'NewLabel');
+        $labels = $this->client->getLabels()->getBody();
+        $this->assertContains('NewLabel', $labels);
     }
 
     public function testCreateAndListIndex()

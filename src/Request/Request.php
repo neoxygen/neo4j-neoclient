@@ -12,7 +12,7 @@
 
 namespace Neoxygen\NeoClient\Request;
 
-use Neoxygen\NeoClient\Connection;
+use Neoxygen\NeoClient\Connection\Connection;
 
 class Request implements RequestInterface
 {
@@ -41,6 +41,29 @@ class Request implements RequestInterface
     private $password;
 
     private $stream;
+
+    private $queryMode;
+
+    /**
+     * @return mixed
+     */
+    public function getQueryMode()
+    {
+        return $this->queryMode;
+    }
+
+    /**
+     * @param mixed $queryMode
+     */
+    public function setQueryMode($queryMode)
+    {
+        $this->queryMode = $queryMode;
+    }
+
+    public function hasQueryMode()
+    {
+        return null !== $this->queryMode;
+    }
 
     /**
      * @return mixed
@@ -243,5 +266,16 @@ class Request implements RequestInterface
     public function isSecured()
     {
         return null !== $this->authMode;
+    }
+
+    public function setInfoFromConnection(Connection $connection)
+    {
+        $this->connection = $connection->getAlias();
+        if ($connection->isAuth()){
+            $this->authMode = true;
+            $this->user = $connection->getAuthUser();
+            $this->password = $connection->getAuthPassword();
+            $this->url = $connection->getBaseUrl() . $this->path;
+        }
     }
 }

@@ -29,6 +29,8 @@ class GuzzleHttpClient implements HttpClientInterface
 
     private $eventDispatcher;
 
+    private $connectionsUsed = [];
+
     public function __construct(EventDispatcherInterface $eventDispatcher)
     {
         $this->client = new Client();
@@ -48,9 +50,10 @@ class GuzzleHttpClient implements HttpClientInterface
         if ($request->isSecured()) {
             $defaults['auth'] = [$request->getUser(), $request->getPassword()];
         }
-        $defaults['timeout'] = null !== $request->getTimeout() ? $request->getTimeout() : 1;
+        $defaults['timeout'] = null !== $request->getTimeout() ? $request->getTimeout() : 5;
+        $url = $request->getUrl();
 
-        $httpRequest = $this->client->createRequest($request->getMethod(), $request->getUrl(), $defaults);
+        $httpRequest = $this->client->createRequest($request->getMethod(), $url, $defaults);
         $httpRequest->setHeader('Content-Type', 'application/json');
         $httpRequest->setHeader('Accept', 'application/json');
 
@@ -58,9 +61,12 @@ class GuzzleHttpClient implements HttpClientInterface
         try {
             $response = $this->client->send($httpRequest);
             $this->dispatchPostRequestSend($request, $response);
+            if ($request->getUrl() !== $url) {
+                return $this->sendRequest($request);
+            }
             return $this->getResponse($response);
         } catch (RequestException $e) {
-            $this->dispatchHttpException($request, $e);
+            return $this->dispatchHttpException($request, $e);
         }
 
 
@@ -93,7 +99,10 @@ class GuzzleHttpClient implements HttpClientInterface
 
     private function dispatchHttpException(Request $request, RequestException $exception)
     {
+        $conn = $request->getConnection();
         $event = new HttpExceptionEvent($request, $exception);
         $this->eventDispatcher->dispatch(NeoClientEvents::NEO_HTTP_EXCEPTION, $event);
+
+        return $this->sendRequest($request);
     }
 }

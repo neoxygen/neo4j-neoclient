@@ -20,6 +20,6 @@ class SimpleCommand extends AbstractCommand
 
     public function execute()
     {
-        return $this->process(self::METHOD, self::PATH, null, null, $this->connection);
+        return $this->process(self::METHOD, self::PATH, null, $this->connection);
     }
 }

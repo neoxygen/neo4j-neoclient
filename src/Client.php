@@ -39,11 +39,14 @@ class Client
 
     private $lastResponse;
 
+    public static $logger;
+
     public function __construct(ContainerInterface $container)
     {
         $this->serviceContainer = $container;
         $formatterClass = $container->getParameter('response_formatter_class');
         $this->responseFormatter = $formatterClass;
+        self::$logger = $container->get('logger');
     }
 
     /**
@@ -123,5 +126,10 @@ class Client
     public function getRows()
     {
         return $this->lastResponse->getRows();
+    }
+
+    public static function log($level = 'debug', $message, array $context = array())
+    {
+        return self::$logger->log($level, $message, $context);
     }
 }

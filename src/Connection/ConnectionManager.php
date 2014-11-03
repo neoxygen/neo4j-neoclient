@@ -251,6 +251,11 @@ class ConnectionManager
         throw new HttpException('There are no more slaves to process');
     }
 
+    public function getSlaves()
+    {
+        return $this->slaves;
+    }
+
     public function getHAConfig()
     {
         if (null !== $this->master && !empty($this->slaves)) {

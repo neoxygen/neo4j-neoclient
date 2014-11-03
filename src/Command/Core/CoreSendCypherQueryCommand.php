@@ -26,21 +26,21 @@ class CoreSendCypherQueryCommand extends AbstractCommand
 
     public $resultDataContents;
 
-    public $slaveConn;
+    public $queryMode;
 
-    public function setArguments($query, array $parameters = array(), array $resultDataContents = array(), $slaveConn = false)
+    public function setArguments($query, array $parameters = array(), array $resultDataContents = array(), $queryMode = null)
     {
         $this->query = $query;
         $this->parameters = $parameters;
         $this->resultDataContents = $resultDataContents;
-        $this->slaveConn = $slaveConn;
+        $this->queryMode = $queryMode;
 
         return $this;
     }
 
     public function execute()
     {
-        return $this->process(self::METHOD, self::PATH, $this->prepareBody(), $this->connection, null, $this->slaveConn);
+        return $this->process(self::METHOD, self::PATH, $this->prepareBody(), $this->connection, null, $this->queryMode);
     }
 
     public function prepareBody()
