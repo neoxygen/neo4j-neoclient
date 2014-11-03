@@ -496,28 +496,52 @@ OK
     
 
 
-## Mini HA for Neo4j Community
+## High Availibility
 
-Fallback connections feature provide a mini HA mode when you use the Community Edition. If you are using the Enterprise edition 
-we recommend that you set up the built-in `HA Mode` feature of this library.
+### HA Mode at the driver level for the Community Edition
 
-When working with multiple connections, you may work with a main db and a backup db, and define the backup db as
-a fallback in case of connection failure with the main db.
+The library provides a HA mode management at the driver level.
 
-Configuring a fallback connection (define a connection key with the fallback connection to use as
-value :
+You need to define a `master` connection and one or more `slaves` connections.
 
-```php
-$client = ClientBuilder::create()
-    ->addDefaultLocalConnection()
-    ->addConnection('backupdb', 'http', 'backupserver.dev', 7474)
-    ->setFallbackConnection('default', 'backupdb')
-    ->build();
+```yaml
+connections:
+  default:
+    scheme: http
+    host: localhost
+    port: 7474
+  testdb:
+    scheme: http
+    host: testserver.dev
+    port: 7475
+    auth: true
+    user: user
+    password: password
+  testdb2:
+      scheme: http
+      host: testserver2.dev
+      port: 7475
+      auth: true
+      user: user
+      password: password
+
+ha_mode:
+    enabled: true
+    type: community|enterprise
+    master: default
+    slaves:
+        - testdb
+        - testdb2
 ```
 
-For each command, in case of connection failure, the http client will check if a fallback is defined and use it.
+The library provide two special methods for working with the HA Mode, respectively `sendWriteQuery` and `sendReadQuery`.
 
-If you have loggers settled up, an `alert` entry will be logged to avert you of the connection failure.
+Write queries will be automatically first executed on the master connection, when completed it will replicated the writes on the slaves connections.
+
+Read queries are automatically run against the slaves connections. If a slave connection fallback, it tries to rerun the read query on 
+the other slaves and the master.
+
+Note that in case of write query failure, an exception will be thrown, otherwise you loose benefit from replication and have two different graphs.
 
 ## Events & Logging
 
@@ -672,9 +696,6 @@ connections:
     host: testserver.dev
     port: 7475
 
-fallback:
-  default: testdb
-
 cache:
   enable: true
   cache_path: /dev/project/cache/
@@ -697,9 +718,18 @@ connections:
     scheme: http
     host: testserver.dev
     port: 7475
+    auth: true
+    user: user
+    password: password
 
-fallback:
-  default: testdb
+ha_mode:
+    enabled: true
+    type: community|enterprise
+    master: default
+    slaves:
+        - testdb
+
+auto_format_response: true
 
 cache:
   enabled: true
@@ -712,30 +742,7 @@ custom_commands:
 extensions:
   my_extension:
     class: My\Extension\Class
-
-default_result_data_content: ['row','graph','rest'] #default to "row"
 ```
-
-### PHP
-
-```php
-
-$client = new Client();
-$client
-  ->addConnection('default','http','localhost',7474,true,'user','password')
-  ->addConnection('backupdb','http','testserver',7475)
-  ->setFallbackConnection('default', 'backupdb')
-  ->enableCache('my/cache/path')
-  ->registerCommand('my_command', 'My\Command\Path')
-  ->registerExtension('my_extension', 'My\Extension\Class\Path')
-  ->setLogger('my_logger', new MyLogger())
-  ->createDefaultStreamLogger('main', '/path/to/log/', 'debug')
-  ->createDefaultChromePHPLogger('other_log')
-  ->setDefaultResultDataContent(array('row', 'graph', 'rest')
-  ->build();
-```
-
----
 
 ### License
 
