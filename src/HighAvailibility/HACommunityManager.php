@@ -86,8 +86,18 @@ class HACommunityManager implements EventSubscriberInterface
                     $slaves = $this->connectionManager->getSlaves();
                     $slave = current($slaves);
                     $this->writeReplicationUsed[] = $slave;
+                    Client::log('debug', sprintf('Performing write replication on connection "%s"', $slave));
                     $request->setInfoFromConnection($this->connectionManager->getConnection($slave));
                     $event->stopPropagation();
+                } elseif ($this->connectionManager->hasNextSlave($this->writeReplicationUsed)) {
+                    $next = $this->connectionManager->getNextSlave($this->writeReplicationUsed);
+                    $nc = $this->connectionManager->getConnection($next);
+                    Client::log('debug', sprintf('Performing write replication on connection "%s"', $next));
+                    $request->setInfoFromConnection($nc);
+                    $event->stopPropagation();
+                } elseif (null !== $this->masterUsed && !$this->connectionManager->hasNextSlave($this->masterUsed) && $request->getConnection() !== $master) {
+                    $this->masterUsed = [];
+                    Client::log('debug', 'Replication terminated');
                 }
             }
         }
