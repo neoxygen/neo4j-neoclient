@@ -57,6 +57,11 @@ class ClientBuilder
     private $loggers = array();
 
     /**
+     * @var null|true if the check for a Ha Failure file have to be skipped or not
+     */
+    private $skipHaFailureFileCheck;
+
+    /**
      */
     public static function create()
     {
@@ -420,6 +425,10 @@ class ClientBuilder
             file_put_contents($file, $dumper->dump());
         }
 
+        if (!$this->skipHaFailureFileCheck) {
+            $this->checkForHaConfig();
+        }
+
         $client = $this->serviceContainer->get('neoclient.client');
 
         return $client;
@@ -452,6 +461,13 @@ class ClientBuilder
         return $this;
     }
 
+    public function skipHaFailureFileCheck()
+    {
+        $this->skipHaFailureFileCheck = true;
+
+        return $this;
+    }
+
     private function checkConnection($alias)
     {
         if (!array_key_exists($alias, $this->configuration['connections'])) {
@@ -459,6 +475,37 @@ class ClientBuilder
         }
 
         return true;
+    }
+
+    private function checkForHaConfig()
+    {
+        if ($this->serviceContainer->has('neoclient.ha_manager')) {
+            $file = sys_get_temp_dir().DIRECTORY_SEPARATOR.'neoclient_ha_config_after_failure';
+            if (!file_exists($file)){
+                return;
+            }
+            $content = file_get_contents($file);
+            $config = Yaml::parse($content);
+            $cm = $this->serviceContainer->get('neoclient.connection_manager');
+            $all = $cm->getConnectionAliases();
+            if (isset($config['new_master'])) {
+                $newConfig['master'] = $config['new_master'];
+                unset($all[$config['new_master']]);
+            } else {
+                $newConfig['master'] = $cm->getMasterConnectionAlias();
+                unset($all[$cm->getMasterConnectionAlias()]);
+            }
+            if (isset($config['primary_slave'])) {
+                $newConfig['slaves'][] = $config['primary_slave'];
+                unset($all[$config['primary_slave']]);
+            }
+            foreach ($all as $slave) {
+                $newConfig['slaves'][] = $slave;
+            }
+
+            $cm->setMasterConnection($newConfig['master']);
+            $cm->setSlaveConnections($newConfig['slaves']);
+        }
     }
 
 }
