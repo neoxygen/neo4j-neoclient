@@ -14,6 +14,7 @@ namespace Neoxygen\NeoClient;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Neoxygen\NeoClient\Request\Response;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * @method getRoot($conn = null)
@@ -47,6 +48,7 @@ class Client
         $formatterClass = $container->getParameter('response_formatter_class');
         $this->responseFormatter = $formatterClass;
         self::$logger = $container->get('logger');
+        $this->checkForHaConfig();
     }
 
     /**
@@ -131,5 +133,36 @@ class Client
     public static function log($level = 'debug', $message, array $context = array())
     {
         return self::$logger->log($level, $message, $context);
+    }
+
+    private function checkForHaConfig()
+    {
+        if ($this->serviceContainer->has('neoclient.ha_manager')) {
+            $file = sys_get_temp_dir().DIRECTORY_SEPARATOR.'neoclient_ha_config_after_failure';
+            if (!file_exists($file)){
+                return;
+            }
+            $content = file_get_contents($file);
+            $config = Yaml::parse($content);
+            $cm = $this->serviceContainer->get('neoclient.connection_manager');
+            $all = $cm->getConnectionAliases();
+            if (isset($config['new_master'])) {
+                $newConfig['master'] = $config['new_master'];
+                unset($all[$config['new_master']]);
+            } else {
+                $newConfig['master'] = $cm->getMasterConnectionAlias();
+                unset($all[$cm->getMasterConnectionAlias()]);
+            }
+            if (isset($config['primary_slave'])) {
+                $newConfig['slaves'][] = $config['primary_slave'];
+                unset($all[$config['primary_slave']]);
+            }
+            foreach ($all as $slave) {
+                $newConfig['slaves'][] = $slave;
+            }
+
+            $cm->setMasterConnection($newConfig['master']);
+            $cm->setSlaveConnections($newConfig['slaves']);
+        }
     }
 }

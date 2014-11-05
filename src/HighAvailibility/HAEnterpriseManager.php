@@ -10,9 +10,11 @@ use Neoxygen\NeoClient\Connection\ConnectionManager,
     Neoxygen\NeoClient\NeoClientEvents,
     Neoxygen\NeoClient\HttpClient\GuzzleHttpClient,
     Neoxygen\NeoClient\Exception\HttpException,
-    Neoxygen\NeoClient\Client;
+    Neoxygen\NeoClient\Client,
+    Neoxygen\NeoClient\Request\Response;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Yaml\Yaml;
 
 class HAEnterpriseManager implements EventSubscriberInterface
 {
@@ -104,6 +106,7 @@ class HAEnterpriseManager implements EventSubscriberInterface
                 if ($request->getQueryMode() === 'READ') {
                     if ($this->connectionManager->hasNextSlave([$conn])){
                         $next = $this->connectionManager->getNextSlave([$conn]);
+                        $this->setHaPrimarySlave($next);
                         $request->setInfoFromConnection($this->connectionManager->getConnection($next));
                     }
                 }
@@ -112,6 +115,7 @@ class HAEnterpriseManager implements EventSubscriberInterface
 
         if (null !== $this->masterWriteFails && $request->getQueryMode() == 'WRITE' && $this->masterWriteFails >= 5) {
             if (null !== $this->newMasterDetected) {
+                $this->setHaNewMaster($this->newMasterDetected);
                 $conn = $this->connectionManager->getConnection($this->newMasterDetected);
                 Client::log('debug', sprintf('Automatic Write connection change after 5 write failures on Master. Changing to the "%s" connection', $this->newMasterDetected));
                 $request->setInfoFromConnection($conn);
@@ -131,15 +135,11 @@ class HAEnterpriseManager implements EventSubscriberInterface
     {
         $slaves = $this->connectionManager->getSlaves();
         foreach ($slaves as $slave) {
-            try {
                 if ($this->isMaster($slave)) {
                     Client::log('debug', sprintf('Master Reelection detected, new Master is "%s".', $slave));
+
                     return $slave;
-                }
-            } catch (HttpException $e) {
-
             }
-
         }
 
         return null;
@@ -149,11 +149,59 @@ class HAEnterpriseManager implements EventSubscriberInterface
     {
         $command = $this->commandManager->getCommand('neo.core_get_ha_master');
         $command->setConnection($connAlias);
-        $response = $command->execute();
-        if (true == $response->getBody()) {
-            return true;
+        try {
+            $response = $command->execute();
+            if ($response instanceof Response && true == $response->getBody()) {
+                return true;
+            }
+        } catch (HttpException $e) {
+            return false;
         }
 
         return false;
+    }
+
+    private function setHAConfigAfterFailure(array $config)
+    {
+        $dump = Yaml::dump($config, 4, 2);
+        $file = $this->getHAFailureFile();
+        file_put_contents($file, $dump);
+    }
+
+    private function getHAConfigAfterFailure()
+    {
+        if (!file_exists($this->getHAFailureFile())){
+
+            return array();
+        }
+        $content = file_get_contents($this->getHAFailureFile());
+        $config = Yaml::parse($content);
+
+        return $config;
+    }
+
+    /**
+     * @todo move this to cache directory, this means that for HA, the enable cache config must be set
+     */
+    private function getHAFailureFile()
+    {
+        $dir = sys_get_temp_dir();
+        $file = $dir.DIRECTORY_SEPARATOR.'neoclient_ha_config_after_failure';
+
+        return $file;
+    }
+
+    private function setHaPrimarySlave($slaveAlias)
+    {
+        $config = $this->getHAConfigAfterFailure();
+        $config['primary_slave'] = $slaveAlias;
+        $this->setHAConfigAfterFailure($config);
+    }
+
+    private function setHaNewMaster($masterAlias)
+    {
+        $config = $this->getHAConfigAfterFailure();
+        $config['new_master'] = $masterAlias;
+        $this->setHAConfigAfterFailure($config);
     }
 }

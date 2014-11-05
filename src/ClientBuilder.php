@@ -441,6 +441,17 @@ class ClientBuilder
         return true === $this->getServiceContainer()->isFrozen();
     }
 
+    public function resetHaFailureFile()
+    {
+        $file = sys_get_temp_dir().DIRECTORY_SEPARATOR.'neoclient_ha_config_after_failure';
+        if (file_exists($file)) {
+            print_r($file);
+            unlink($file);
+        }
+
+        return $this;
+    }
+
     private function checkConnection($alias)
     {
         if (!array_key_exists($alias, $this->configuration['connections'])) {

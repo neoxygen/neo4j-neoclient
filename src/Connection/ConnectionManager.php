@@ -133,49 +133,6 @@ class ConnectionManager
         return array_key_exists($alias, $this->connections);
     }
 
-    /**
-     * Defines a fallback connection for a given collection
-     *
-     * @param  string The connection alias to have a fallback
-     * @param  string The fallback connection alias
-     * @throws \Neoxygen\NeoClient\Exception\InvalidConnectionException If one of the connections is not defined
-     */
-    public function setFallbackConnection($connectionAlias, $fallbackAlias)
-    {
-        if (!$this->hasConnection($connectionAlias) || !$this->hasConnection($fallbackAlias)) {
-            throw new InvalidConnectionException('The fallback connection can not be set, one of the connections does not exist');
-        }
-
-        $this->fallbacks[$connectionAlias] = $fallbackAlias;
-    }
-
-    /**
-     * Returns whether or not a given connection has a fallback connection
-     *
-     * @param  string $connectionAlias The connection alias
-     * @return bool
-     */
-    public function hasFallbackConnection($connectionAlias)
-    {
-        return array_key_exists($connectionAlias, $this->fallbacks);
-    }
-
-    /**
-     * Returns the fallback connection for a given connection alias
-     *
-     * @param  string The connection alias
-     * @return \Neoxygen\NeoClient\Connection\Connection
-     * @throws \Neoxygen\NeoClient\Exception\InvalidConnectionException If the connection has no fallback
-     */
-    public function getFallbackConnection($connectionAlias)
-    {
-        if (!$this->hasFallbackConnection($connectionAlias)) {
-            throw new InvalidConnectionException(sprintf('The connection "%s" has no defined fallback'));
-        }
-
-        return $this->getConnection($this->fallbacks[$connectionAlias]);
-    }
-
     public function setMasterConnection($connectionAlias)
     {
         if (!array_key_exists($connectionAlias, $this->connections)) {
@@ -263,6 +220,25 @@ class ConnectionManager
                 'master' => $this->master,
                 'slaves' => $this->slaves
             );
+        }
+
+        return null;
+    }
+
+    public function getConnectionAliases()
+    {
+        $aliases = [];
+        foreach ($this->connections as $k => $c){
+            $aliases[$k] = $k;
+        }
+
+        return $aliases;
+    }
+
+    public function getMasterConnectionAlias()
+    {
+        if ($this->isHA()){
+            return $this->getMasterConnection()->getAlias();
         }
 
         return null;
