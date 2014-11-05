@@ -60,6 +60,7 @@ class NeoClientExtension implements  ExtensionInterface
         if (isset($config['ha_mode'])){
             $logger = $container->getDefinition('logger');
             $connectionManager = $container->getDefinition('neoclient.connection_manager');
+            $commandManager = $container->getDefinition('neoclient.command_manager');
             $httpClient = $container->getDefinition('neoclient.http_client');
             $type = $config['ha_mode']['type'];
             switch($type){
@@ -67,8 +68,10 @@ class NeoClientExtension implements  ExtensionInterface
                     $definition = new Definition();
                     $definition
                         ->setClass('Neoxygen\NeoClient\HighAvailibility\HAEnterpriseManager')
-                        ->addArgument('@neoclient.connection_manager')
-                        ->addArgument('@logger')
+                        ->addArgument($connectionManager)
+                        ->addArgument($commandManager)
+                        ->addArgument($httpClient)
+                        ->addArgument($logger)
                         ->addTag('neoclient.service_event_subscriber');
                     $container->setDefinition('neoclient.ha_manager', $definition);
                     break;

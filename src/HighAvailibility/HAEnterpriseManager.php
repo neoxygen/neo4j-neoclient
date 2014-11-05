@@ -3,11 +3,13 @@
 namespace Neoxygen\NeoClient\HighAvailibility;
 
 use Neoxygen\NeoClient\Connection\ConnectionManager,
+    Neoxygen\NeoClient\Command\CommandManager,
     Neoxygen\NeoClient\Event\HttpExceptionEvent,
     Neoxygen\NeoClient\Event\PostRequestSendEvent,
     Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent,
     Neoxygen\NeoClient\NeoClientEvents,
     Neoxygen\NeoClient\HttpClient\GuzzleHttpClient,
+    Neoxygen\NeoClient\Exception\HttpException,
     Neoxygen\NeoClient\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -15,6 +17,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class HAEnterpriseManager implements EventSubscriberInterface
 {
     protected $connectionManager;
+
+    protected $commandManager;
 
     protected $logger;
 
@@ -28,24 +32,29 @@ class HAEnterpriseManager implements EventSubscriberInterface
 
     protected $fails = [];
 
+    protected $masterWriteFails = null;
+
+    protected $newMasterDetected;
+
     public static function getSubscribedEvents()
     {
         return array(
             NeoClientEvents::NEO_HTTP_EXCEPTION => array(
                 'onRequestException', 50
             ),
-            NeoClientEvents::NEO_POST_REQUEST_SEND => array(
-                'onSuccessfulRequest', 50
-            ),
             NeoClientEvents::NEO_PRE_REQUEST_SEND => array(
                 'onPreSend', 50
+            ),
+            NeoClientEvents::NEO_POST_REQUEST_SEND => array(
+                'onSuccessfulRequest', 30
             )
         );
     }
 
-    public function __construct(ConnectionManager $connectionManager, GuzzleHttpClient $httpClient, LoggerInterface $logger)
+    public function __construct(ConnectionManager $connectionManager, CommandManager $commandManager, GuzzleHttpClient $httpClient, LoggerInterface $logger)
     {
         $this->connectionManager = $connectionManager;
+        $this->commandManager = $commandManager;
         $this->httpClient = $httpClient;
         $this->logger = $logger;
     }
@@ -61,43 +70,26 @@ class HAEnterpriseManager implements EventSubscriberInterface
                     $next = $this->connectionManager->getNextSlave($this->slavesUsed);
                     Client::log('warning', sprintf('Connection "%s" unreacheable, using "%s"', $request->getConnection(), $next));
                     $request->setInfoFromConnection($this->connectionManager->getConnection($next));
+                    $request->setQueryMode('READ');
                     $event->stopPropagation();
                 } elseif (null === $this->masterUsed) {
                     $master = $this->connectionManager->getMasterConnection();
                     Client::log('warning', sprintf('Connection "%s" unreacheable, using "%s"', $request->getConnection(), $master->getAlias()));
                     $this->masterUsed = true;
                     $request->setInfoFromConnection($master);
+                    $request->setQueryMode('READ');
                     $event->stopPropagation();
                 }
-            }
-        }
-    }
-
-    public function onSuccessfulRequest(PostRequestSendEvent $event)
-    {
-        $request = $event->getRequest();
-        $this->fails[$request->getConnection()] = null;
-        $this->slavesUsed = [];
-        $this->masterUsed = null;
-        if ($request->hasQueryMode()){
-            if ($request->getQueryMode() === 'WRITE') {
-                $master = $this->connectionManager->getMasterConnection()->getAlias();
-                if ($request->getConnection() === $master){
-                    $slaves = $this->connectionManager->getSlaves();
-                    $slave = current($slaves);
-                    $this->writeReplicationUsed[] = $slave;
-                    Client::log('debug', sprintf('Performing write replication on connection "%s"', $slave));
-                    $request->setInfoFromConnection($this->connectionManager->getConnection($slave));
+            } elseif ($request->getQueryMode() == 'WRITE') {
+                Client::log('emergency', sprintf('The master connection "%s" is unreachable', $request->getConnection()));
+                $newMaster = $this->detectReelectedMaster();
+                if (null !== $newMaster) {
+                    $conn = $this->connectionManager->getConnection($newMaster);
+                    $this->masterWriteFails = $this->masterWriteFails + 1;
+                    $this->newMasterDetected = $newMaster;
+                    $request->setInfoFromConnection($conn);
+                    $request->setQueryMode('WRITE');
                     $event->stopPropagation();
-                } elseif ($this->connectionManager->hasNextSlave($this->writeReplicationUsed)) {
-                    $next = $this->connectionManager->getNextSlave($this->writeReplicationUsed);
-                    $nc = $this->connectionManager->getConnection($next);
-                    Client::log('debug', sprintf('Performing write replication on connection "%s"', $next));
-                    $request->setInfoFromConnection($nc);
-                    $event->stopPropagation();
-                } elseif (!$this->connectionManager->hasNextSlave($this->masterUsed) && $request->getConnection() !== $master) {
-                    $this->masterUsed = [];
-                    Client::log('debug', 'Replication terminated');
                 }
             }
         }
@@ -117,5 +109,51 @@ class HAEnterpriseManager implements EventSubscriberInterface
                 }
             }
         }
+
+        if (null !== $this->masterWriteFails && $request->getQueryMode() == 'WRITE' && $this->masterWriteFails >= 5) {
+            if (null !== $this->newMasterDetected) {
+                $conn = $this->connectionManager->getConnection($this->newMasterDetected);
+                Client::log('debug', sprintf('Automatic Write connection change after 5 write failures on Master. Changing to the "%s" connection', $this->newMasterDetected));
+                $request->setInfoFromConnection($conn);
+            }
+        }
+    }
+
+    public function onSuccessfulRequest(PostRequestSendEvent $event)
+    {
+        $request = $event->getRequest();
+        $this->fails[$request->getConnection()] = null;
+        $this->slavesUsed = [];
+        $this->masterUsed = null;
+    }
+
+    private function detectReelectedMaster()
+    {
+        $slaves = $this->connectionManager->getSlaves();
+        foreach ($slaves as $slave) {
+            try {
+                if ($this->isMaster($slave)) {
+                    Client::log('debug', sprintf('Master Reelection detected, new Master is "%s".', $slave));
+                    return $slave;
+                }
+            } catch (HttpException $e) {
+
+            }
+
+        }
+
+        return null;
+    }
+
+    private function isMaster($connAlias)
+    {
+        $command = $this->commandManager->getCommand('neo.core_get_ha_master');
+        $command->setConnection($connAlias);
+        $response = $command->execute();
+        if (true == $response->getBody()) {
+            return true;
+        }
+
+        return false;
     }
 }

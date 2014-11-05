@@ -275,7 +275,9 @@ class Request implements RequestInterface
             $this->authMode = true;
             $this->user = $connection->getAuthUser();
             $this->password = $connection->getAuthPassword();
-            $this->url = $connection->getBaseUrl() . $this->path;
         }
+        $this->url = $connection->getBaseUrl() . $this->path;
+
+        return $this;
     }
 }

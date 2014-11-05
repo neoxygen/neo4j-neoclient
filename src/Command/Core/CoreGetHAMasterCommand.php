@@ -24,7 +24,7 @@ class CoreGetHAMasterCommand extends AbstractCommand
     public function execute()
     {
         try {
-            return $this->process(self::METHOD, self::PATH, null, $this->connection);
+            return $this->process(self::METHOD, self::PATH, null, $this->connection, array(), 'HA_DETECTION');
 
         } catch (HttpException $e) {
             return false;

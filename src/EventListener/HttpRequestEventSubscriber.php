@@ -40,7 +40,7 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
         $conn = $event->getRequest()->getConnection();
         $request = $event->getRequest();
         $mode = $request->hasQueryMode() ? $request->getQueryMode() : '';
-        $this->logger->log('debug', sprintf('Sending %s request to the "%s" connection',$mode,  $conn));
+        $this->logger->log('debug', sprintf('Sending "%s" request to the "%s" connection',$mode,  $conn));
     }
 
     public function onPostRequestSend(PostRequestSendEvent $event)
