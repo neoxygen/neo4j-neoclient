@@ -16,6 +16,7 @@ class CoreCommandsTest extends \PHPUnit_Framework_TestCase
     {
         $client = ClientBuilder::create()
             ->addDefaultLocalConnection()
+            ->setAutoFormatResponse(true)
             ->build();
 
         $this->client = $client;
@@ -97,6 +98,24 @@ class CoreCommandsTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('ToDrop', $this->client->getUniqueConstraints()->getBody());
         $this->client->dropUniqueConstraint('ToDrop', 'username');
         $this->assertArrayNotHasKey('ToDrop', $this->client->getUniqueConstraints()->getBody());
+    }
+
+    public function testPushMultipleInTransaction()
+    {
+        $q = 'MATCH (n:MultiplePersonNode) DELETE n';
+        $this->client->sendCypherQuery($q);
+        $statements = [];
+        $statement = 'CREATE (n:MultiplePersonNode {id:{myId} })';
+        for ($i = 0; $i <= 2000; $i++) {
+            $statements[] = ['statement' => $statement, 'parameters' => ['myId' => uniqid()]];
+        }
+        $this->client->sendMultiple($statements);
+
+        $q = 'MATCH (n:MultiplePersonNode) RETURN count(n)';
+        $r = $this->client->sendCypherQuery($q);
+        $count = $r->getRows()['count(n)'][0];
+
+        $this->assertEquals(2001, $count);
     }
 
 

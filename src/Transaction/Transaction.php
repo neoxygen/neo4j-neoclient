@@ -24,17 +24,26 @@ class Transaction
         $this->conn = $conn;
         $this->client = $extension;
         $response = $this->handleResponse($this->client->openTransaction($this->conn));
-        $this->commitUrl = $response->getResponse()['commit'];
+        $this->commitUrl = $response->getBody()['commit'];
         $this->parseTransactionId();
         $this->active = true;
 
         return $this;
     }
 
-    public function pushQuery($query, array $parameters = array(), array $resultDataContents = array())
+    public function pushQuery($query, array $parameters = array())
     {
         $this->checkIfOpened();
-        $response = $this->handleResponse($this->client->pushToTransaction($this->transactionId, $query, $parameters, $this->conn, $resultDataContents));
+        $response = $this->handleResponse($this->client->pushToTransaction($this->transactionId, $query, $parameters, $this->conn));
+
+        return $this;
+    }
+
+    public function pushMultiple(array $statements)
+    {
+        $this->checkIfOpened();
+        $execution = $this->client->pushMultipleToTransaction($this->getTransactionId(), $statements, $this->conn);
+        $response = $this->handleResponse($execution);
 
         return $this;
     }

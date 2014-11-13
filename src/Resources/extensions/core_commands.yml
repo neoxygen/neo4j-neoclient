@@ -21,6 +21,9 @@ neo.get_neo4j_version:
 neo.send_cypher_query:
   class: "Neoxygen\\NeoClient\\Command\\Core\\CoreSendCypherQueryCommand"
 
+neo.send_cypher_multiple:
+  class: "Neoxygen\\NeoClient\\Command\\Core\\CoreSendMultipleCypherCommand"
+
 neo.open_transaction:
   class: "Neoxygen\\NeoClient\\Command\\Core\\CoreOpenTransactionCommand"
 
