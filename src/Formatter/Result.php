@@ -172,7 +172,7 @@ class Result
     public function get($identifier)
     {
         if (!array_key_exists($identifier, $this->identifiers)) {
-            throw new \InvalidArgumentException(sprintf('The identifier %s is not defined', $identifier));
+            return null;
         }
 
         if (count($this->identifiers[$identifier]) === 1) {
