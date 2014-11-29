@@ -86,6 +86,20 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
+     * @param array $statements
+     * @param null $conn
+     * @return \Neoxygen\NeoClient\Formatter\Response
+     */
+    public function sendMultiple(array $statements, $conn = null)
+    {
+        $command = $this->invoke('neo.send_cypher_multiple', $conn);
+        $command->setArguments($statements);
+        $httpResponse = $command->execute();
+
+        return $this->handleHttpResponse($httpResponse);
+    }
+
+    /**
      * Convenience method that invoke the GetLabelsCommand
      *
      * @param  string|null $conn The alias of the connection to use

@@ -14,49 +14,43 @@ namespace Neoxygen\NeoClient\Command\Core;
 
 use Neoxygen\NeoClient\Command\AbstractCommand;
 
-class CorePushMultipleToTransactionCommand extends AbstractCommand
+class CoreSendMultipleCypherCommand extends AbstractCommand
 {
     const METHOD = 'POST';
 
-    const PATH = '/db/data/transaction/';
+    const PATH = '/db/data/transaction/commit';
 
     public $statements;
 
     public $resultDataContents;
 
-    public $transactionId;
+    public $queryMode;
 
-    public function setArguments($transactionId, array $statements, array $resultDataContents = array())
+    public function setArguments(array $statements, array $resultDataContents = array(), $queryMode = null)
     {
-        $this->transactionId = (int) $transactionId;
         $this->statements = $statements;
         $this->resultDataContents = $resultDataContents;
+        $this->queryMode = $queryMode;
 
         return $this;
     }
 
     public function execute()
     {
-        return $this->process(self::METHOD, $this->getPath(), $this->prepareBody(), $this->connection);
+        return $this->process(self::METHOD, self::PATH, $this->prepareBody(), $this->connection, null, $this->queryMode);
     }
 
     public function prepareBody()
     {
-        $body = [];
-        foreach ($this->statements as $statement) {
-            $body['statements'][] = $statement;
-        }
+        $body = array(
+            'statements' => $this->statements
+        );
 
         return json_encode($body);
     }
 
     public function getPath()
     {
-        return self::PATH . $this->getTransactionId();
-    }
-
-    public function getTransactionId()
-    {
-        return $this->transactionId;
+        return $this->getBaseUrl() . '/db/data/transaction/commit';
     }
 }

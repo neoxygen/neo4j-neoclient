@@ -28,6 +28,7 @@ use Symfony\Component\Yaml\Yaml;
  * @method openTransaction($conn = null)
  * @method rollbackTransaction($id, $conn = null)
  * @method sendCypherQuery($query, array $parameters = array(), $conn = null)
+ * @method sendMultiple(array $statements, $conn = null)
  * @method sendWriteQuery($query, array $parameters = array())
  * @method sendReadQuery($query, array $parameters = array())
  */
