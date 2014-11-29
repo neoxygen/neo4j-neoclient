@@ -390,10 +390,10 @@ class ClientBuilder
         if ($this->isCacheEnabled()) {
             $file = $this->getCachePath() . self::CACHE_FILENAME;
             if (file_exists($file)) {
-                require_once $file;
+                include_once($file);
                 $this->serviceContainer = new \ProjectServiceContainer();
-
-                return true;
+                
+                return new Client($this->serviceContainer);
             }
         }
         $extension = new NeoClientExtension();
@@ -454,7 +454,6 @@ class ClientBuilder
     {
         $file = sys_get_temp_dir().DIRECTORY_SEPARATOR.'neoclient_ha_config_after_failure';
         if (file_exists($file)) {
-            print_r($file);
             unlink($file);
         }
 

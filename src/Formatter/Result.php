@@ -166,7 +166,7 @@ class Result
 
     public function addRowToIdentifier($value, $identifier)
     {
-        $this->identifiers[$identifier] = $value;
+        $this->identifiers[$identifier][] = $value;
     }
 
     public function get($identifier)

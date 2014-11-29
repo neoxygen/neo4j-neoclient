@@ -183,9 +183,9 @@ class ResponseFormatter implements ResponseFormatterInterface
                     $this->result->addNodeToIdentifier($elts['metadata']['id'], $columns[$idx]);
                 } elseif (array_key_exists('type', $elts)) {
                     $this->result->addRelationshipToIdentifier($elts['metadata']['id'], $columns[$idx]);
-                } elseif (!is_array($elts)) {
-                    $this->result->addRowToIdentifier($elts, $columns[$idx]);
                 }
+            } else {
+                $this->result->addRowToIdentifier($elts, $columns[$idx]);
             }
         }
     }
