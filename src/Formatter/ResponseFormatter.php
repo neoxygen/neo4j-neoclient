@@ -178,12 +178,14 @@ class ResponseFormatter implements ResponseFormatterInterface
                 $this->processRestEltType($elt, $columns, $idx);
             }
         } else {
-            if (array_key_exists('labels', $elts)) {
-                $this->result->addNodeToIdentifier($elts['metadata']['id'], $columns[$idx]);
-            } elseif (array_key_exists('type', $elts)) {
-                $this->result->addRelationshipToIdentifier($elts['metadata']['id'], $columns[$idx]);
-            } elseif (!is_array($elts)) {
-                $this->result->addRowToIdentifier($elts, $columns[$idx]);
+            if (is_array($elts)) {
+                if (array_key_exists('labels', $elts)) {
+                    $this->result->addNodeToIdentifier($elts['metadata']['id'], $columns[$idx]);
+                } elseif (array_key_exists('type', $elts)) {
+                    $this->result->addRelationshipToIdentifier($elts['metadata']['id'], $columns[$idx]);
+                } elseif (!is_array($elts)) {
+                    $this->result->addRowToIdentifier($elts, $columns[$idx]);
+                }
             }
         }
     }
