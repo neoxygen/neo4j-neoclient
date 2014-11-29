@@ -24,7 +24,7 @@ class Relationship
 
     protected $properties;
 
-    public function __construct($id, $type, Node $startNode, Node $endNode, array $properties = array())
+    public function __construct($id, $type, Node &$startNode, Node &$endNode, array $properties = array())
     {
         $this->id = $id;
         $this->type = strtoupper($type);
