@@ -334,6 +334,17 @@ $nbNodes = $result->getNodesCount();
 $nbRels = $result->getRelationshipsCount();
 ```
 
+### Using `get`
+
+Commonly, you'll use identifiers in your return statements, you can access them in an easy way :
+
+```php
+$q = 'MATCH (n:User)<-[:FOLLOWS]-(followers) RETURN n, collect(followers) as flwers';
+$r = $client->sendCypherQuery($q)->getResult();
+
+print_r($r->get('flwers')); // Returns an array of node objects
+```
+
 ## Transaction Management
 
 The library comes with a Transaction Manager removing you the burden of parsing commit urls and transaction ids.

@@ -392,7 +392,7 @@ class ClientBuilder
             if (file_exists($file)) {
                 include_once($file);
                 $this->serviceContainer = new \ProjectServiceContainer();
-                
+
                 return new Client($this->serviceContainer);
             }
         }
