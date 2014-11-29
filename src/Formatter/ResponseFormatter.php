@@ -31,7 +31,7 @@ class ResponseFormatter implements ResponseFormatterInterface
 
     public static function getDefaultResultDataContents()
     {
-        return array('row', 'graph');
+        return array('row', 'graph', 'rest');
     }
 
     public function __construct()
@@ -69,6 +69,7 @@ class ResponseFormatter implements ResponseFormatterInterface
             $this->prepareResultSet();
             $this->prepareNodesByLabels();
             $this->prepareRelationshipsByType();
+            $this->processIdentification($response);
 
             $responseObject->setResult($this->result);
         }
@@ -155,6 +156,35 @@ class ResponseFormatter implements ResponseFormatterInterface
             $this->result->addRelationship($r);
             $startNode->addOutboundRelationship($r);
             $endNode->addInboundRelationship($r);
+        }
+    }
+
+    private function processIdentification($response)
+    {
+        foreach ($response['results'] as $result) {
+            $columns = $result['columns'];
+            foreach ($result['data'] as $dat) {
+                foreach ($dat['rest'] as $idx => $restx) {
+                    $this->processRestEltType($restx, $columns, $idx);
+                }
+            }
+        }
+    }
+
+    private function processRestEltType($elts, $columns, $idx)
+    {
+        if (isset($elts[0])) {
+            foreach ($elts as $elt) {
+                $this->processRestEltType($elt, $columns, $idx);
+            }
+        } else {
+            if (array_key_exists('labels', $elts)) {
+                $this->result->addNodeToIdentifier($elts['metadata']['id'], $columns[$idx]);
+            } elseif (array_key_exists('type', $elts)) {
+                $this->result->addRelationshipToIdentifier($elts['metadata']['id'], $columns[$idx]);
+            } elseif (!is_array($elts)) {
+                $this->result->addRowToIdentifier($elts, $columns[$idx]);
+            }
         }
     }
 

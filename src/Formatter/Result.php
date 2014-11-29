@@ -20,6 +20,8 @@ class Result
 
     protected $errors;
 
+    protected $identifiers = [];
+
     public function __construct()
     {
         $this->nodes = array();
@@ -150,5 +152,34 @@ class Result
     public function getRelationshipsCount()
     {
         return count($this->relationships);
+    }
+
+    public function addNodeToIdentifier($nodeId, $identifier)
+    {
+        $this->identifiers[$identifier][] = $this->getNodeById($nodeId);
+    }
+
+    public function addRelationshipToIdentifier($relationshipId, $identifier)
+    {
+        $this->identifiers[$identifier][] = $this->getRelationship($relationshipId);
+    }
+
+    public function addRowToIdentifier($value, $identifier)
+    {
+        $this->identifiers[$identifier] = $value;
+    }
+
+    public function get($identifier)
+    {
+        if (!array_key_exists($identifier, $this->identifiers)) {
+            throw new \InvalidArgumentException(sprintf('The identifier %s is not defined', $identifier));
+        }
+
+        if (count($this->identifiers[$identifier]) === 1) {
+            return $this->identifiers[$identifier][0];
+        }
+
+        return $this->identifiers[$identifier];
+
     }
 }
