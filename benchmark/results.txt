@@ -1,0 +1,15 @@
+Benchmarking client instantation without cache, with result formatter enabled, 1000 runs
+Runned in 51.304757833481 seconds, using 7.75 mb memory
+--------------------------
+Benchmarking client instatation with cache enabled, 1000 runs
+Runned in 0.10484790802002 seconds, using 7.75 mb memory
+--------------------------
+Running 1000 statements with immediate tx commits
+Runned in 8.3988671302795 seconds, using 8 mb memory
+--------------------------
+Running 1000 statements in one transaction commit
+Runned in 3.4637598991394 seconds, using 8.25 mb memory
+--------------------------
+Handling big graph Response format, 1000 nodes with more edges
+Runned in 1.4977011680603 seconds, using 30.5 mb memory
+--------------------------
