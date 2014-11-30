@@ -136,12 +136,12 @@ class Node
         return array_key_exists($name, $this->properties);
     }
 
-    public function addInboundRelationship(Relationship &$relationship)
+    public function addInboundRelationship(Relationship $relationship)
     {
         $this->inboundRelationships[$relationship->getId()] = $relationship;
     }
 
-    public function addOutboundRelationship(Relationship &$relationship)
+    public function addOutboundRelationship(Relationship $relationship)
     {
         $this->outboundRelationships[$relationship->getId()] = $relationship;
     }
