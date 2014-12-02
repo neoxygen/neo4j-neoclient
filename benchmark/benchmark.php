@@ -85,7 +85,7 @@ $q = null;
 
 // ---------- Running 1000 statements with immediate tx commits
 
-$output .= 'Running 1000 statements in one transaction commit'.PHP_EOL;
+$output .= 'Running 1000 statements in one transaction commit, separate requests using the TransactionManager'.PHP_EOL;
 
 $client = ClientBuilder::create()
     ->addDefaultLocalConnection()
@@ -100,6 +100,39 @@ for ($i=0; $i < 1000; $i++) {
     $tx->pushQuery($q, $p);
 }
 $tx->commit();
+$end = microtime(true);
+$usage = convert(memory_get_peak_usage(true));
+$diff = $end - $start;
+$output .= sprintf('Runned in %s seconds, using %s memory', $diff, $usage).PHP_EOL;
+$output .= '--------------------------'.PHP_EOL;
+
+$client = null;
+$i = null;
+$p = null;
+$q = null;
+
+
+// ---------- Running 1000 statements with immediate tx commits
+
+$output .= 'Running 1000 statements in one transaction commit, same request'.PHP_EOL;
+
+$client = ClientBuilder::create()
+    ->addDefaultLocalConnection()
+    //->setAutoFormatResponse(true)
+    ->build();
+
+$start = microtime(true);
+$statements = [];
+for ($i=0; $i < 1000; $i++) {
+    $q = 'CREATE (n {tx_id:{id}})';
+    $p = ['id' => $i];
+    $st = [
+        'statement' => $q,
+        'parameters' => $p
+    ];
+    $statements[] = $st;
+}
+$client->sendMultiple($statements);
 $end = microtime(true);
 $usage = convert(memory_get_peak_usage(true));
 $diff = $end - $start;
