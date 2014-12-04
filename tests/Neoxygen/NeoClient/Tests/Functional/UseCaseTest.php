@@ -19,13 +19,10 @@ class UseCaseTest extends \PHPUnit_Framework_TestCase
     public function testConnectivity()
     {
         $client = $this->getClient();
+        $root = $client->getRoot()->getBody();
 
-        $default = [
-            'management' => 'http://localhost:7474/db/manage/',
-            'data' => 'http://localhost:7474/db/data/'
-        ];
-
-        $this->assertEquals($default, $client->getRoot()->getBody());
+        $this->assertArrayHasKey('data', $root);
+        $this->assertArrayHasKey('management', $root);
     }
 
     public function testCreatingElement()
@@ -108,7 +105,7 @@ class UseCaseTest extends \PHPUnit_Framework_TestCase
     protected function getClient()
     {
         return ClientBuilder::create()
-            ->addConnection('default','http','localhost',7474)
+            ->addConnection('default','http','localhost',7474, true, '', '4287e44985b04c7536c523ca6ea8e67c')
             ->setAutoFormatResponse(true)
             ->build();
     }

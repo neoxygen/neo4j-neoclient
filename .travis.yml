@@ -8,6 +8,7 @@ php:
 env:
   - NEO_VERSION="2.1.5"
   - NEO_VERSION="2.1.6"
+  - NEO_VERSION="2.2.0-M01"
 
 before_install:
     - sudo apt-get update > /dev/null
@@ -21,6 +22,7 @@ before_script:
     - mv tests/database_settings.yml.dist tests/database_settings.yml
 
 script:
+    - ./tests/setNeoToken.sh
     - vendor/bin/phpunit
 
 notifications:
