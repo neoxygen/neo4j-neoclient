@@ -511,6 +511,11 @@ $client = ClientBuilder::create()
 
 Your password will automatically be encoded in base64 for the Authorization.
 
+#### Note for Neo4j2.2
+
+Since the Neo4j 2.2.0-M01, a dedicated authentication endpoint has been integrated and will be backported to 2.1.x, to use this 
+system, just provide an empty user name and the token as password in your connection.
+
 ### Convenience methods for the `Authentication extension`
 
 #### listUsers | List the users registered in the connection authentication extension
