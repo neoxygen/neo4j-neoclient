@@ -19,13 +19,10 @@ class UseCaseTest extends \PHPUnit_Framework_TestCase
     public function testConnectivity()
     {
         $client = $this->getClient();
+        $root = $client->getRoot()->getBody();
 
-        $default = [
-            'management' => 'http://localhost:7474/db/manage/',
-            'data' => 'http://localhost:7474/db/data/'
-        ];
-
-        $this->assertEquals($default, $client->getRoot()->getBody());
+        $this->assertArrayHasKey('data', $root);
+        $this->assertArrayHasKey('management', $root);
     }
 
     public function testCreatingElement()
