@@ -25,6 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface,
 use Neoxygen\NeoClient\DependencyInjection\NeoClientExtension,
     Neoxygen\NeoClient\DependencyInjection\Compiler\ConnectionRegistryCompilerPass,
     Neoxygen\NeoClient\DependencyInjection\Compiler\NeoClientExtensionsCompilerPass,
+    Neoxygen\NeoClient\DependencyInjection\Compiler\AliasesCompilerPass,
     Neoxygen\NeoClient\DependencyInjection\Compiler\EventSubscribersCompilerPass;
 
 class ClientBuilder
@@ -398,6 +399,7 @@ class ClientBuilder
         }
         $extension = new NeoClientExtension();
         $this->serviceContainer->registerExtension($extension);
+        $this->serviceContainer->addCompilerPass(new AliasesCompilerPass());
         $this->serviceContainer->addCompilerPass(new ConnectionRegistryCompilerPass());
         $this->serviceContainer->addCompilerPass(new NeoClientExtensionsCompilerPass());
         $this->serviceContainer->addCompilerPass(new EventSubscribersCompilerPass());

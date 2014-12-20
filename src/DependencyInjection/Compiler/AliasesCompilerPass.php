@@ -12,23 +12,16 @@
 
 namespace Neoxygen\NeoClient\DependencyInjection\Compiler;
 
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
-class EventSubscribersCompilerPass implements CompilerPassInterface
+class AliasesCompilerPass implements CompilerPassInterface
 {
 
     public function process(ContainerBuilder $container)
     {
-        $subscribers = $container->findTaggedServiceIds('neoclient.service_event_subscriber');
-        $ev = $container->getDefinition('neoclient.event_dispatcher');
-        foreach ($subscribers as $id => $params) {
-            $definition = $container->getDefinition($id);
-            $class = $definition->getClass();
-            $ev->addMethodCall(
-                'addSubscriberService',
-                array($id, $class)
-            );
-        }
+        $container->setAlias('event_dispatcher', 'neoclient.event_dispatcher');
+        $container->setAlias('logger', 'neoclient.logger');
     }
 }

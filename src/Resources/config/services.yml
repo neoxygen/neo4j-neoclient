@@ -11,7 +11,7 @@ services:
     class: "Neoxygen\\NeoClient\\HttpClient\\GuzzleHttpClient"
     arguments: ["@event_dispatcher", "?@neoclient.ha_manager"]
 
-  logger:
+  neoclient.logger:
     class: "Neoxygen\\NeoClient\\Logger\\LoggerManager"
 
   neoclient.extension_manager:
@@ -22,7 +22,7 @@ services:
     class: "Neoxygen\\NeoClient\\Formatter\\ResponseFormatterManager"
     arguments: ["%response_formatter_class%"]
 
-  event_dispatcher:
+  neoclient.event_dispatcher:
     class: "Symfony\\Component\\EventDispatcher\\ContainerAwareEventDispatcher"
     arguments: ["@service_container"]
 
