@@ -169,17 +169,16 @@ class Result
         $this->identifiers[$identifier][] = $value;
     }
 
-    public function get($identifier)
+    public function get($identifier, $default = null, $skipSingle = false)
     {
         if (!array_key_exists($identifier, $this->identifiers)) {
-            return null;
+            return $default;
         }
 
-        if (count($this->identifiers[$identifier]) === 1) {
-            return $this->identifiers[$identifier][0];
+        if ($skipSingle) {
+            return $this->identifiers[$identifier];
         }
 
-        return $this->identifiers[$identifier];
-
+        return $this->identifiers[$identifier][0];
     }
 }
