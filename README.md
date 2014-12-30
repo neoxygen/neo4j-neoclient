@@ -70,6 +70,17 @@ $client = ClientBuilder::create()
 
 The build method will process configuration settings and return you a `Client` instance.
 
+#### Configuring the connection timeout
+
+You can configure the default timeout during the build process :
+
+```php
+$client = ClientBuilder::create()
+    ->addDefaultLocalConnection()
+    ->setDefaultTimeout(20) // <-- Timeout of 20 seconds for http requests
+    ->build();
+```
+
 ### Usage
 
 You have now full access to the database.
