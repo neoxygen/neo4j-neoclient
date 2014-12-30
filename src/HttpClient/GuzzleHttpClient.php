@@ -31,10 +31,13 @@ class GuzzleHttpClient implements HttpClientInterface
 
     private $connectionsUsed = [];
 
-    public function __construct(EventDispatcherInterface $eventDispatcher)
+    private $defaultTimeout;
+
+    public function __construct($defaultTimeOut, EventDispatcherInterface $eventDispatcher)
     {
         $this->client = new Client();
         $this->eventDispatcher = $eventDispatcher;
+        $this->defaultTimeout = (int) $defaultTimeOut;
     }
 
     public function sendRequest(Request $request)
@@ -50,7 +53,7 @@ class GuzzleHttpClient implements HttpClientInterface
         if ($request->isSecured()) {
             $defaults['auth'] = [$request->getUser(), $request->getPassword()];
         }
-        $defaults['timeout'] = null !== $request->getTimeout() ? $request->getTimeout() : 5;
+        $defaults['timeout'] = null !== $request->getTimeout() ? $request->getTimeout() : $this->defaultTimeout;
         $url = $request->getUrl();
 
         $httpRequest = $this->client->createRequest($request->getMethod(), $url, $defaults);

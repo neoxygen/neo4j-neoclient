@@ -49,6 +49,7 @@ class Definition implements ConfigurationInterface
                     ->end()
             ->end()
         ->end()
+        ->integerNode('default_timeout')->defaultValue(5)->end()
         ->arrayNode('extensions')
                 ->prototype('array')
                     ->children()

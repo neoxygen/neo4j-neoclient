@@ -49,6 +49,7 @@ class NeoClientExtension implements  ExtensionInterface
         $this->addListeners($config);
         $this->registerCustomCommands($config);
         $container->setParameter('loggers', $config['loggers']);
+        $container->setParameter('default_timeout', $config['default_timeout']);
 
         $formatterClass = $config['response_formatter_class'];
         $container->setParameter('response_formatter_class', $formatterClass);

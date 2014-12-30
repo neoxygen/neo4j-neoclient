@@ -174,6 +174,19 @@ class ClientBuilder
     }
 
     /**
+     * Sets the default timeout for the http connection request
+     *
+     * @param int $seconds
+     * @return $this
+     */
+    public function setDefaultTimeout($seconds)
+    {
+        $this->configuration['default_timeout'] = (int) $seconds;
+
+        return $this;
+    }
+
+    /**
      * Sets whether or not the response from the API should be formatted by the ResponseFormatter
      *
      * @param  bool  $auto
