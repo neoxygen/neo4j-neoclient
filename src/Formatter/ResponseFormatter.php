@@ -173,7 +173,7 @@ class ResponseFormatter implements ResponseFormatterInterface
 
     private function processRestEltType($elts, $columns, $idx)
     {
-        if (isset($elts[0])) {
+        if (isset($elts[0]) && is_array($elts[0])) {
             foreach ($elts as $elt) {
                 $this->processRestEltType($elt, $columns, $idx);
             }
