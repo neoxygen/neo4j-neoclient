@@ -44,7 +44,7 @@ class GuzzleHttpClient implements HttpClientInterface
     {
         $this->dispatchPreSend($request);
         $defaults = [];
-        if ($request->hasBody()){
+        if ($request->hasBody()) {
             $defaults['body'] = $request->getBody();
         }
         if ($request->hasQueryStrings()) {
@@ -60,18 +60,17 @@ class GuzzleHttpClient implements HttpClientInterface
         $httpRequest->setHeader('Content-Type', 'application/json');
         $httpRequest->setHeader('Accept', 'application/json');
 
-
         try {
             $response = $this->client->send($httpRequest);
             $this->dispatchPostRequestSend($request, $response);
             if ($request->getUrl() !== $url) {
                 return $this->sendRequest($request);
             }
+
             return $this->getResponse($response);
         } catch (RequestException $e) {
             return $this->dispatchHttpException($request, $e);
         }
-
 
     }
 

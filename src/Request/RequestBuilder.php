@@ -2,7 +2,6 @@
 
 namespace Neoxygen\NeoClient\Request;
 
-use Neoxygen\NeoClient\Request\Request;
 use Neoxygen\NeoClient\Connection\ConnectionManager;
 
 class RequestBuilder
@@ -17,9 +16,9 @@ class RequestBuilder
     /**
      * @param $method
      * @param $path
-     * @param null $body
-     * @param null $queryStrings
-     * @param null $conn
+     * @param  null    $body
+     * @param  null    $queryStrings
+     * @param  null    $conn
      * @return Request
      */
     public function buildRequest($method, $path, $body = null, $queryStrings = null, $conn = null, $queryMode = null)
@@ -32,7 +31,7 @@ class RequestBuilder
         $request->setQueryStrings($queryStrings);
         $request->setConnection($connection->getAlias());
         $request->setQueryMode($queryMode);
-        if ($connection->isAuth()){
+        if ($connection->isAuth()) {
             $request->setAuthMode(true);
             $request->setUser($connection->getAuthUser());
             $request->setPassword($connection->getAuthPassword());

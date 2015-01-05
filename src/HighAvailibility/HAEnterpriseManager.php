@@ -104,7 +104,7 @@ class HAEnterpriseManager implements EventSubscriberInterface
         if (isset($this->fails[$conn]) && $this->fails[$conn] >= 5) {
             if ($request->hasQueryMode()) {
                 if ($request->getQueryMode() === 'READ') {
-                    if ($this->connectionManager->hasNextSlave([$conn])){
+                    if ($this->connectionManager->hasNextSlave([$conn])) {
                         $next = $this->connectionManager->getNextSlave([$conn]);
                         $this->setHaPrimarySlave($next);
                         $request->setInfoFromConnection($this->connectionManager->getConnection($next));
@@ -170,8 +170,7 @@ class HAEnterpriseManager implements EventSubscriberInterface
 
     private function getHAConfigAfterFailure()
     {
-        if (!file_exists($this->getHAFailureFile())){
-
+        if (!file_exists($this->getHAFailureFile())) {
             return array();
         }
         $content = file_get_contents($this->getHAFailureFile());

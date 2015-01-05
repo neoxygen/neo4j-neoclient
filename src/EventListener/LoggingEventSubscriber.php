@@ -30,7 +30,7 @@ class LoggingEventSubscriber implements EventSubscriberInterface
         $level = strtoupper($event->getLevel());
         $message = (string) $event->getMessage();
         $context = $event->getContext();
-        if (!is_array($context)){
+        if (!is_array($context)) {
             $context = array();
         }
         $this->logger->log($level, $message, $context);

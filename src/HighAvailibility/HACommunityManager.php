@@ -79,10 +79,10 @@ class HACommunityManager implements EventSubscriberInterface
         $this->fails[$request->getConnection()] = null;
         $this->slavesUsed = [];
         $this->masterUsed = null;
-        if ($request->hasQueryMode()){
+        if ($request->hasQueryMode()) {
             if ($request->getQueryMode() === 'WRITE') {
                 $master = $this->connectionManager->getMasterConnection()->getAlias();
-                if ($request->getConnection() === $master){
+                if ($request->getConnection() === $master) {
                     $slaves = $this->connectionManager->getSlaves();
                     $slave = current($slaves);
                     $this->writeReplicationUsed[] = $slave;
@@ -110,7 +110,7 @@ class HACommunityManager implements EventSubscriberInterface
         if (isset($this->fails[$conn]) && $this->fails[$conn] >= 5) {
             if ($request->hasQueryMode()) {
                 if ($request->getQueryMode() === 'READ') {
-                    if ($this->connectionManager->hasNextSlave([$conn])){
+                    if ($this->connectionManager->hasNextSlave([$conn])) {
                         $next = $this->connectionManager->getNextSlave([$conn]);
                         $request->setInfoFromConnection($this->connectionManager->getConnection($next));
                     }

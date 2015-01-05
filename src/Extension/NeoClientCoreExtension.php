@@ -69,10 +69,10 @@ class NeoClientCoreExtension extends AbstractExtension
      * Convenience method that invoke the sendCypherQueryCommand
      * and passes given query and parameters arguments
      *
-     * @param  string      $query              The query to send
-     * @param  array       $parameters         Map of query parameters
-     * @param  string|null $conn               The alias of the connection to use
-     * @param  string|null $queryMode           The mode of the query, could be WRITE or READ
+     * @param  string      $query      The query to send
+     * @param  array       $parameters Map of query parameters
+     * @param  string|null $conn       The alias of the connection to use
+     * @param  string|null $queryMode  The mode of the query, could be WRITE or READ
      * @return mixed
      */
     public function sendCypherQuery($query, array $parameters = array(), $conn = null, $queryMode = null)
@@ -86,8 +86,8 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * @param array $statements
-     * @param null $conn
+     * @param  array                                  $statements
+     * @param  null                                   $conn
      * @return \Neoxygen\NeoClient\Formatter\Response
      */
     public function sendMultiple(array $statements, $conn = null)
@@ -526,7 +526,6 @@ class NeoClientCoreExtension extends AbstractExtension
 
         return $this->handleHttpResponse($response);
     }
-
 
     /**
      * Retrieve paths between two nodes

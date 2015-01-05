@@ -20,7 +20,7 @@ class PostRequestSendEvent extends Event
 
     /**
      * @param RequestInterface $request
-     * @param Response $response
+     * @param Response         $response
      */
     public function __construct(RequestInterface $request, Response $response)
     {

@@ -14,7 +14,6 @@ namespace Neoxygen\NeoClient;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Neoxygen\NeoClient\Request\Response;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * @method getRoot($conn = null)

@@ -228,7 +228,7 @@ class ConnectionManager
     public function getConnectionAliases()
     {
         $aliases = [];
-        foreach ($this->connections as $k => $c){
+        foreach ($this->connections as $k => $c) {
             $aliases[$k] = $k;
         }
 
@@ -237,7 +237,7 @@ class ConnectionManager
 
     public function getMasterConnectionAlias()
     {
-        if ($this->isHA()){
+        if ($this->isHA()) {
             return $this->getMasterConnection()->getAlias();
         }
 

@@ -271,7 +271,7 @@ class Request implements RequestInterface
     public function setInfoFromConnection(Connection $connection)
     {
         $this->connection = $connection->getAlias();
-        if ($connection->isAuth()){
+        if ($connection->isAuth()) {
             $this->authMode = true;
             $this->user = $connection->getAuthUser();
             $this->password = $connection->getAuthPassword();

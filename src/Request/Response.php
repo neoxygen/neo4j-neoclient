@@ -64,5 +64,4 @@ class Response
         $this->result = $result;
     }
 
-
 }

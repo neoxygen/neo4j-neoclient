@@ -176,7 +176,7 @@ class ClientBuilder
     /**
      * Sets the default timeout for the http connection request
      *
-     * @param int $seconds
+     * @param  int   $seconds
      * @return $this
      */
     public function setDefaultTimeout($seconds)
@@ -197,6 +197,20 @@ class ClientBuilder
         $this->configuration['auto_format_response'] = $auto;
 
         return $this;
+    }
+
+    /**
+     * Defines the class to use as Response Formatter, should implements <code>\Neoxygen\NeoClient\Formatter\ResponseFormatterInterface</code>
+     *
+     * @param string $class
+     */
+    public function setResponseFormatterClass($class)
+    {
+        if (null === $class) {
+            throw new \InvalidArgumentException('A string should be passed as response formatter class');
+        }
+
+        $this->configuration['response_formatter_class'] = $class;
     }
 
     /**
@@ -404,7 +418,7 @@ class ClientBuilder
         if ($this->isCacheEnabled()) {
             $file = $this->getCachePath() . self::CACHE_FILENAME;
             if (file_exists($file)) {
-                include_once($file);
+                include_once $file;
                 $this->serviceContainer = new \ProjectServiceContainer();
 
                 return new Client($this->serviceContainer);
@@ -495,7 +509,7 @@ class ClientBuilder
     {
         if ($this->serviceContainer->has('neoclient.ha_manager')) {
             $file = sys_get_temp_dir().DIRECTORY_SEPARATOR.'neoclient_ha_config_after_failure';
-            if (!file_exists($file)){
+            if (!file_exists($file)) {
                 return;
             }
             $content = file_get_contents($file);
