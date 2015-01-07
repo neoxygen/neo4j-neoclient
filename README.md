@@ -12,7 +12,6 @@
 +[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/neoxygen/neo4j-neoclient?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
-This is the documentation for the upcoming 2.0 branch. For the doc of the 1.6.*, checkout the 1.6 branch.
 
 ## Introduction
 
@@ -28,7 +27,7 @@ NeoClient is the most advanced and flexible [Neo4j](http://neo4j.com) Client for
 ### Requirements
 
 * PHP 5.4+
-* A Neo4j database
+* A Neo4j database (minimum version 2.1.6)
 
 ## Installation and basic usage
 
