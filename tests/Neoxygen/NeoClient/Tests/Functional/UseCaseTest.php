@@ -102,6 +102,16 @@ class UseCaseTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($client->createIndex('Person', 'email', 'name'));
     }
 
+    public function testRelationshipProperty()
+    {
+        $client = $this->getClient();
+        $q = 'CREATE (n:RelationshipTest)-[r:SOME_REL {time:1234} ]->(x:RelTest) RETURN r';
+        $r = $client->sendCypherQuery($q)->getResult();
+        $rel = $r->get('r');
+        $this->assertEquals(1234, $rel->getProperty('time'));
+        $this->assertNull($rel->getProperty('nonExist'));
+    }
+
     protected function getClient()
     {
         return ClientBuilder::create()
