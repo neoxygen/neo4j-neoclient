@@ -60,7 +60,7 @@ class Relationship
 
     public function getProperty($name)
     {
-        $value = isset($this->properties[$name]) ?: null;
+        $value = isset($this->properties[$name]) ? $this->properties[$name] : null;
 
         return $value;
     }
