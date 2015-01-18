@@ -101,7 +101,7 @@ class ClientBuilder
         if (!file_exists($file)) {
             throw new \InvalidArgumentException(sprintf('Configuration file "%s" not found', $file));
         }
-        $this->loadedConfig = Yaml::parse($file);
+        $this->loadedConfig = Yaml::parse(file_get_contents($file));
 
         return $this;
     }
