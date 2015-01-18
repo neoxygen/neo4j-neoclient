@@ -18,6 +18,6 @@ class NeoClientAuthExtension implements NeoClientExtensionInterface
 {
     public static function getAvailableCommands()
     {
-        return Yaml::parse(__DIR__.'/../Resources/extensions/auth_commands.yml');
+        return Yaml::parse(file_get_contents(__DIR__.'/../Resources/extensions/auth_commands.yml'));
     }
 }
