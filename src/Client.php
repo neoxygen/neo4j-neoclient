@@ -12,6 +12,7 @@
 
 namespace Neoxygen\NeoClient;
 
+use Neoxygen\NeoClient\Transaction\PreparedTransaction;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Neoxygen\NeoClient\Request\Response;
 
@@ -30,11 +31,12 @@ use Neoxygen\NeoClient\Request\Response;
  * @method sendMultiple(array $statements, $conn = null)
  * @method sendWriteQuery($query, array $parameters = array())
  * @method sendReadQuery($query, array $parameters = array())
+ * @method PreparedTransaction prepareTransaction($conn = null)
  */
 
 class Client
 {
-    private $serviceContainer;
+    private static $serviceContainer;
 
     private $responseFormatter;
 
@@ -44,10 +46,29 @@ class Client
 
     public function __construct(ContainerInterface $container)
     {
-        $this->serviceContainer = $container;
+        self::$serviceContainer = $container;
         $formatterClass = $container->getParameter('response_formatter_class');
         $this->responseFormatter = $formatterClass;
         self::$logger = $container->get('logger');
+    }
+
+    public static function commitPreparedTransaction(PreparedTransaction $transaction)
+    {
+        return self::call('sendMultiple', array($transaction->getStatements(), $transaction->getConnection()));
+    }
+
+    /**
+     * @param $method
+     * @param $attributes
+     * @return \Neoxygen\NeoClient\Request\Response
+     */
+    private static function call($method, $attributes)
+    {
+        $extManager = self::$serviceContainer->get('neoclient.extension_manager');
+
+        $response = $extManager->execute($method, $attributes);
+
+        return $response;
     }
 
     /**
@@ -57,7 +78,7 @@ class Client
      */
     public function getConnectionManager()
     {
-        return $this->serviceContainer->get('neoclient.connection_manager');
+        return self::$serviceContainer->get('neoclient.connection_manager');
     }
 
     /**
@@ -78,7 +99,7 @@ class Client
      */
     public function getCommandManager()
     {
-        return $this->serviceContainer->get('neoclient.command_manager');
+        return self::$serviceContainer->get('neoclient.command_manager');
     }
 
     /**
@@ -86,7 +107,7 @@ class Client
      */
     public function getServiceContainer()
     {
-        return $this->serviceContainer;
+        return self::$serviceContainer;
     }
 
     /**

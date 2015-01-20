@@ -12,6 +12,7 @@
 
 namespace Neoxygen\NeoClient\Extension;
 
+use Neoxygen\NeoClient\Transaction\PreparedTransaction;
 use Symfony\Component\Yaml\Yaml;
 use Neoxygen\NeoClient\Transaction\Transaction,
     Neoxygen\NeoClient\Request\Response;
@@ -97,6 +98,15 @@ class NeoClientCoreExtension extends AbstractExtension
         $httpResponse = $command->execute();
 
         return $this->handleHttpResponse($httpResponse);
+    }
+
+    /**
+     * @param null|string $conn Connection alias
+     * @return PreparedTransaction
+     */
+    public function prepareTransaction($conn = null)
+    {
+        return new PreparedTransaction($conn);
     }
 
     /**
