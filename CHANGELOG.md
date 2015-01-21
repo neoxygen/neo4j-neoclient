@@ -1,3 +1,14 @@
+## 2.1
+
+### Bug fixes
+
+* getProperty() on relationship was returning always true
+* sendMultiple was not converting empty arrays to maps in the Request json body
+
+### Features
+
+* added Prepared Transaction instance for handling multiple statements in one commit
+
 ## 2.0
 
 * The bootstrap process has been changed

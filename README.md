@@ -355,6 +355,38 @@ $r = $client->sendCypherQuery($q)->getResult();
 print_r($r->get('flwers')); // Returns an array of node objects
 ```
 
+## Sending multiple statements in one transaction
+
+There are 3 ways for sending multiple statements in one and only transaction.
+
+1. Using an open transaction throughout the process (see the next section "Transaction Management")
+2. Creating an array of statements and sending it all together with the `sendMultiple` method
+3. Using a `PreparedTransaction` instance
+
+### Using sendMultiple
+
+If you want to build yourself an array of statements and send it once with sendMultiple :
+
+```php
+$statements = array();
+$statements[] = array('statement' => 'MATCH (n:User {id:{id}})', 'parameters' => ['id' => 123]);
+$statements[] = array('statement' => 'MATCH (n:User) RETURN count(n));
+$client->sendMultiple($statements);
+```
+
+### PreparedTransaction
+
+Handy if you want to keep a `PreparedTransaction` instance throughout your code :
+
+```php
+$tx = $client->prepareTransaction()
+    ->pushQuery($q, $p)
+    ->pushQuery($q2)
+    ->pushQuery($q3)
+    ->commit();
+```
+
+
 ## Transaction Management
 
 The library comes with a Transaction Manager removing you the burden of parsing commit urls and transaction ids.
