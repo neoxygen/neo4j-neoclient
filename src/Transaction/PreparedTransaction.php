@@ -54,7 +54,7 @@ class PreparedTransaction
             throw new CommandException('Cypher query parameters should be of type array or null');
         }
         $this->statements[] = array(
-            'statements' => $q,
+            'statement' => $q,
             'parameters' => $p
         );
 

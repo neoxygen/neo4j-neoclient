@@ -42,8 +42,17 @@ class CoreSendMultipleCypherCommand extends AbstractCommand
 
     public function prepareBody()
     {
+        $sts = [];
+        foreach ($this->statements as $statement) {
+            $statement['resultDataContents'] = $this->resultDataContents;
+            if (empty($statement['parameters'])) {
+                unset($statement['parameters']);
+            }
+            $sts[] = $statement;
+        }
+
         $body = array(
-            'statements' => $this->statements
+            'statements' => $sts
         );
 
         return json_encode($body);

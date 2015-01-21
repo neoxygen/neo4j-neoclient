@@ -91,10 +91,10 @@ class NeoClientCoreExtension extends AbstractExtension
      * @param  null                                   $conn
      * @return \Neoxygen\NeoClient\Formatter\Response
      */
-    public function sendMultiple(array $statements, $conn = null)
+    public function sendMultiple(array $statements, $conn = null, $queryMode = null)
     {
         $command = $this->invoke('neo.send_cypher_multiple', $conn);
-        $command->setArguments($statements);
+        $command->setArguments($statements, $this->resultDataContent, $queryMode);
         $httpResponse = $command->execute();
 
         return $this->handleHttpResponse($httpResponse);
