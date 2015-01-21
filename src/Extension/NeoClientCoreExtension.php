@@ -12,6 +12,7 @@
 
 namespace Neoxygen\NeoClient\Extension;
 
+use Neoxygen\NeoClient\Transaction\PreparedTransaction;
 use Symfony\Component\Yaml\Yaml;
 use Neoxygen\NeoClient\Transaction\Transaction,
     Neoxygen\NeoClient\Request\Response;
@@ -90,13 +91,22 @@ class NeoClientCoreExtension extends AbstractExtension
      * @param  null                                   $conn
      * @return \Neoxygen\NeoClient\Formatter\Response
      */
-    public function sendMultiple(array $statements, $conn = null)
+    public function sendMultiple(array $statements, $conn = null, $queryMode = null)
     {
         $command = $this->invoke('neo.send_cypher_multiple', $conn);
-        $command->setArguments($statements);
+        $command->setArguments($statements, $this->resultDataContent, $queryMode);
         $httpResponse = $command->execute();
 
         return $this->handleHttpResponse($httpResponse);
+    }
+
+    /**
+     * @param null|string $conn Connection alias
+     * @return PreparedTransaction
+     */
+    public function prepareTransaction($conn = null)
+    {
+        return new PreparedTransaction($conn);
     }
 
     /**
