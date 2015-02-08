@@ -112,6 +112,23 @@ class UseCaseTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($rel->getProperty('nonExist'));
     }
 
+    public function testFormatterIsResetBetweenQueries()
+    {
+        $client = $this->getClient();
+        $q1 = "CREATE (n:FormatterTest {name:'User1'})";
+        $q2 = "CREATE (n:FormatterTest {name:'User2'})";
+        $client->sendCypherQuery($q1);
+        $client->sendCypherQuery($q2);
+        $match1 = "MATCH (n:FormatterTest {name:'User1'}) RETURN n";
+        $match2 = "MATCH (n:FormatterTest {name:'User2'}) RETURN n";
+        $r1 = $client->sendCypherQuery($match1)->getResult();
+        $this->assertCount(1, $r1->getNodes());
+        $r2 = $client->sendCypherQuery($match2)->getResult();
+        $this->assertCount(1, $r2->getNodes());
+        $this->assertCount(1, $r1->getnodes());
+
+    }
+
     protected function getClient()
     {
         return ClientBuilder::create()

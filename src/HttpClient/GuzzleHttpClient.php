@@ -80,7 +80,7 @@ class GuzzleHttpClient implements HttpClientInterface
 
         if ($httpResponse->getBody()) {
             $resp = (string) $httpResponse->getBody();
-            $decoded = \GuzzleHttp\json_decode($resp, true);
+            $decoded = json_decode($resp, true);
             $response->setBody($decoded);
             }
 

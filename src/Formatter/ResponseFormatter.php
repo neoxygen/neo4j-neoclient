@@ -78,6 +78,7 @@ class ResponseFormatter implements ResponseFormatterInterface
             $rows = $this->formatRows($response);
             $responseObject->setRows($rows);
         }
+        $this->reset();
 
         return $responseObject;
     }
@@ -217,12 +218,6 @@ class ResponseFormatter implements ResponseFormatterInterface
 
     public function reset()
     {
-        unset($this->nodesMap);
-        unset($this->relationshipsMap);
-        unset($this->errors);
-        unset($this->nodesByLabel);
-        unset($this->relsByType);
-        unset($this->result);
         $this->isNew = true;
         $this->nodesMap = array();
         $this->relationshipsMap = array();
