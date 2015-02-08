@@ -6,9 +6,9 @@ php:
     - 5.6
 
 env:
-  - NEO_VERSION="2.1.5"
   - NEO_VERSION="2.1.6"
-  - NEO_VERSION="2.2.0-M01"
+  - NEO_VERSION="2.1.7"
+  - NEO_VERSION="2.2.0-M03"
 
 before_install:
     - sudo apt-get update > /dev/null

@@ -15,35 +15,75 @@ namespace Neoxygen\NeoClient\Formatter;
 class ResponseFormatter implements ResponseFormatterInterface
 {
 
+    /**
+     * @var array
+     */
     protected $nodesMap = [];
 
+    /**
+     * @var array
+     */
     protected $relationshipsMap = [];
 
+    /**
+     * @var array
+     */
     protected $errors = [];
 
+    /**
+     * @var array
+     */
     protected $nodesByLabel = [];
 
+    /**
+     * @var array
+     */
     protected $relsByType = [];
 
+    /**
+     * @var Result
+     */
     protected $result;
 
+    /**
+     * @var bool
+     */
     protected $isNew = true;
 
+    /**
+     * Returns the Neo4j API ResultDataContent to be used during Cypher queries
+     *
+     * @return array
+     */
     public static function getDefaultResultDataContents()
     {
         return array('row', 'graph', 'rest');
     }
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->result = new Result();
     }
 
+    /**
+     * Returns whether or not the Neo4j response contains errors
+     *
+     * @return bool
+     */
     public function hasErrors()
     {
         return null !== $this->errors;
     }
 
+    /**
+     * Formats the Neo4j Response
+     *
+     * @param $response
+     * @return Response
+     */
     public function format($response)
     {
         $this->isNew = false;
@@ -51,26 +91,11 @@ class ResponseFormatter implements ResponseFormatterInterface
         $responseObject->setRawResponse($response);
 
         if ($responseObject->containsResults()) {
-            $resultSet = $response;
-
-            foreach ($resultSet['results'] as $result) {
-                foreach ($result['data'] as $data) {
-                    if (isset($data['graph'])) {
-                        foreach ($data['graph']['nodes'] as $node) {
-                            $this->nodesMap[$node['id']] = $node;
-                        }
-                        foreach ($data['graph']['relationships'] as $rel) {
-                            $this->relationshipsMap[$rel['id']] = $rel;
-                        }
-                    }
-                }
-            }
-
+            $this->extractResults($response);
             $this->prepareResultSet();
             $this->prepareNodesByLabels();
             $this->prepareRelationshipsByType();
             $this->processIdentification($response);
-
             $responseObject->setResult($this->result);
         }
 
@@ -78,21 +103,34 @@ class ResponseFormatter implements ResponseFormatterInterface
             $rows = $this->formatRows($response);
             $responseObject->setRows($rows);
         }
+
         $this->reset();
 
         return $responseObject;
     }
 
+    /**
+     * Returns the nodes from the Response array
+     *
+     * @return array
+     */
     public function getNodes()
     {
         return $this->nodesMap;
     }
 
+    /**
+     * @return array
+     */
     public function getRelationships()
     {
         return $this->relationshipsMap;
     }
 
+    /**
+     * @param $type
+     * @return null
+     */
     public function getRelationshipsByType($type)
     {
         if ($this->relsByType[$type]) {
@@ -102,6 +140,10 @@ class ResponseFormatter implements ResponseFormatterInterface
         return null;
     }
 
+    /**
+     * @param $label
+     * @return mixed
+     */
     public function getNodesByLabel($label)
     {
         if ($this->nodesByLabel[$label]) {
@@ -109,16 +151,25 @@ class ResponseFormatter implements ResponseFormatterInterface
         }
     }
 
+    /**
+     * @return bool
+     */
     public function hasNodes()
     {
         return !empty($this->nodesMap);
     }
 
+    /**
+     * @return bool
+     */
     public function hasRelationships()
     {
         return !empty($this->relationshipsMap);
     }
 
+    /**
+     * @return array
+     */
     public function getGraph()
     {
         return array(
@@ -127,6 +178,30 @@ class ResponseFormatter implements ResponseFormatterInterface
         );
     }
 
+    /**
+     * Extracts the results from the Neo4j Response
+     *
+     * @param $resultSet
+     */
+    private function extractResults($resultSet)
+    {
+        foreach ($resultSet['results'] as $result) {
+            foreach ($result['data'] as $data) {
+                if (isset($data['graph'])) {
+                    foreach ($data['graph']['nodes'] as $node) {
+                        $this->nodesMap[$node['id']] = $node;
+                    }
+                    foreach ($data['graph']['relationships'] as $rel) {
+                        $this->relationshipsMap[$rel['id']] = $rel;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     */
     private function prepareNodesByLabels()
     {
         foreach ($this->nodesMap as $node) {
@@ -136,6 +211,9 @@ class ResponseFormatter implements ResponseFormatterInterface
         }
     }
 
+    /**
+     *
+     */
     private function prepareRelationshipsByType()
     {
         foreach ($this->relationshipsMap as $rel) {
@@ -143,6 +221,9 @@ class ResponseFormatter implements ResponseFormatterInterface
         }
     }
 
+    /**
+     *
+     */
     private function prepareResultSet()
     {
         foreach ($this->nodesMap as $node) {
@@ -160,6 +241,9 @@ class ResponseFormatter implements ResponseFormatterInterface
         }
     }
 
+    /**
+     * @param $response
+     */
     private function processIdentification($response)
     {
         foreach ($response['results'] as $result) {
@@ -172,6 +256,11 @@ class ResponseFormatter implements ResponseFormatterInterface
         }
     }
 
+    /**
+     * @param $elts
+     * @param $columns
+     * @param $idx
+     */
     private function processRestEltType($elts, $columns, $idx)
     {
         if (isset($elts[0]) && is_array($elts[0])) {
@@ -191,6 +280,10 @@ class ResponseFormatter implements ResponseFormatterInterface
         }
     }
 
+    /**
+     * @param $response
+     * @return array
+     */
     private function formatRows($response)
     {
         $rows = [];
@@ -216,6 +309,9 @@ class ResponseFormatter implements ResponseFormatterInterface
 
     }
 
+    /**
+     * Resets the results collections for next Result process
+     */
     public function reset()
     {
         $this->isNew = true;
@@ -225,6 +321,9 @@ class ResponseFormatter implements ResponseFormatterInterface
         $this->result = new Result();
     }
 
+    /**
+     * @return bool
+     */
     public function isNew()
     {
         return $this->isNew;
