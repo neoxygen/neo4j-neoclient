@@ -129,6 +129,21 @@ class UseCaseTest extends \PHPUnit_Framework_TestCase
 
     }
 
+    public function testCreateTransaction()
+    {
+        $client = $this->getClient();
+        $q = 'FOREACH (i in range(0,24)| CREATE (n:Person {id: i} ))';
+        $client->sendCypherQuery($q);
+        $query = 'MATCH (n:`Person`) RETURN n LIMIT 25';
+
+        $tx = $client->createTransaction();
+        $tx->pushQuery($query);
+        $tx->commit();
+        $this->assertCount(1, $tx->getResults());
+        $this->assertCount(25, $tx->getResults()[0]->getNodes());
+
+    }
+
     protected function getClient()
     {
         return ClientBuilder::create()

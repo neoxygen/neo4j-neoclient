@@ -50,6 +50,7 @@ class CorePushToTransactionCommand extends AbstractCommand
         if (!empty($this->parameters)) {
             $statement['parameters'] = $this->parameters;
         }
+        $statement['resultDataContents'] = $this->resultDataContents;
         $body = array(
             'statements' => array(
                 $statement

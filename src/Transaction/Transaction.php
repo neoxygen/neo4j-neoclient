@@ -35,6 +35,7 @@ class Transaction
     {
         $this->checkIfOpened();
         $response = $this->handleResponse($this->client->pushToTransaction($this->transactionId, $query, $parameters, $this->conn));
+        $this->results[] = $response->getResult();
 
         return $this;
     }

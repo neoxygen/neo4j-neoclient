@@ -376,7 +376,7 @@ class NeoClientCoreExtension extends AbstractExtension
     public function pushToTransaction($transactionId, $query, array $parameters = array(), $conn = null)
     {
         $httpResponse = $this->invoke('neo.push_to_transaction', $conn)
-            ->setArguments($transactionId, $query, $parameters)
+            ->setArguments($transactionId, $query, $parameters, $this->resultDataContent)
             ->execute();
 
         return $this->handleHttpResponse($httpResponse);
