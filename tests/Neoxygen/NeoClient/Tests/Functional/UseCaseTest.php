@@ -144,6 +144,25 @@ class UseCaseTest extends \PHPUnit_Framework_TestCase
 
     }
 
+    public function testReuseNodeIdForOtherQuery()
+    {
+        $client = $this->getClient();
+        $q = 'FOREACH (i in range(0,24)| CREATE (n:Person {id: i} ))';
+        $client->sendCypherQuery($q);
+        $q2 = 'MATCH (n:Person) RETURN n LIMIT 1';
+        $r = $client->sendCypherQuery($q2)->getResult();
+        $node = $r->get('n');
+        $r2 = $client->sendCypherQuery('
+    MATCH (a:Person)
+    WHERE id(a) = {id}
+    RETURN a
+', array(
+            'id' => $node->getId()
+        ))->getResult();
+
+        $this->assertEquals($node->getId(), $r2->get('a')->getId());
+    }
+
     protected function getClient()
     {
         return ClientBuilder::create()

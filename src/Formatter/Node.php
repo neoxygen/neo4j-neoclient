@@ -46,7 +46,7 @@ class Node
      */
     public function __construct($id, array $labels = array(), array $properties = array())
     {
-        $this->id = $id;
+        $this->id = (int) $id;
         $this->labels = $labels;
         $this->properties = $properties;
         $this->inboundRelationships = array();
