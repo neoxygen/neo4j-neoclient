@@ -19,7 +19,7 @@ $i = 0;
 while ($i < 1000) {
     $client = ClientBuilder::create()
         ->setAutoFormatResponse(true)
-        ->addDefaultLocalConnection()
+        ->addConnection('default', 'http', 'localhost', 7474, true, 'neo4j', 'veryCoolMax')
         ->build();
 
     $i++;
@@ -42,7 +42,7 @@ while ($i < 1000) {
     $client = ClientBuilder::create()
         ->enableCache(__DIR__.'/../cache/')
         ->setAutoFormatResponse(true)
-        ->addDefaultLocalConnection()
+        ->addConnection('default', 'http', 'localhost', 7474, true, 'neo4j', 'veryCoolMax')
         ->build();
 
     $i++;
@@ -62,7 +62,7 @@ $i = null;
 $output .= 'Running 1000 statements with immediate tx commits'.PHP_EOL;
 
 $client = ClientBuilder::create()
-    ->addDefaultLocalConnection()
+    ->addConnection('default', 'http', 'localhost', 7474, true, 'neo4j', 'veryCoolMax')
     ->setAutoFormatResponse(true)
     ->build();
 
@@ -88,7 +88,7 @@ $q = null;
 $output .= 'Running 1000 statements in one transaction commit, separate requests using the TransactionManager'.PHP_EOL;
 
 $client = ClientBuilder::create()
-    ->addDefaultLocalConnection()
+    ->addConnection('default', 'http', 'localhost', 7474, true, 'neo4j', 'veryCoolMax')
     ->setAutoFormatResponse(true)
     ->build();
 
@@ -117,7 +117,7 @@ $q = null;
 $output .= 'Running 1000 statements in one transaction commit, same request'.PHP_EOL;
 
 $client = ClientBuilder::create()
-    ->addDefaultLocalConnection()
+    ->addConnection('default', 'http', 'localhost', 7474, true, 'neo4j', 'veryCoolMax')
     //->setAutoFormatResponse(true)
     ->build();
 
@@ -148,9 +148,10 @@ $q = null;
 
 $output .= 'Handling big graph Response format, 1000 nodes with more edges'.PHP_EOL;
 $client = ClientBuilder::create()
-    ->addDefaultLocalConnection()
+    ->addConnection('default', 'http', 'localhost', 7474, true, 'neo4j', 'veryCoolMax')
     ->setAutoFormatResponse(true)
     ->build();
+$client->sendCypherQuery('MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE r,n');
 
 $start = microtime(true);
 $q = 'MATCH (n) OPTIONAL MATCH (n)-[r]-() RETURN r,n LIMIT 1000';
