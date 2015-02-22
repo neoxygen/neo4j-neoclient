@@ -17,6 +17,7 @@ class CoreCommandsTest extends \PHPUnit_Framework_TestCase
         $client = ClientBuilder::create()
             ->addConnection('default', 'http', 'localhost', 7474, true, 'neo4j', 'veryCoolMax')
             ->setAutoFormatResponse(true)
+            ->setDefaultTimeout(15)
             ->build();
 
         $this->client = $client;
