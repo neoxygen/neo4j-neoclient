@@ -1,4 +1,4 @@
-## 2.1.4
+## 2.1.5
 
 * Fixed node internal ID not being casted to int
 * added a parameter `removeIndexIfExist` defaulted to false in `createUniqueConstraint` which will drop automatically 
@@ -6,6 +6,12 @@ the index when creating the constraint
 
 ```php
 $client->createUniqueConstraint('Repository', 'name', true);
+```
+
+* added `changePassword` method for Neo4j 2.2M04+
+
+```php
+$client->changePassword('myUser', 'newPassword');
 ```
 
 ## 2.1

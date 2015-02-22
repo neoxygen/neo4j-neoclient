@@ -549,6 +549,26 @@ $client->checkHAAvailable('serverxxx'); // Returns master|slave|false
 
 ### Authenticated connection
 
+#### For Neo4j 2.2
+
+Provide the user and the password when building the connection :
+
+```php
+$client = ClientBuilder::create()
+    ->addConnection('default', 'http', 'myserver.dev', 7474, true, 'username', 'password')
+    ->build();
+```
+
+#### changing the password
+
+The client has a built-in method for changing the password :
+
+```php
+$client->changePassword('user', 'newPassword');
+```
+
+#### Before Neo4j 2.2 using the Auth Extension
+
 If you are using the `authenticated-extension` or using [GrapheneDB](http://graphenedb.com) instance, you can specify to use the authMode for the connection and provide your username
 and password :
 
@@ -559,11 +579,6 @@ $client = ClientBuilder::create()
 ```
 
 Your password will automatically be encoded in base64 for the Authorization.
-
-#### Note for Neo4j2.2
-
-Since the Neo4j 2.2.0-M01, a dedicated authentication endpoint has been integrated and will be backported to 2.1.x, to use this 
-system, just provide an empty user name and the token as password in your connection.
 
 ### Convenience methods for the `Authentication extension`
 
