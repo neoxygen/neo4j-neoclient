@@ -172,7 +172,7 @@ class UseCaseTest extends \PHPUnit_Framework_TestCase
         } catch (Neo4jException $e) {
 
         }
-        $this->assertTrue($client->createUniqueConstraint('Tag', 'name'));
+        $this->assertTrue($client->createUniqueConstraint('Tag', 'name', true));
     }
 
     protected function getClient()
