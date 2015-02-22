@@ -410,6 +410,15 @@ class NeoClientCoreExtension extends AbstractExtension
         return $this->handleHttpResponse($response);
     }
 
+    public function changePassword($user, $newPassword, $conn = null)
+    {
+        $response = $this->invoke('neo.core_change_password', $conn)
+            ->setArguments($user, $newPassword)
+            ->execute();
+
+        return $response;
+    }
+
     /**
      * @param  string|null $connectionAlias
      * @return mixed

@@ -47,3 +47,6 @@ neo.core_get_ha_slave:
 
 neo.core_get_ha_available:
   class: "Neoxygen\\NeoClient\\Command\\Core\\CoreGetHAAvailableCommand"
+
+neo.core_change_password:
+  class: "Neoxygen\\NeoClient\\Command\\Core\\CoreChangePasswordCommand"

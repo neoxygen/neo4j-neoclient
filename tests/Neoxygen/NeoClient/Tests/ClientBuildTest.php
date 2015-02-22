@@ -17,7 +17,7 @@ class ClientBuildTest extends \PHPUnit_Framework_TestCase
     public function testAddConnection()
     {
         $builder = ClientBuilder::create()
-            ->addConnection('default', 'http', 'localhost', 7474, true, '', '4287e44985b04c7536c523ca6ea8e67c');
+            ->addConnection('default', 'http', 'localhost', 7474, true, 'neo4j', 'neoclient');
 
         $this->assertArrayHasKey('default', $builder->getConfiguration()['connections']);
     }
