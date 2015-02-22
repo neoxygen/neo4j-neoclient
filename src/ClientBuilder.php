@@ -13,8 +13,6 @@
 namespace Neoxygen\NeoClient;
 
 use Monolog\Logger;
-use Neoxygen\NeoClient\Exception\CommandException,
-    Neoxygen\NeoClient\Transaction\Transaction;
 use Neoxygen\NeoClient\Exception\Neo4jException;
 use Psr\Log\NullLogger,
     Psr\Log\LoggerInterface;

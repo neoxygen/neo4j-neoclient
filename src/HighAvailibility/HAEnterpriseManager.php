@@ -151,7 +151,7 @@ class HAEnterpriseManager implements EventSubscriberInterface
         $command->setConnection($connAlias);
         try {
             $response = $command->execute();
-            if ($response instanceof Response && true == $response->getBody()) {
+            if ($response instanceof Response && true === $response->getBody()) {
                 return true;
             }
         } catch (HttpException $e) {
@@ -180,7 +180,7 @@ class HAEnterpriseManager implements EventSubscriberInterface
     }
 
     /**
-     * @todo move this to cache directory, this means that for HA, the enable cache config must be set
+     * Retrieve the new HAconfig after a failure
      */
     private function getHAFailureFile()
     {

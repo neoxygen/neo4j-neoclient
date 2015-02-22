@@ -650,14 +650,16 @@ class NeoClientCoreExtension extends AbstractExtension
         }
         $q = 'MATCH p='.$startNPattern.$in.$rel.$out.$endNPattern;
         if (isset($startNodeProperties['id'])) {
-            $q .= ' WHERE id(start) = '.$startNodeProperties['id'];
+            $q .= ' WHERE id(start) = {startNodeId}';
+            $parameters['startNodeId'] = $startNodeProperties['id'];
         }
 
         if (isset($endNodeProperties['id'])) {
             if (isset($startNodeProperties['id'])) {
                 $q .= ' AND ';
             }
-            $q .= ' WHERE id(end) = '.$endNodeProperties['id'];
+            $q .= ' WHERE id(end) = {endNodeId}';
+            $parameters['endNodeId'] = $endNodeProperties['id'];
         }
 
         $q .= ' RETURN p';

@@ -44,7 +44,6 @@ class Transaction
     {
         $this->checkIfOpened();
         $execution = $this->client->pushMultipleToTransaction($this->getTransactionId(), $statements, $this->conn);
-        $response = $this->handleResponse($execution);
 
         return $this;
     }
