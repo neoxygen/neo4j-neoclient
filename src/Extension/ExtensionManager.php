@@ -3,7 +3,6 @@
 namespace Neoxygen\NeoClient\Extension;
 
 use Neoxygen\NeoClient\Command\CommandManager,
-    Neoxygen\NeoClient\Extension\NeoClientExtensionInterface,
     Neoxygen\NeoClient\Formatter\ResponseFormatterManager,
     Neoxygen\NeoClient\Connection\ConnectionManager;
 

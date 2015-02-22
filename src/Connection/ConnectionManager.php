@@ -29,11 +29,6 @@ class ConnectionManager
      */
     private $defaultConnection;
 
-    /**
-     * @var array Array containing connections fallbacks configs
-     */
-    private $fallbacks;
-
     private $master;
 
     private $slaves = [];
@@ -44,7 +39,6 @@ class ConnectionManager
     public function __construct()
     {
         $this->connections = array();
-        $this->fallbacks = array();
     }
 
     /**

@@ -29,8 +29,6 @@ class GuzzleHttpClient implements HttpClientInterface
 
     private $eventDispatcher;
 
-    private $connectionsUsed = [];
-
     private $defaultTimeout;
 
     public function __construct($defaultTimeOut, EventDispatcherInterface $eventDispatcher)
@@ -101,7 +99,6 @@ class GuzzleHttpClient implements HttpClientInterface
 
     private function dispatchHttpException(Request $request, RequestException $exception)
     {
-        $conn = $request->getConnection();
         $event = new HttpExceptionEvent($request, $exception);
         $this->eventDispatcher->dispatch(NeoClientEvents::NEO_HTTP_EXCEPTION, $event);
 

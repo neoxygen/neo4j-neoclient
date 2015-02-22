@@ -45,7 +45,7 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
 
     public function onPostRequestSend(PostRequestSendEvent $event)
     {
-        $request = $event->getRequest();
+
     }
 
     public function onHttpException(HttpExceptionEvent $event)

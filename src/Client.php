@@ -14,7 +14,6 @@ namespace Neoxygen\NeoClient;
 
 use Neoxygen\NeoClient\Transaction\PreparedTransaction;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Neoxygen\NeoClient\Request\Response;
 
 /**
  * @method getRoot($conn = null)
@@ -39,8 +38,6 @@ use Neoxygen\NeoClient\Request\Response;
 class Client
 {
     private static $serviceContainer;
-
-    private $responseFormatter;
 
     private $lastResponse;
 
