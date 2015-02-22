@@ -2,13 +2,13 @@
 
 namespace Neoxygen\NeoClient\HighAvailibility;
 
-use Neoxygen\NeoClient\Connection\ConnectionManager,
-    Neoxygen\NeoClient\Event\HttpExceptionEvent,
-    Neoxygen\NeoClient\Event\PostRequestSendEvent,
-    Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent,
-    Neoxygen\NeoClient\NeoClientEvents,
-    Neoxygen\NeoClient\HttpClient\GuzzleHttpClient,
-    Neoxygen\NeoClient\Client;
+use Neoxygen\NeoClient\Connection\ConnectionManager;
+use Neoxygen\NeoClient\Event\HttpExceptionEvent;
+use Neoxygen\NeoClient\Event\PostRequestSendEvent;
+use Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent;
+use Neoxygen\NeoClient\NeoClientEvents;
+use Neoxygen\NeoClient\HttpClient\GuzzleHttpClient;
+use Neoxygen\NeoClient\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -32,14 +32,14 @@ class HACommunityManager implements EventSubscriberInterface
     {
         return array(
             NeoClientEvents::NEO_HTTP_EXCEPTION => array(
-                'onRequestException', 50
+                'onRequestException', 50,
             ),
             NeoClientEvents::NEO_POST_REQUEST_SEND => array(
-                'onSuccessfulRequest', 50
+                'onSuccessfulRequest', 50,
             ),
             NeoClientEvents::NEO_PRE_REQUEST_SEND => array(
-                'onPreSend', 50
-            )
+                'onPreSend', 50,
+            ),
         );
     }
 

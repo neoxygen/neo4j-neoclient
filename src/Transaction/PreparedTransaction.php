@@ -46,6 +46,7 @@ class PreparedTransaction
     /**
      * @param $q
      * @param null|array $p
+     *
      * @return $this
      */
     public function pushQuery($q, $p = array())
@@ -55,7 +56,7 @@ class PreparedTransaction
         }
         $this->statements[] = array(
             'statement' => $q,
-            'parameters' => $p
+            'parameters' => $p,
         );
 
         return $this;
@@ -90,9 +91,10 @@ class PreparedTransaction
     }
 
     /**
-     * Commit the prepared transaction
+     * Commit the prepared transaction.
      *
      * @return mixed
+     *
      * @throws \Neoxygen\NeoClient\Exception\CommandException if the transaction was already committed
      */
     public function commit()

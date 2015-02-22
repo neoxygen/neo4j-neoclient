@@ -1,13 +1,12 @@
 <?php
 
 /**
- * This file is part of the "-[:NEOXYGEN]->" NeoClient package
+ * This file is part of the "-[:NEOXYGEN]->" NeoClient package.
  *
  * (c) Neoxygen.io <http://neoxygen.io>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 namespace Neoxygen\NeoClient\Command\Core;
@@ -41,13 +40,13 @@ class CoreChangePasswordCommand extends AbstractCommand
 
     private function getPath()
     {
-        return self::PATH . $this->user . '/password';
+        return self::PATH.$this->user.'/password';
     }
 
     private function getBody()
     {
         $b = array(
-            'password' => $this->password
+            'password' => $this->password,
         );
 
         $body = json_encode($b);

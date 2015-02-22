@@ -1,13 +1,12 @@
 <?php
 
 /**
- * This file is part of the "-[:NEOXYGEN]->" NeoClient package
+ * This file is part of the "-[:NEOXYGEN]->" NeoClient package.
  *
  * (c) Neoxygen.io <http://neoxygen.io>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 namespace Neoxygen\NeoClient\Extension;
@@ -15,8 +14,8 @@ namespace Neoxygen\NeoClient\Extension;
 use Neoxygen\NeoClient\Exception\Neo4jException;
 use Neoxygen\NeoClient\Transaction\PreparedTransaction;
 use Symfony\Component\Yaml\Yaml;
-use Neoxygen\NeoClient\Transaction\Transaction,
-    Neoxygen\NeoClient\Request\Response;
+use Neoxygen\NeoClient\Transaction\Transaction;
+use Neoxygen\NeoClient\Request\Response;
 
 class NeoClientCoreExtension extends AbstractExtension
 {
@@ -26,9 +25,10 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Convenience method that returns the root of the Neo4j Api
+     * Convenience method that returns the root of the Neo4j Api.
      *
-     * @param  string|null $conn The alias of the connection to use
+     * @param string|null $conn The alias of the connection to use
+     *
      * @return mixed
      */
     public function getRoot($conn = null)
@@ -40,9 +40,10 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Convenience method that invoke the GetVersionCommand
+     * Convenience method that invoke the GetVersionCommand.
      *
-     * @param  string|null $conn The alias of the connection to use
+     * @param string|null $conn The alias of the connection to use
+     *
      * @return mixed
      */
     public function getNeo4jVersion($conn = null)
@@ -54,10 +55,9 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Convenience method for pinging the Connection
+     * Convenience method for pinging the Connection.
      *
-     * @param  string|null $conn The alias of the connection to use
-     * @return null        The command treating the ping will throw an Exception if the connection can not be made
+     * @param string|null $conn The alias of the connection to use
      */
     public function ping($conn = null)
     {
@@ -69,12 +69,13 @@ class NeoClientCoreExtension extends AbstractExtension
 
     /**
      * Convenience method that invoke the sendCypherQueryCommand
-     * and passes given query and parameters arguments
+     * and passes given query and parameters arguments.
      *
-     * @param  string      $query      The query to send
-     * @param  array       $parameters Map of query parameters
-     * @param  string|null $conn       The alias of the connection to use
-     * @param  string|null $queryMode  The mode of the query, could be WRITE or READ
+     * @param string      $query      The query to send
+     * @param array       $parameters Map of query parameters
+     * @param string|null $conn       The alias of the connection to use
+     * @param string|null $queryMode  The mode of the query, could be WRITE or READ
+     *
      * @return mixed
      */
     public function sendCypherQuery($query, array $parameters = array(), $conn = null, $queryMode = null)
@@ -88,8 +89,9 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * @param  array                                  $statements
-     * @param  null                                   $conn
+     * @param array $statements
+     * @param null  $conn
+     *
      * @return \Neoxygen\NeoClient\Formatter\Response
      */
     public function sendMultiple(array $statements, $conn = null, $queryMode = null)
@@ -103,6 +105,7 @@ class NeoClientCoreExtension extends AbstractExtension
 
     /**
      * @param null|string $conn Connection alias
+     *
      * @return PreparedTransaction
      */
     public function prepareTransaction($conn = null)
@@ -111,9 +114,10 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Convenience method that invoke the GetLabelsCommand
+     * Convenience method that invoke the GetLabelsCommand.
      *
-     * @param  string|null $conn The alias of the connection to use
+     * @param string|null $conn The alias of the connection to use
+     *
      * @return mixed
      */
     public function getLabels($conn = null)
@@ -122,7 +126,6 @@ class NeoClientCoreExtension extends AbstractExtension
         $httpResponse = $command->execute();
 
         return $this->handleHttpResponse($httpResponse);
-
     }
 
     public function renameLabel($oldLabel, $newLabel, $conn = null)
@@ -135,10 +138,11 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Creates an index on a label
+     * Creates an index on a label.
      *
-     * @param  string       $label
-     * @param  string|array $property
+     * @param string       $label
+     * @param string|array $property
+     *
      * @return bool
      */
     public function createIndex($label, $property)
@@ -159,10 +163,11 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Returns the list of indexed properties for a given Label
+     * Returns the list of indexed properties for a given Label.
      *
-     * @param  string      $label
-     * @param  string|null $conn
+     * @param string      $label
+     * @param string|null $conn
+     *
      * @return array
      */
     public function listIndex($label, $conn = null)
@@ -184,10 +189,11 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Drops an index on a label
+     * Drops an index on a label.
      *
-     * @param  string $label
-     * @param  string $property
+     * @param string $label
+     * @param string $property
+     *
      * @return bool
      */
     public function dropIndex($label, $property)
@@ -208,8 +214,9 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * @param  array       $labels
-     * @param  string|null $conn
+     * @param array       $labels
+     * @param string|null $conn
+     *
      * @return Response
      */
     public function listIndexes(array $labels = array(), $conn = null)
@@ -230,11 +237,12 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Checks if a property is indexed for a given label
+     * Checks if a property is indexed for a given label.
      *
-     * @param  string      $label
-     * @param  string      $propertyKey
-     * @param  string|null $conn
+     * @param string      $label
+     * @param string      $propertyKey
+     * @param string|null $conn
+     *
      * @return bool
      */
     public function isIndexed($label, $propertyKey, $conn = null)
@@ -248,9 +256,10 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Returns the registered constraints
+     * Returns the registered constraints.
      *
-     * @param  string|null $conn
+     * @param string|null $conn
+     *
      * @return mixed
      */
     public function getUniqueConstraints($conn = null)
@@ -272,10 +281,11 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Create a unique constraint on a label
+     * Create a unique constraint on a label.
      *
-     * @param  string       $label
-     * @param  string|array $property
+     * @param string       $label
+     * @param string|array $property
+     *
      * @return bool
      */
     public function createUniqueConstraint($label, $property, $removeIndexIfExist = false)
@@ -295,21 +305,22 @@ class NeoClientCoreExtension extends AbstractExtension
             } catch (Neo4jException $e) {
                 if (true === $removeIndexIfExist && 8000 === $e->getCode() && !is_array($property)) {
                     $this->dropIndex($label, $property);
+
                     return $this->createUniqueConstraint($label, $property);
                 }
                 throw($e);
             }
-
         }
 
         return true;
     }
 
     /**
-     * Drops a unique constraint on a label
+     * Drops a unique constraint on a label.
      *
-     * @param  string       $label
-     * @param  string|array $property
+     * @param string       $label
+     * @param string|array $property
+     *
      * @return bool
      */
     public function dropUniqueConstraint($label, $property)
@@ -331,9 +342,10 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Creates a new Transaction Handler
+     * Creates a new Transaction Handler.
      *
-     * @param  string|null $conn The connection alias
+     * @param string|null $conn The connection alias
+     *
      * @return Transaction
      */
     public function createTransaction($conn = null)
@@ -344,9 +356,10 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Convenience method that invoke the OpenTransactionCommand
+     * Convenience method that invoke the OpenTransactionCommand.
      *
-     * @param  string|null $conn The alias of the connection to use
+     * @param string|null $conn The alias of the connection to use
+     *
      * @return mixed
      */
     public function openTransaction($conn = null)
@@ -358,10 +371,11 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Convenience method that invoke the RollBackTransactionCommand
+     * Convenience method that invoke the RollBackTransactionCommand.
      *
-     * @param  int         $id   The id of the transaction
-     * @param  string|null $conn The alias of the connection to use
+     * @param int         $id   The id of the transaction
+     * @param string|null $conn The alias of the connection to use
+     *
      * @return mixed
      */
     public function rollBackTransaction($id, $conn = null)
@@ -375,12 +389,13 @@ class NeoClientCoreExtension extends AbstractExtension
 
     /**
      * Convenience method that invoke the PushToTransactionCommand
-     * and passes the query and parameters as arguments
+     * and passes the query and parameters as arguments.
      *
-     * @param  int         $transactionId The transaction id
-     * @param  string      $query         The query to send
-     * @param  array       $parameters    Parameters map of the query
-     * @param  string|null $conn          The alias of the connection to use
+     * @param int         $transactionId The transaction id
+     * @param string      $query         The query to send
+     * @param array       $parameters    Parameters map of the query
+     * @param string|null $conn          The alias of the connection to use
+     *
      * @return mixed
      */
     public function pushToTransaction($transactionId, $query, array $parameters = array(), $conn = null)
@@ -403,12 +418,13 @@ class NeoClientCoreExtension extends AbstractExtension
 
     /**
      * Convenience method that commit the transaction
-     * and passes the optional query and parameters as arguments
+     * and passes the optional query and parameters as arguments.
      *
-     * @param  int         $transactionId The transaction id
-     * @param  string|null $query         The query to send
-     * @param  array       $parameters    Parameters map of the query
-     * @param  string|null $conn          The alias of the connection to use
+     * @param int         $transactionId The transaction id
+     * @param string|null $query         The query to send
+     * @param array       $parameters    Parameters map of the query
+     * @param string|null $conn          The alias of the connection to use
+     *
      * @return mixed
      */
     public function commitTransaction($transactionId, $query = null, array $parameters = array(), $conn = null)
@@ -430,7 +446,8 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * @param  string|null $connectionAlias
+     * @param string|null $connectionAlias
+     *
      * @return mixed
      */
     public function listUsers($connectionAlias = null)
@@ -442,10 +459,11 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * @param  string      $user
-     * @param  string      $password
-     * @param  bool        $readOnly
-     * @param  string|null $connectionAlias
+     * @param string      $user
+     * @param string      $password
+     * @param bool        $readOnly
+     * @param string|null $connectionAlias
+     *
      * @return mixed
      */
     public function addUser($user, $password, $readOnly = false, $connectionAlias = null)
@@ -460,9 +478,10 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * @param  string      $user
-     * @param  string      $password
-     * @param  string|null $connectionAlias
+     * @param string      $user
+     * @param string      $password
+     * @param string|null $connectionAlias
+     *
      * @return mixed
      */
     public function removeUser($user, $password, $connectionAlias = null)
@@ -477,10 +496,11 @@ class NeoClientCoreExtension extends AbstractExtension
 
     /**
      * Convenience method for working with replication
-     * Sends a read only query
+     * Sends a read only query.
      *
-     * @param  string $query
-     * @param  array  $parameters
+     * @param string $query
+     * @param array  $parameters
+     *
      * @return mixed
      */
     public function sendReadQuery($query, array $parameters = array())
@@ -489,10 +509,11 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Convenience method for working with replication
+     * Convenience method for working with replication.
      *
-     * @param  string $query
-     * @param  array  $parameters
+     * @param string $query
+     * @param array  $parameters
+     *
      * @return mixed
      */
     public function sendWriteQuery($query, array $parameters = array())
@@ -501,7 +522,7 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Get the connection alias of the Master Connection
+     * Get the connection alias of the Master Connection.
      *
      * @return string
      */
@@ -511,7 +532,7 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Get the connection alias of the first Slave connection
+     * Get the connection alias of the first Slave connection.
      *
      * @return string
      */
@@ -521,7 +542,8 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * @param  string|null $conn
+     * @param string|null $conn
+     *
      * @return mixed
      */
     public function checkHAMaster($conn = null)
@@ -533,7 +555,8 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * @param  string|null $conn
+     * @param string|null $conn
+     *
      * @return mixed
      */
     public function checkHASlave($conn = null)
@@ -545,7 +568,8 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * @param  string|null $conn
+     * @param string|null $conn
+     *
      * @return mixed
      */
     public function checkHAAvailable($conn = null)
@@ -557,13 +581,14 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Retrieve paths between two nodes
+     * Retrieve paths between two nodes.
      *
-     * @param  array       $startNodeProperties
-     * @param  array       $endNodeProperties
-     * @param  int|null    $depth
-     * @param  string|null $direction
-     * @param  string|null $conn
+     * @param array       $startNodeProperties
+     * @param array       $endNodeProperties
+     * @param int|null    $depth
+     * @param string|null $direction
+     * @param string|null $conn
+     *
      * @return mixed
      */
     public function getPathBetween(array $startNodeProperties, array $endNodeProperties, $direction = null, $depth = null, $conn = null)
@@ -585,7 +610,7 @@ class NeoClientCoreExtension extends AbstractExtension
             $propsCount = count($startNodeProperties['properties']);
             $i = 0;
             foreach ($startNodeProperties['properties'] as $key => $value) {
-                $startNPattern .= $key . ': {start_'.$key.'}';
+                $startNPattern .= $key.': {start_'.$key.'}';
                 if ($value instanceof \DateTime) {
                     $value = $value->format('Ymdhis');
                 }
@@ -613,7 +638,7 @@ class NeoClientCoreExtension extends AbstractExtension
             $propsCount = count($endNodeProperties['properties']);
             $i = 0;
             foreach ($endNodeProperties['properties'] as $key => $value) {
-                $endNPattern .= $key . ': {end_'.$key.'}';
+                $endNPattern .= $key.': {end_'.$key.'}';
                 if ($value instanceof \DateTime) {
                     $value = $value->format('Ymdhis');
                 }

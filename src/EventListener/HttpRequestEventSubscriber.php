@@ -3,12 +3,12 @@
 namespace Neoxygen\NeoClient\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent,
-    Neoxygen\NeoClient\Event\PostRequestSendEvent,
-    Neoxygen\NeoClient\Event\HttpExceptionEvent,
-    Neoxygen\NeoClient\NeoClientEvents,
-    Neoxygen\NeoClient\Exception\HttpException,
-    Neoxygen\NeoClient\Client;
+use Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent;
+use Neoxygen\NeoClient\Event\PostRequestSendEvent;
+use Neoxygen\NeoClient\Event\HttpExceptionEvent;
+use Neoxygen\NeoClient\NeoClientEvents;
+use Neoxygen\NeoClient\Exception\HttpException;
+use Neoxygen\NeoClient\Client;
 use Psr\Log\LoggerInterface;
 
 class HttpRequestEventSubscriber implements EventSubscriberInterface
@@ -19,14 +19,14 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
     {
         return array(
             NeoClientEvents::NEO_PRE_REQUEST_SEND => array(
-                'onPreHttpRequestSend', 10
+                'onPreHttpRequestSend', 10,
             ),
             NeoClientEvents::NEO_POST_REQUEST_SEND => array(
-                'onPostRequestSend'
+                'onPostRequestSend',
             ),
             NeoClientEvents::NEO_HTTP_EXCEPTION => array(
-                'onHttpException', 10
-            )
+                'onHttpException', 10,
+            ),
         );
     }
 
@@ -40,12 +40,11 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
         $conn = $event->getRequest()->getConnection();
         $request = $event->getRequest();
         $mode = $request->hasQueryMode() ? $request->getQueryMode() : '';
-        $this->logger->log('debug', sprintf('Sending "%s" request to the "%s" connection',$mode,  $conn));
+        $this->logger->log('debug', sprintf('Sending "%s" request to the "%s" connection', $mode,  $conn));
     }
 
     public function onPostRequestSend(PostRequestSendEvent $event)
     {
-
     }
 
     public function onHttpException(HttpExceptionEvent $event)
@@ -54,6 +53,6 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
         $exception = $event->getException();
         $message = $exception->getMessage();
         Client::log('emergency', sprintf('Error on connection "%s" - %s', $request->getConnection(), $message));
-        throw new HttpException(sprintf('Error on Connection "%s" with message "%s"',$request->getConnection(), $message));
+        throw new HttpException(sprintf('Error on Connection "%s" with message "%s"', $request->getConnection(), $message));
     }
 }

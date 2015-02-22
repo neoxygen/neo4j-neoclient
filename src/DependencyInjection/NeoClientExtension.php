@@ -1,24 +1,23 @@
 <?php
 
 /**
- * This file is part of the "-[:NEOXYGEN]->" NeoClient package
+ * This file is part of the "-[:NEOXYGEN]->" NeoClient package.
  *
  * (c) Neoxygen.io <http://neoxygen.io>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 namespace Neoxygen\NeoClient\DependencyInjection;
 
 use Doctrine\Instantiator\Exception\InvalidArgumentException;
-use Symfony\Component\DependencyInjection\ContainerBuilder,
-    Symfony\Component\DependencyInjection\Loader\YamlFileLoader,
-    Symfony\Component\DependencyInjection\Extension\ExtensionInterface,
-    Symfony\Component\DependencyInjection\Definition,
-    Symfony\Component\Config\Definition\Processor,
-    Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\Config\Definition\Processor;
+use Symfony\Component\Config\FileLocator;
 use Neoxygen\NeoClient\DependencyInjection\Definition as ConfigDefinition;
 
 class NeoClientExtension implements  ExtensionInterface
@@ -87,9 +86,7 @@ class NeoClientExtension implements  ExtensionInterface
                     $container->setDefinition('neoclient.ha_manager', $definition);
                     break;
             }
-
         }
-
     }
 
     private function addConnectionDefinitions($config, $container)
@@ -171,7 +168,6 @@ class NeoClientExtension implements  ExtensionInterface
 
     private function addListeners(array $config)
     {
-
     }
 
     public function getAlias()

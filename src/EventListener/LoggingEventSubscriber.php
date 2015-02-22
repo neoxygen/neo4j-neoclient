@@ -3,8 +3,8 @@
 namespace Neoxygen\NeoClient\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Neoxygen\NeoClient\Event\LoggingEvent,
-    Neoxygen\NeoClient\NeoClientEvents;
+use Neoxygen\NeoClient\Event\LoggingEvent;
+use Neoxygen\NeoClient\NeoClientEvents;
 use Psr\Log\LoggerInterface;
 
 class LoggingEventSubscriber implements EventSubscriberInterface
@@ -15,8 +15,8 @@ class LoggingEventSubscriber implements EventSubscriberInterface
     {
         return array(
             NeoClientEvents::NEO_LOG_MESSAGE => array(
-                'writeLogMessage'
-            )
+                'writeLogMessage',
+            ),
         );
     }
 

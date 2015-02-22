@@ -1,13 +1,12 @@
 <?php
 
 /**
- * This file is part of the "-[:NEOXYGEN]->" NeoClient package
+ * This file is part of the "-[:NEOXYGEN]->" NeoClient package.
  *
  * (c) Neoxygen.io <http://neoxygen.io>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 namespace Neoxygen\NeoClient\Command\Auth;
@@ -46,7 +45,7 @@ class AuthRemoveUserCommand extends AbstractCommand
     protected function prepareBody()
     {
         $userField = array(
-            'user' => $this->user.':'.$this->password
+            'user' => $this->user.':'.$this->password,
         );
 
         return $userField;

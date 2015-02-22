@@ -1,13 +1,12 @@
 <?php
 
 /**
- * This file is part of the "-[:NEOXYGEN]->" NeoClient package
+ * This file is part of the "-[:NEOXYGEN]->" NeoClient package.
  *
  * (c) Neoxygen.io <http://neoxygen.io>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 namespace Neoxygen\NeoClient;
@@ -34,7 +33,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @method bool createIndex($label, $property)
  * @method bool createUniqueConstraint($label, $property, $removeIndexIfExist = false)
  */
-
 class Client
 {
     private static $serviceContainer;
@@ -59,6 +57,7 @@ class Client
     /**
      * @param $method
      * @param $attributes
+     *
      * @return \Neoxygen\NeoClient\Request\Response
      */
     private static function call($method, $attributes)
@@ -71,7 +70,7 @@ class Client
     }
 
     /**
-     * Returns the ConnectionManager Service
+     * Returns the ConnectionManager Service.
      *
      * @return \Neoxygen\NeoClient\Connection\ConnectionManager
      */
@@ -81,9 +80,10 @@ class Client
     }
 
     /**
-     * Returns the connection bound to the alias, or the default connection if no alias is provided
+     * Returns the connection bound to the alias, or the default connection if no alias is provided.
      *
-     * @param  string|null                               $alias
+     * @param string|null $alias
+     *
      * @return \Neoxygen\NeoClient\Connection\Connection The connection with alias "$alias"
      */
     public function getConnection($alias = null)
@@ -92,7 +92,7 @@ class Client
     }
 
     /**
-     * Returns the CommandManager Service
+     * Returns the CommandManager Service.
      *
      * @return \Neoxygen\NeoClient\Command\CommandManager
      */
@@ -112,6 +112,7 @@ class Client
     /**
      * @param $method
      * @param $attributes
+     *
      * @return \Neoxygen\NeoClient\Request\Response
      */
     public function __call($method, $attributes)

@@ -1,13 +1,12 @@
 <?php
 
 /**
- * This file is part of the "-[:NEOXYGEN]->" NeoClient package
+ * This file is part of the "-[:NEOXYGEN]->" NeoClient package.
  *
  * (c) Neoxygen.io <http://neoxygen.io>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 namespace Neoxygen\NeoClient\Formatter;
@@ -15,27 +14,27 @@ namespace Neoxygen\NeoClient\Formatter;
 class Node
 {
     /**
-     * @var int $id the node internal ID
+     * @var int the node internal ID
      */
     protected $id;
 
     /**
-     * @var array $labels Collection of the node labels
+     * @var array Collection of the node labels
      */
     protected $labels;
 
     /**
-     * @var array $properties The properties of the node
+     * @var array The properties of the node
      */
     protected $properties;
 
     /**
-     * @var array[Neoxygen\NeoClient\Formatter\Relationship] $inboundRelationships The collection of inbound relationships
+     * @var array[Neoxygen\NeoClient\Formatter\Relationship] The collection of inbound relationships
      */
     protected $inboundRelationships;
 
     /**
-     * @var array[Neoxygen\NeoClient\Formatter\Relationship] $outboundRelationships The collection of outbound relationships
+     * @var array[Neoxygen\NeoClient\Formatter\Relationship] The collection of outbound relationships
      */
     protected $outboundRelationships;
 
@@ -54,7 +53,7 @@ class Node
     }
 
     /**
-     * Returns the node internal id
+     * Returns the node internal id.
      *
      * @return int
      */
@@ -64,7 +63,6 @@ class Node
     }
 
     /**
-     *
      * @return array collection of node's labels
      */
     public function getLabels()
@@ -73,8 +71,9 @@ class Node
     }
 
     /**
-     * @param  string|null $label The label to check for
-     * @return bool        True if the label is matched or if no label is given if the node has minimum 1 label, false otherwise
+     * @param string|null $label The label to check for
+     *
+     * @return bool True if the label is matched or if no label is given if the node has minimum 1 label, false otherwise
      */
     public function hasLabel($label = null)
     {
@@ -94,14 +93,14 @@ class Node
     }
 
     /**
-     * Used when only one label is expected
+     * Used when only one label is expected.
      *
      * @return string|null the label of the node
      */
     public function getLabel()
     {
         if (empty($this->labels)) {
-            return null;
+            return;
         }
         reset($this->labels);
 
@@ -128,7 +127,7 @@ class Node
             return $this->properties[$name];
         }
 
-        return null;
+        return;
     }
 
     public function hasProperty($name)

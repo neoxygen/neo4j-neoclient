@@ -2,9 +2,9 @@
 
 namespace Neoxygen\NeoClient\Bundle\DataCollector;
 
-use Symfony\Component\HttpKernel\DataCollector\DataCollector,
-    Symfony\Component\HttpFoundation\Request,
-    Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\DataCollector\DataCollector;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class NeoClientDataCollector extends DataCollector
 {

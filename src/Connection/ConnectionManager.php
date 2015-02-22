@@ -1,24 +1,21 @@
 <?php
 
 /**
- * This file is part of the "-[:NEOXYGEN]->" NeoClient package
-*
-* (c) Neoxygen.io <http://neoxygen.io>
-*
-* For the full copyright and license information, please view the LICENSE
-* file that was distributed with this source code.
-*
-*/
+ * This file is part of the "-[:NEOXYGEN]->" NeoClient package.
+ *
+ * (c) Neoxygen.io <http://neoxygen.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Neoxygen\NeoClient\Connection;
 
-use Neoxygen\NeoClient\Connection\Connection,
-    Neoxygen\NeoClient\Exception\InvalidConnectionException;
+use Neoxygen\NeoClient\Exception\InvalidConnectionException;
 use Neoxygen\NeoClient\Exception\HttpException;
 
 class ConnectionManager
 {
-
     /**
      * @var array Array of all registered connections
      */
@@ -34,7 +31,7 @@ class ConnectionManager
     private $slaves = [];
 
     /**
-     * Initialize connections array
+     * Initialize connections array.
      */
     public function __construct()
     {
@@ -50,8 +47,7 @@ class ConnectionManager
     }
 
     /**
-     *
-     * Register a new Collection
+     * Register a new Collection.
      *
      * @param Connection $connection
      */
@@ -61,9 +57,11 @@ class ConnectionManager
     }
 
     /**
-     * @param  string|null                               $alias The connection's alias
+     * @param string|null $alias The connection's alias
+     *
      * @return \Neoxygen\NeoClient\Connection\Connection The requested connection
-     * @throws InvalidConnectionException                When the connection does not exist
+     *
+     * @throws InvalidConnectionException When the connection does not exist
      */
     public function getConnection($alias = null)
     {
@@ -86,7 +84,8 @@ class ConnectionManager
     }
 
     /**
-     * @return \Neoxygen\NeoClient\Connection\Connection                The default Connection if defined, the first connection in the connections array otherwise
+     * @return \Neoxygen\NeoClient\Connection\Connection The default Connection if defined, the first connection in the connections array otherwise
+     *
      * @throws \Neoxygen\NeoClient\Exception\InvalidConnectionException If no connections are configured
      */
     public function getDefaultConnection()
@@ -117,9 +116,10 @@ class ConnectionManager
     }
 
     /**
-     * Returns whether or not a connection exist for a given alias
+     * Returns whether or not a connection exist for a given alias.
      *
-     * @param  string $alias The connection's alias to verify the existence
+     * @param string $alias The connection's alias to verify the existence
+     *
      * @return bool
      */
     public function hasConnection($alias)
@@ -170,7 +170,7 @@ class ConnectionManager
             return $this->getConnection($this->master);
         }
 
-        return null;
+        return;
     }
 
     public function isHA()
@@ -212,11 +212,11 @@ class ConnectionManager
         if (null !== $this->master && !empty($this->slaves)) {
             return array(
                 'master' => $this->master,
-                'slaves' => $this->slaves
+                'slaves' => $this->slaves,
             );
         }
 
-        return null;
+        return;
     }
 
     public function getConnectionAliases()
@@ -235,7 +235,6 @@ class ConnectionManager
             return $this->getMasterConnection()->getAlias();
         }
 
-        return null;
+        return;
     }
-
 }

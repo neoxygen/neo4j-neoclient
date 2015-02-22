@@ -1,21 +1,20 @@
 <?php
 
 /**
- * This file is part of the "-[:NEOXYGEN]->" NeoClient package
+ * This file is part of the "-[:NEOXYGEN]->" NeoClient package.
  *
  * (c) Neoxygen.io <http://neoxygen.io>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 namespace Neoxygen\NeoClient\Logger;
 
-use Psr\Log\NullLogger,
-    Psr\Log\LoggerInterface;
-use Monolog\Logger,
-    Monolog\Handler\StreamHandler;
+use Psr\Log\NullLogger;
+use Psr\Log\LoggerInterface;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 class LoggerManager implements LoggerInterface
 {
@@ -44,7 +43,6 @@ class LoggerManager implements LoggerInterface
     public function createLogger($name, $config)
     {
         if (!isset($this->loggers[$name])) {
-
             $logger = new Logger($name);
             switch ($config['type']) {
                 case 'stream':

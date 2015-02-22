@@ -1,20 +1,18 @@
 <?php
 
 /**
- * This file is part of the "-[:NEOXYGEN]->" NeoClient package
+ * This file is part of the "-[:NEOXYGEN]->" NeoClient package.
  *
  * (c) Neoxygen.io <http://neoxygen.io>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 namespace Neoxygen\NeoClient\Formatter;
 
 class ResponseFormatter implements ResponseFormatterInterface
 {
-
     /**
      * @var array
      */
@@ -51,7 +49,7 @@ class ResponseFormatter implements ResponseFormatterInterface
     protected $isNew = true;
 
     /**
-     * Returns the Neo4j API ResultDataContent to be used during Cypher queries
+     * Returns the Neo4j API ResultDataContent to be used during Cypher queries.
      *
      * @return array
      */
@@ -61,7 +59,7 @@ class ResponseFormatter implements ResponseFormatterInterface
     }
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -69,7 +67,7 @@ class ResponseFormatter implements ResponseFormatterInterface
     }
 
     /**
-     * Returns whether or not the Neo4j response contains errors
+     * Returns whether or not the Neo4j response contains errors.
      *
      * @return bool
      */
@@ -79,9 +77,10 @@ class ResponseFormatter implements ResponseFormatterInterface
     }
 
     /**
-     * Formats the Neo4j Response
+     * Formats the Neo4j Response.
      *
      * @param $response
+     *
      * @return Response
      */
     public function format($response)
@@ -110,7 +109,7 @@ class ResponseFormatter implements ResponseFormatterInterface
     }
 
     /**
-     * Returns the nodes from the Response array
+     * Returns the nodes from the Response array.
      *
      * @return array
      */
@@ -129,7 +128,6 @@ class ResponseFormatter implements ResponseFormatterInterface
 
     /**
      * @param $type
-     * @return null
      */
     public function getRelationshipsByType($type)
     {
@@ -137,11 +135,12 @@ class ResponseFormatter implements ResponseFormatterInterface
             return $this->relsByType[$type];
         }
 
-        return null;
+        return;
     }
 
     /**
      * @param $label
+     *
      * @return mixed
      */
     public function getNodesByLabel($label)
@@ -174,12 +173,12 @@ class ResponseFormatter implements ResponseFormatterInterface
     {
         return array(
             'nodes' => $this->nodesMap,
-            'relationships' => $this->relationshipsMap
+            'relationships' => $this->relationshipsMap,
         );
     }
 
     /**
-     * Extracts the results from the Neo4j Response
+     * Extracts the results from the Neo4j Response.
      *
      * @param $resultSet
      */
@@ -282,6 +281,7 @@ class ResponseFormatter implements ResponseFormatterInterface
 
     /**
      * @param $response
+     *
      * @return array
      */
     private function formatRows($response)
@@ -301,16 +301,14 @@ class ResponseFormatter implements ResponseFormatterInterface
                 if (!empty($tmpColumns)) {
                     $rows[$col] = $tmpColumns[$k];
                 }
-
             }
         }
 
         return $rows;
-
     }
 
     /**
-     * Resets the results collections for next Result process
+     * Resets the results collections for next Result process.
      */
     public function reset()
     {
@@ -328,5 +326,4 @@ class ResponseFormatter implements ResponseFormatterInterface
     {
         return $this->isNew;
     }
-
 }

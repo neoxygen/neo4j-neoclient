@@ -2,16 +2,16 @@
 
 namespace Neoxygen\NeoClient\HighAvailibility;
 
-use Neoxygen\NeoClient\Connection\ConnectionManager,
-    Neoxygen\NeoClient\Command\CommandManager,
-    Neoxygen\NeoClient\Event\HttpExceptionEvent,
-    Neoxygen\NeoClient\Event\PostRequestSendEvent,
-    Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent,
-    Neoxygen\NeoClient\NeoClientEvents,
-    Neoxygen\NeoClient\HttpClient\GuzzleHttpClient,
-    Neoxygen\NeoClient\Exception\HttpException,
-    Neoxygen\NeoClient\Client,
-    Neoxygen\NeoClient\Request\Response;
+use Neoxygen\NeoClient\Connection\ConnectionManager;
+use Neoxygen\NeoClient\Command\CommandManager;
+use Neoxygen\NeoClient\Event\HttpExceptionEvent;
+use Neoxygen\NeoClient\Event\PostRequestSendEvent;
+use Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent;
+use Neoxygen\NeoClient\NeoClientEvents;
+use Neoxygen\NeoClient\HttpClient\GuzzleHttpClient;
+use Neoxygen\NeoClient\Exception\HttpException;
+use Neoxygen\NeoClient\Client;
+use Neoxygen\NeoClient\Request\Response;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Yaml\Yaml;
@@ -42,14 +42,14 @@ class HAEnterpriseManager implements EventSubscriberInterface
     {
         return array(
             NeoClientEvents::NEO_HTTP_EXCEPTION => array(
-                'onRequestException', 50
+                'onRequestException', 50,
             ),
             NeoClientEvents::NEO_PRE_REQUEST_SEND => array(
-                'onPreSend', 50
+                'onPreSend', 50,
             ),
             NeoClientEvents::NEO_POST_REQUEST_SEND => array(
-                'onSuccessfulRequest', 30
-            )
+                'onSuccessfulRequest', 30,
+            ),
         );
     }
 
@@ -135,14 +135,14 @@ class HAEnterpriseManager implements EventSubscriberInterface
     {
         $slaves = $this->connectionManager->getSlaves();
         foreach ($slaves as $slave) {
-                if ($this->isMaster($slave)) {
-                    Client::log('debug', sprintf('Master Reelection detected, new Master is "%s".', $slave));
+            if ($this->isMaster($slave)) {
+                Client::log('debug', sprintf('Master Reelection detected, new Master is "%s".', $slave));
 
-                    return $slave;
+                return $slave;
             }
         }
 
-        return null;
+        return;
     }
 
     private function isMaster($connAlias)
@@ -180,7 +180,7 @@ class HAEnterpriseManager implements EventSubscriberInterface
     }
 
     /**
-     * Retrieve the new HAconfig after a failure
+     * Retrieve the new HAconfig after a failure.
      */
     private function getHAFailureFile()
     {

@@ -1,13 +1,12 @@
 <?php
 
 /**
- * This file is part of the "-[:NEOXYGEN]->" NeoClient package
+ * This file is part of the "-[:NEOXYGEN]->" NeoClient package.
  *
  * (c) Neoxygen.io <http://neoxygen.io>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 namespace Neoxygen\NeoClient\Command\Core;
@@ -46,7 +45,7 @@ class CoreCommitTransactionCommand extends AbstractCommand
     public function prepareBody()
     {
         if (null === $this->query) {
-            return null;
+            return;
         }
         $statement = array();
         $statement['statement'] = $this->query;
@@ -55,8 +54,8 @@ class CoreCommitTransactionCommand extends AbstractCommand
         }
         $body = array(
             'statements' => array(
-                $statement
-            )
+                $statement,
+            ),
         );
 
         return json_encode($body);
@@ -64,7 +63,7 @@ class CoreCommitTransactionCommand extends AbstractCommand
 
     public function getPath()
     {
-        return self::PATH . $this->getTransactionId() . '/commit';
+        return self::PATH.$this->getTransactionId().'/commit';
     }
 
     public function getTransactionId()

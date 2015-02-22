@@ -1,26 +1,25 @@
 <?php
 
 /**
- * This file is part of the "-[:NEOXYGEN]->" NeoClient package
+ * This file is part of the "-[:NEOXYGEN]->" NeoClient package.
  *
  * (c) Neoxygen.io <http://neoxygen.io>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 namespace Neoxygen\NeoClient\HttpClient;
 
-use GuzzleHttp\Client,
-    GuzzleHttp\Exception\RequestException,
-    GuzzleHttp\Message\Response as HttpResponse;
-use Neoxygen\NeoClient\Request\Request,
-    Neoxygen\NeoClient\Request\Response,
-    Neoxygen\NeoClient\NeoClientEvents,
-    Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent,
-    Neoxygen\NeoClient\Event\PostRequestSendEvent,
-    Neoxygen\NeoClient\Event\HttpExceptionEvent;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Message\Response as HttpResponse;
+use Neoxygen\NeoClient\Request\Request;
+use Neoxygen\NeoClient\Request\Response;
+use Neoxygen\NeoClient\NeoClientEvents;
+use Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent;
+use Neoxygen\NeoClient\Event\PostRequestSendEvent;
+use Neoxygen\NeoClient\Event\HttpExceptionEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class GuzzleHttpClient implements HttpClientInterface
@@ -69,7 +68,6 @@ class GuzzleHttpClient implements HttpClientInterface
         } catch (RequestException $e) {
             return $this->dispatchHttpException($request, $e);
         }
-
     }
 
     private function getResponse(HttpResponse $httpResponse)
@@ -80,7 +78,7 @@ class GuzzleHttpClient implements HttpClientInterface
             $resp = (string) $httpResponse->getBody();
             $decoded = json_decode($resp, true);
             $response->setBody($decoded);
-            }
+        }
 
         return $response;
     }

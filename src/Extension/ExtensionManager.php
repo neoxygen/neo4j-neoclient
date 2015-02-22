@@ -2,9 +2,9 @@
 
 namespace Neoxygen\NeoClient\Extension;
 
-use Neoxygen\NeoClient\Command\CommandManager,
-    Neoxygen\NeoClient\Formatter\ResponseFormatterManager,
-    Neoxygen\NeoClient\Connection\ConnectionManager;
+use Neoxygen\NeoClient\Command\CommandManager;
+use Neoxygen\NeoClient\Formatter\ResponseFormatterManager;
+use Neoxygen\NeoClient\Connection\ConnectionManager;
 
 class ExtensionManager
 {

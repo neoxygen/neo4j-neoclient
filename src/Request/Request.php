@@ -1,13 +1,12 @@
 <?php
 
 /**
- * This file is part of the "-[:NEOXYGEN]->" NeoClient package
+ * This file is part of the "-[:NEOXYGEN]->" NeoClient package.
  *
  * (c) Neoxygen.io <http://neoxygen.io>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 namespace Neoxygen\NeoClient\Request;
@@ -276,7 +275,7 @@ class Request implements RequestInterface
             $this->user = $connection->getAuthUser();
             $this->password = $connection->getAuthPassword();
         }
-        $this->url = $connection->getBaseUrl() . $this->path;
+        $this->url = $connection->getBaseUrl().$this->path;
 
         return $this;
     }

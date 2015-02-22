@@ -16,9 +16,10 @@ class RequestBuilder
     /**
      * @param $method
      * @param $path
-     * @param  null    $body
-     * @param  null    $queryStrings
-     * @param  null    $conn
+     * @param null $body
+     * @param null $queryStrings
+     * @param null $conn
+     *
      * @return Request
      */
     public function buildRequest($method, $path, $body = null, $queryStrings = null, $conn = null, $queryMode = null)
@@ -36,7 +37,7 @@ class RequestBuilder
             $request->setUser($connection->getAuthUser());
             $request->setPassword($connection->getAuthPassword());
         }
-        $url = $connection->getBaseUrl() . $path;
+        $url = $connection->getBaseUrl().$path;
         $request->setUrl($url);
 
         return $request;

@@ -1,13 +1,12 @@
 <?php
 
 /**
- * This file is part of the "-[:NEOXYGEN]->" NeoClient package
+ * This file is part of the "-[:NEOXYGEN]->" NeoClient package.
  *
  * (c) Neoxygen.io <http://neoxygen.io>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 namespace Neoxygen\NeoClient\Formatter;
@@ -62,12 +61,12 @@ class Result
             return $this->nodes[$id];
         }
 
-        return null;
+        return;
     }
 
     /**
      * Returns a single node from the nodes collection
-     * To use when you do cypher queries returning only one node
+     * To use when you do cypher queries returning only one node.
      *
      * @return mixed|null
      */
@@ -80,9 +79,10 @@ class Result
     }
 
     /**
-     * Returns a single node for a given label
+     * Returns a single node for a given label.
      *
-     * @param  string    $label The label to match for
+     * @param string $label The label to match for
+     *
      * @return Node|null The Node or null if not node found matching the label
      */
     public function getSingleNodeByLabel($label)
@@ -93,7 +93,7 @@ class Result
             }
         }
 
-        return null;
+        return;
     }
 
     public function getNodesByLabel($name, $labelizedKeys = false)
@@ -106,7 +106,6 @@ class Result
                 } else {
                     $collection[] = $node;
                 }
-
             }
         }
 
@@ -141,7 +140,7 @@ class Result
             return $this->relationships[$id];
         }
 
-        return null;
+        return;
     }
 
     public function getNodesCount()

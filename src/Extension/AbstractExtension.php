@@ -2,17 +2,14 @@
 
 namespace Neoxygen\NeoClient\Extension;
 
-use Neoxygen\NeoClient\Connection\Connection;
 use Neoxygen\NeoClient\Request\Response;
-use Neoxygen\NeoClient\Extension\NeoClientExtensionInterface,
-    Neoxygen\NeoClient\Command\CommandManager,
-    Neoxygen\NeoClient\Formatter\ResponseFormatterManager,
-    Neoxygen\NeoClient\Exception\Neo4jException,
-    Neoxygen\NeoClient\Connection\ConnectionManager;
+use Neoxygen\NeoClient\Command\CommandManager;
+use Neoxygen\NeoClient\Formatter\ResponseFormatterManager;
+use Neoxygen\NeoClient\Exception\Neo4jException;
+use Neoxygen\NeoClient\Connection\ConnectionManager;
 
 abstract class AbstractExtension implements NeoClientExtensionInterface
 {
-
     const WRITE_QUERY = 'WRITE';
 
     const READ_QUERY = 'READ';
@@ -43,7 +40,8 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
 
     /**
      * @param $commandAlias
-     * @param  null                                        $connectionAlias
+     * @param null $connectionAlias
+     *
      * @return \Neoxygen\NeoClient\Command\AbstractCommand
      */
     public function invoke($commandAlias, $connectionAlias = null)
@@ -55,7 +53,8 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
     }
 
     /**
-     * @param  mixed                                  $response
+     * @param mixed $response
+     *
      * @return \Neoxygen\NeoClient\Formatter\Response
      */
     public function formatResponse($response)
@@ -66,8 +65,10 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
     }
 
     /**
-     * @param  mixed                                               $response
+     * @param mixed $response
+     *
      * @return string|array|\Neoxygen\NeoClient\Formatter\Response
+     *
      * @throws Neo4jException
      */
     public function handleHttpResponse(Response $response)

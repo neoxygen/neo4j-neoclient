@@ -1,13 +1,12 @@
 <?php
 
 /**
- * This file is part of the "-[:NEOXYGEN]->" NeoClient package
+ * This file is part of the "-[:NEOXYGEN]->" NeoClient package.
  *
  * (c) Neoxygen.io <http://neoxygen.io>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 namespace Neoxygen\NeoClient\Command\ChangeFeed;
@@ -55,7 +54,7 @@ class ChangeFeedCommand extends AbstractCommand
     private function getQuery()
     {
         if (!$this->uuid && !$this->limit) {
-            return null;
+            return;
         }
 
         $query = array();
@@ -72,7 +71,7 @@ class ChangeFeedCommand extends AbstractCommand
     private function getPath()
     {
         if ($this->moduleId) {
-            return self::PATH . $this->moduleId.'/';
+            return self::PATH.$this->moduleId.'/';
         }
 
         return self::PATH;

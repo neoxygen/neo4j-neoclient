@@ -1,52 +1,50 @@
 <?php
 
 /**
- * This file is part of the "-[:NEOXYGEN]->" NeoClient package
-*
-* (c) Neoxygen.io <http://neoxygen.io>
-*
-* For the full copyright and license information, please view the LICENSE
-* file that was distributed with this source code.
-*
-*/
+ * This file is part of the "-[:NEOXYGEN]->" NeoClient package.
+ *
+ * (c) Neoxygen.io <http://neoxygen.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Neoxygen\NeoClient\Connection;
 
 class Connection
 {
-
     /**
-     * @var string $alias The Connection Alias
+     * @var string The Connection Alias
      */
     private $alias;
 
     /**
-     * @var string $scheme The scheme to use for the Connection, could be http|https
+     * @var string The scheme to use for the Connection, could be http|https
      */
     private $scheme;
 
     /**
-     * @var string $host The connection's host
+     * @var string The connection's host
      */
     private $host;
 
     /**
-     * @var integer $port The connection's port
+     * @var integer The connection's port
      */
     private $port;
 
     /**
-     * @var bool $authMode Whether or not to use Auth headers
+     * @var bool Whether or not to use Auth headers
      */
     private $authMode;
 
     /**
-     * @var string $authUser The username for the authentication
+     * @var string The username for the authentication
      */
     private $authUser;
 
     /**
-     * @var string $authPassword The user's password for the authentication
+     * @var string The user's password for the authentication
      */
     private $authPassword;
 
@@ -113,7 +111,7 @@ class Connection
      */
     public function getBaseUrl()
     {
-        return $this->scheme . '://' . $this->host . ':' . $this->port;
+        return $this->scheme.'://'.$this->host.':'.$this->port;
     }
 
     /**
@@ -125,7 +123,7 @@ class Connection
     }
 
     /**
-     * Sets the authentication mode to true
+     * Sets the authentication mode to true.
      */
     public function setAuthMode()
     {

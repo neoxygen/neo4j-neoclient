@@ -14,7 +14,6 @@ class Response
 
     public function __construct()
     {
-
     }
 
     public function setBody($body)
@@ -63,5 +62,4 @@ class Response
     {
         $this->result = $result;
     }
-
 }

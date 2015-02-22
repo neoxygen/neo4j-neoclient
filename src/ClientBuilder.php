@@ -1,30 +1,29 @@
 <?php
 
 /**
- * This file is part of the "-[:NEOXYGEN]->" NeoClient package
+ * This file is part of the "-[:NEOXYGEN]->" NeoClient package.
  *
  * (c) Neoxygen.io <http://neoxygen.io>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 namespace Neoxygen\NeoClient;
 
 use Monolog\Logger;
 use Neoxygen\NeoClient\Exception\Neo4jException;
-use Psr\Log\NullLogger,
-    Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface,
-    Symfony\Component\DependencyInjection\ContainerBuilder,
-    Symfony\Component\DependencyInjection\Dumper\PhpDumper,
-    Symfony\Component\Yaml\Yaml;
-use Neoxygen\NeoClient\DependencyInjection\NeoClientExtension,
-    Neoxygen\NeoClient\DependencyInjection\Compiler\ConnectionRegistryCompilerPass,
-    Neoxygen\NeoClient\DependencyInjection\Compiler\NeoClientExtensionsCompilerPass,
-    Neoxygen\NeoClient\DependencyInjection\Compiler\AliasesCompilerPass,
-    Neoxygen\NeoClient\DependencyInjection\Compiler\EventSubscribersCompilerPass;
+use Psr\Log\NullLogger;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
+use Symfony\Component\Yaml\Yaml;
+use Neoxygen\NeoClient\DependencyInjection\NeoClientExtension;
+use Neoxygen\NeoClient\DependencyInjection\Compiler\ConnectionRegistryCompilerPass;
+use Neoxygen\NeoClient\DependencyInjection\Compiler\NeoClientExtensionsCompilerPass;
+use Neoxygen\NeoClient\DependencyInjection\Compiler\AliasesCompilerPass;
+use Neoxygen\NeoClient\DependencyInjection\Compiler\EventSubscribersCompilerPass;
 
 class ClientBuilder
 {
@@ -123,14 +122,14 @@ class ClientBuilder
             'port' => $port,
             'auth' => $authMode,
             'user' => $authUser,
-            'password' => $authPassword
+            'password' => $authPassword,
         );
 
         return $this;
     }
 
     /**
-     * Add a default local connection running at http://localhost:7474
+     * Add a default local connection running at http://localhost:7474.
      *
      * @return ClientBuilder
      */
@@ -158,10 +157,11 @@ class ClientBuilder
     }
 
     /**
-     * Defines a fallback connection for a given connection
+     * Defines a fallback connection for a given connection.
      *
-     * @param  string $connectionAlias
-     * @param  string $fallbackConnectionAlias
+     * @param string $connectionAlias
+     * @param string $fallbackConnectionAlias
+     *
      * @return $this
      */
     public function setFallbackConnection($connectionAlias, $fallbackConnectionAlias)
@@ -172,9 +172,10 @@ class ClientBuilder
     }
 
     /**
-     * Sets the default timeout for the http connection request
+     * Sets the default timeout for the http connection request.
      *
-     * @param  int   $seconds
+     * @param int $seconds
+     *
      * @return $this
      */
     public function setDefaultTimeout($seconds)
@@ -185,9 +186,10 @@ class ClientBuilder
     }
 
     /**
-     * Sets whether or not the response from the API should be formatted by the ResponseFormatter
+     * Sets whether or not the response from the API should be formatted by the ResponseFormatter.
      *
-     * @param  bool  $auto
+     * @param bool $auto
+     *
      * @return $this
      */
     public function setAutoFormatResponse($auto = false)
@@ -198,7 +200,7 @@ class ClientBuilder
     }
 
     /**
-     * Defines the class to use as Response Formatter, should implements <code>\Neoxygen\NeoClient\Formatter\ResponseFormatterInterface</code>
+     * Defines the class to use as Response Formatter, should implements <code>\Neoxygen\NeoClient\Formatter\ResponseFormatterInterface</code>.
      *
      * @param string $class
      */
@@ -212,10 +214,11 @@ class ClientBuilder
     }
 
     /**
-     * Adds an event listener to an event
+     * Adds an event listener to an event.
      *
-     * @param  string          $event    The Event to listen to
-     * @param  string|\Closure $listener The listener, can be a Closure, a callback function or a class
+     * @param string          $event    The Event to listen to
+     * @param string|\Closure $listener The listener, can be a Closure, a callback function or a class
+     *
      * @return $this
      */
     public function addEventListener($event, $listener)
@@ -234,7 +237,7 @@ class ClientBuilder
     }
 
     /**
-     * Register a user defined logger
+     * Register a user defined logger.
      *
      * @param string          $name   Logger channel name
      * @param LoggerInterface $logger User logger instance
@@ -261,9 +264,10 @@ class ClientBuilder
     }
 
     /**
-     * Returns a registered Logger
+     * Returns a registered Logger.
      *
-     * @param  string|null     $name The name of the Logger
+     * @param string|null $name The name of the Logger
+     *
      * @return LoggerInterface The logger bounded to the specified name
      */
     public function getLogger($name = null)
@@ -277,7 +281,7 @@ class ClientBuilder
     }
 
     /**
-     * Logs a record to the registered loggers
+     * Logs a record to the registered loggers.
      *
      * @param string $level   Record logging level
      * @param string $message Log record message
@@ -291,11 +295,12 @@ class ClientBuilder
     }
 
     /**
-     * Creates an internal stream logger
+     * Creates an internal stream logger.
      *
-     * @param  string     $name  Logger channel name
-     * @param  string     $path  Path to the log file
-     * @param  int|string $level Logging level
+     * @param string     $name  Logger channel name
+     * @param string     $path  Path to the log file
+     * @param int|string $level Logging level
+     *
      * @return $this
      */
     public function createDefaultStreamLogger($name, $path, $level = Logger::DEBUG)
@@ -309,10 +314,11 @@ class ClientBuilder
     }
 
     /**
-     * Creates an internal chrome php logger
+     * Creates an internal chrome php logger.
      *
-     * @param  string     $name  Logger channel name
-     * @param  int|string $level Logging level
+     * @param string     $name  Logger channel name
+     * @param int|string $level Logging level
+     *
      * @return $this
      */
     public function createDefaultChromePHPLogger($name, $level = Logger::DEBUG)
@@ -332,27 +338,29 @@ class ClientBuilder
     }
 
     /**
-     * Register a user custom command
+     * Register a user custom command.
      *
-     * @param  string $alias Command alias
-     * @param  string $class The Command class name
+     * @param string $alias Command alias
+     * @param string $class The Command class name
+     *
      * @return $this
      */
     public function registerCommand($alias, $class)
     {
         $this->configuration['custom_commands'][] = array(
             'alias' => $alias,
-            'class' => $class
+            'class' => $class,
         );
 
         return $this;
     }
 
     /**
-     * Register a user custom extension
+     * Register a user custom extension.
      *
-     * @param  string $alias The extension alias
-     * @param  string $class The class name of the extension
+     * @param string $alias The extension alias
+     * @param string $class The class name of the extension
+     *
      * @return $this
      */
     public function registerExtension($alias, $class)
@@ -363,9 +371,10 @@ class ClientBuilder
     }
 
     /**
-     * Enables the cache option for the container dumping
+     * Enables the cache option for the container dumping.
      *
-     * @param  string $cachePath The cache path
+     * @param string $cachePath The cache path
+     *
      * @return $this
      */
     public function enableCache($cachePath)
@@ -395,26 +404,26 @@ class ClientBuilder
     public function getCachePath()
     {
         if (!$this->isCacheEnabled()) {
-            return null;
+            return;
         }
 
         $path = $this->getConfiguration()['cache']['cache_path'];
         if (!preg_match('#/$#', $path)) {
-            $path = $path . '/';
+            $path = $path.'/';
         }
 
         return $path;
     }
 
     /**
-     * Builds the service definitions and processes the configuration
+     * Builds the service definitions and processes the configuration.
      *
      * @return \Neoxygen\NeoClient\Client
      */
     public function build()
     {
         if ($this->isCacheEnabled()) {
-            $file = $this->getCachePath() . self::CACHE_FILENAME;
+            $file = $this->getCachePath().self::CACHE_FILENAME;
             if (file_exists($file)) {
                 include_once $file;
                 $this->serviceContainer = new \ProjectServiceContainer();
@@ -533,5 +542,4 @@ class ClientBuilder
             $cm->setSlaveConnections($newConfig['slaves']);
         }
     }
-
 }
