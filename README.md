@@ -255,6 +255,13 @@ Returns true or false
 $client->createUniqueConstraint('User','username');
 ```
 
+If an index already exist on the combination `Label, property` you can ask the client to drop the index and create the
+constraint instead of throwing an exception, just pass `true` as a third parameter.
+
+```php
+$client->createUniqueConstraint('User','username',true);
+```
+
 #### dropUniqueConstraint | Drop a uniqueness constraint for a given label/property pair
 
 ```php

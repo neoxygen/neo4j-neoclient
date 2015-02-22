@@ -12,6 +12,7 @@
 
 namespace Neoxygen\NeoClient\Extension;
 
+use Neoxygen\NeoClient\Exception\Neo4jException;
 use Neoxygen\NeoClient\Transaction\PreparedTransaction;
 use Symfony\Component\Yaml\Yaml;
 use Neoxygen\NeoClient\Transaction\Transaction,
@@ -277,7 +278,7 @@ class NeoClientCoreExtension extends AbstractExtension
      * @param  string|array $property
      * @return bool
      */
-    public function createUniqueConstraint($label, $property)
+    public function createUniqueConstraint($label, $property, $removeIndexIfExist = false)
     {
         $statements = [];
         $identifier = strtolower($label);
@@ -289,7 +290,16 @@ class NeoClientCoreExtension extends AbstractExtension
             $statements[] = 'CREATE CONSTRAINT ON ('.$identifier.':'.$label.') ASSERT '.$identifier.'.'.$property.' IS UNIQUE';
         }
         foreach ($statements as $statement) {
-            $this->sendCypherQuery($statement);
+            try {
+                $this->sendCypherQuery($statement);
+            } catch (Neo4jException $e) {
+                if (true === $removeIndexIfExist && 8000 === $e->getCode() && !is_array($property)) {
+                    $this->dropIndex($label, $property);
+                    return $this->createUniqueConstraint($label, $property);
+                }
+                throw($e);
+            }
+
         }
 
         return true;

@@ -32,6 +32,8 @@ use Neoxygen\NeoClient\Request\Response;
  * @method sendWriteQuery($query, array $parameters = array())
  * @method sendReadQuery($query, array $parameters = array())
  * @method PreparedTransaction prepareTransaction($conn = null)
+ * @method bool createIndex($label, $property)
+ * @method bool createUniqueConstraint($label, $property, $removeIndexIfExist = false)
  */
 
 class Client

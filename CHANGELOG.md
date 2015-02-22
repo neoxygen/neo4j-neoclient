@@ -1,3 +1,13 @@
+## 2.1.4
+
+* Fixed node internal ID not being casted to int
+* added a parameter `removeIndexIfExist` defaulted to false in `createUniqueConstraint` which will drop automatically 
+the index when creating the constraint
+
+```php
+$client->createUniqueConstraint('Repository', 'name', true);
+```
+
 ## 2.1
 
 ### Bug fixes

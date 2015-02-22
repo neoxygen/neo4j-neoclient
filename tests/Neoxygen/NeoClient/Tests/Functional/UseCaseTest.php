@@ -3,6 +3,7 @@
 namespace Neoxygen\NeoClient\Tests\Functional;
 
 use Neoxygen\NeoClient\ClientBuilder;
+use Neoxygen\NeoClient\Exception\Neo4jException;
 
 /**
  * @group functional
@@ -161,6 +162,17 @@ class UseCaseTest extends \PHPUnit_Framework_TestCase
         ))->getResult();
 
         $this->assertEquals($node->getId(), $r2->get('a')->getId());
+    }
+
+    public function testItCanAddAConstraintIfIndexAlreadyExist()
+    {
+        $client = $this->getClient();
+        try {
+            $client->createIndex('Tag', 'name');
+        } catch (Neo4jException $e) {
+
+        }
+        $this->assertTrue($client->createUniqueConstraint('Tag', 'name', true));
     }
 
     protected function getClient()
