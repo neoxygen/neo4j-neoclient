@@ -43,7 +43,7 @@ class Transaction
     public function pushMultiple(array $statements)
     {
         $this->checkIfOpened();
-        $execution = $this->client->pushMultipleToTransaction($this->getTransactionId(), $statements, $this->conn);
+        $this->client->pushMultipleToTransaction($this->getTransactionId(), $statements, $this->conn);
 
         return $this;
     }
