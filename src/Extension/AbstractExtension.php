@@ -85,7 +85,13 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
     public function checkResponseErrors($response)
     {
         if (isset($response['errors']) && !empty($response['errors'])) {
-            throw new Neo4jException(sprintf('Neo4j Exception with code "%s" and message "%s"', $response['errors'][0]['code'], $response['errors'][0]['message']));
+            throw new Neo4jException(
+                sprintf(
+                    'Neo4j Exception with code "%s" and message "%s"',
+                    $response['errors'][0]['code'],
+                    $response['errors'][0]['message']),
+                        Neo4jException::fromCode($response['errors'][0]['code'])
+            );
         }
     }
 
