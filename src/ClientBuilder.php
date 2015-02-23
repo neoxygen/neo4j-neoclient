@@ -93,6 +93,12 @@ class ClientBuilder
         return $this->configuration;
     }
 
+    /**
+     * Load a configuration from an external YAML file
+     *
+     * @param string $file
+     * @return ClientBuilder
+     */
     public function loadConfigurationFile($file)
     {
         if (!file_exists($file)) {
@@ -112,7 +118,7 @@ class ClientBuilder
      * @param string|null Authentication login
      * @param string|null Authentication password
      *
-     * @return \Neoxygen\NeoClient\ClientBuilder
+     * @return ClientBuilder
      */
     public function addConnection($alias, $scheme, $host, $port, $authMode = false, $authUser = null, $authPassword = null)
     {

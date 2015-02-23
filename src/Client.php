@@ -44,8 +44,6 @@ class Client
     public function __construct(ContainerInterface $container)
     {
         self::$serviceContainer = $container;
-        $formatterClass = $container->getParameter('response_formatter_class');
-        $this->responseFormatter = $formatterClass;
         self::$logger = $container->get('logger');
     }
 

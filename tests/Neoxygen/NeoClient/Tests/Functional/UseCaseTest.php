@@ -164,6 +164,17 @@ class UseCaseTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($node->getId(), $r2->get('a')->getId());
     }
 
+    public function testGetReturnsArray()
+    {
+        $client = $this->getClient();
+        $q = 'FOREACH (i in range(0,24)| CREATE (n:Person {id: i} ))';
+        $client->sendCypherQuery('MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE r,n');
+        $client->sendCypherQuery($q);
+        $result = $client->sendCypherQuery('MATCH (n:Person) RETURN n.id as pId')->getResult();
+        $this->assertCount(25, $result->get('pId'));
+
+    }
+
     public function testItCanAddAConstraintIfIndexAlreadyExist()
     {
         $client = $this->getClient();

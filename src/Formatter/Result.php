@@ -168,16 +168,28 @@ class Result
         $this->identifiers[$identifier][] = $value;
     }
 
-    public function get($identifier, $default = null, $skipSingle = false)
+    public function get($identifier, $default = null)
     {
         if (!array_key_exists($identifier, $this->identifiers)) {
             return $default;
         }
 
-        if ($skipSingle) {
-            return $this->identifiers[$identifier];
+        if (is_array($this->identifiers[$identifier]) && 1 === count($this->identifiers[$identifier])) {
+
+            return array_values($this->identifiers[$identifier])[0];
         }
 
-        return $this->identifiers[$identifier][0];
+        return $this->identifiers[$identifier];
+    }
+
+    public function getSingle($identifier, $default = null)
+    {
+        $get = $this->get($identifier, $default);
+        if (is_array($get)) {
+
+            return array_values($this->identifiers[$identifier])[0];
+        }
+
+        return $get;
     }
 }
