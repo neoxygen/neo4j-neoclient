@@ -175,6 +175,20 @@ class UseCaseTest extends \PHPUnit_Framework_TestCase
 
     }
 
+    public function testIdentifierWithDotIsHandled()
+    {
+        $client = $this->getClient();
+        $result = $client->sendCypherQuery('
+    CREATE (a:TEST {foo: {bar}})
+    RETURN a.foo
+', array(
+            'bar' => array(1, 2, 3)
+        ))->getResult();
+
+        $this->assertNotEmpty($result->get('a.foo'));
+        $this->assertInternalType('array', $result->get('a.foo'));
+    }
+
     public function testItCanAddAConstraintIfIndexAlreadyExist()
     {
         $client = $this->getClient();

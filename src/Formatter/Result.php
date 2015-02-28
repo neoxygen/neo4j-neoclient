@@ -192,4 +192,17 @@ class Result
 
         return $get;
     }
+
+    public function hasIdentifier($i)
+    {
+        return array_key_exists($i, $this->identifiers);
+    }
+
+    public function addIdentifierValue($k, $v) {
+        if (array_key_exists($k, $this->identifiers)) {
+            return $this->addRowToIdentifier($k, $v);
+        }
+
+        return $this->identifiers[$k] = $v;
+    }
 }

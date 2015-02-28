@@ -95,13 +95,22 @@ class ResponseFormatter implements ResponseFormatterInterface
             $this->prepareNodesByLabels();
             $this->prepareRelationshipsByType();
             $this->processIdentification($response);
-            $responseObject->setResult($this->result);
         }
 
         if ($responseObject->containsRows()) {
             $rows = $this->formatRows($response);
             $responseObject->setRows($rows);
+
+            if ($responseObject->containsResults()) {
+                foreach ($responseObject->geRows() as $k => $v) {
+                    if (!$this->result->hasIdentifier($k)) {
+                        $this->result->addIdentifierValue($k, $v);
+                    }
+                }
+            }
         }
+
+        $responseObject->setResult($this->result);
 
         $this->reset();
 
