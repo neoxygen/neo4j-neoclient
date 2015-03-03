@@ -22,8 +22,6 @@ class HAEnterpriseManager implements EventSubscriberInterface
 
     protected $commandManager;
 
-    protected $logger;
-
     protected $httpClient;
 
     protected $slavesUsed = [];
@@ -53,12 +51,11 @@ class HAEnterpriseManager implements EventSubscriberInterface
         );
     }
 
-    public function __construct(ConnectionManager $connectionManager, CommandManager $commandManager, GuzzleHttpClient $httpClient, LoggerInterface $logger)
+    public function __construct(ConnectionManager $connectionManager, CommandManager $commandManager, GuzzleHttpClient $httpClient)
     {
         $this->connectionManager = $connectionManager;
         $this->commandManager = $commandManager;
         $this->httpClient = $httpClient;
-        $this->logger = $logger;
     }
 
     public function onRequestException(HttpExceptionEvent $event)
