@@ -73,11 +73,16 @@ class HAEnterpriseManager implements EventSubscriberInterface
                     $event->stopPropagation();
                 } elseif (null === $this->masterUsed) {
                     $master = $this->connectionManager->getMasterConnection();
-                    Client::log('warning', sprintf('Connection "%s" unreacheable, using "%s"', $request->getConnection(), $master->getAlias()));
-                    $this->masterUsed = true;
-                    $request->setInfoFromConnection($master);
-                    $request->setQueryMode('READ');
-                    $event->stopPropagation();
+                    if (isset($master)) {
+                        Client::log('warning', sprintf('Connection "%s" unreacheable, using "%s"', $request->getConnection(), $master->getAlias()));
+                        $this->masterUsed = true;
+                        $request->setInfoFromConnection($master);
+                        $request->setQueryMode('READ');
+                        $event->stopPropagation();
+                    }
+                    else {
+                        Client::log('warning', sprintf('Connection "%s" unreacheable, even after trying the master', $request->getConnection()));
+                    }
                 }
             } elseif ($request->getQueryMode() == 'WRITE') {
                 Client::log('emergency', sprintf('The master connection "%s" is unreachable', $request->getConnection()));
