@@ -168,13 +168,13 @@ class Result
         $this->identifiers[$identifier][] = $value;
     }
 
-    public function get($identifier, $default = null)
+    public function get($identifier, $default = null, $singleAsArray = false)
     {
         if (!array_key_exists($identifier, $this->identifiers)) {
             return $default;
         }
 
-        if (is_array($this->identifiers[$identifier]) && 1 === count($this->identifiers[$identifier])) {
+        if (is_array($this->identifiers[$identifier]) && 1 === count($this->identifiers[$identifier]) && $singleAsArray === false) {
 
             return array_values($this->identifiers[$identifier])[0];
         }
