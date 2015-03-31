@@ -20,6 +20,7 @@ use Neoxygen\NeoClient\NeoClientEvents;
 use Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent;
 use Neoxygen\NeoClient\Event\PostRequestSendEvent;
 use Neoxygen\NeoClient\Event\HttpExceptionEvent;
+use Neoxygen\NeoClient\Client as BaseClient;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class GuzzleHttpClient implements HttpClientInterface
@@ -56,6 +57,7 @@ class GuzzleHttpClient implements HttpClientInterface
         $httpRequest = $this->client->createRequest($request->getMethod(), $url, $defaults);
         $httpRequest->setHeader('Content-Type', 'application/json');
         $httpRequest->setHeader('Accept', 'application/json');
+        $httpRequest->setHeader('User-Agent', BaseClient::getUserAgentString());
 
         try {
             $response = $this->client->send($httpRequest);

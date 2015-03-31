@@ -35,16 +35,23 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class Client
 {
+    const NEOCLIENT_VERSION = "2.1.10";
+
     private static $serviceContainer;
 
-    private $lastResponse;
-
     public static $logger;
+
+    private $lastResponse;
 
     public function __construct(ContainerInterface $container)
     {
         self::$serviceContainer = $container;
         self::$logger = $container->get('logger');
+    }
+
+    public static function getUserAgentString()
+    {
+        return 'NeoClient-PHP/v' . self::NEOCLIENT_VERSION;
     }
 
     public static function commitPreparedTransaction(PreparedTransaction $transaction)
