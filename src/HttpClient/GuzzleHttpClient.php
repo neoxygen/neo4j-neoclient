@@ -57,7 +57,7 @@ class GuzzleHttpClient implements HttpClientInterface
         $httpRequest = $this->client->createRequest($request->getMethod(), $url, $defaults);
         $httpRequest->setHeader('Content-Type', 'application/json');
         $httpRequest->setHeader('Accept', 'application/json');
-        $httpRequest->setHeader('User-Agent', BaseClient::getUserAgentString());
+        $httpRequest->setHeader('User-Agent', $this->getUserAgent());
 
         try {
             $response = $this->client->send($httpRequest);
@@ -103,5 +103,10 @@ class GuzzleHttpClient implements HttpClientInterface
         $this->eventDispatcher->dispatch(NeoClientEvents::NEO_HTTP_EXCEPTION, $event);
 
         return $this->sendRequest($request);
+    }
+
+    private function getUserAgent()
+    {
+        return 'NeoClient-PHP/v-' . BaseClient::getNeoClientVersion();
     }
 }
