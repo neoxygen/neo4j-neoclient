@@ -19,10 +19,28 @@ NeoClient is the most advanced and flexible [Neo4j](http://neo4j.com) Client for
 
 ### Key features
 
-* Support multiple connections
+* Supports multiple connections
 * Built-in and automatic support for *Neo4j Enterprise HA Master-Slave Mode* with auto slaves fallback
 * Built-in mini HA Mode for Neo4j Community Edition
 * Fully extensible (You can create your own extensions)
+
+#### Neo4j Version Support
+
+| **Version** | **Tested**  |
+|-------------|-------------|
+| <= 2.1.5    |   No        |
+| >= 2.1.6    |   Yes       |
+| 2.2         |   Yes       |
+
+#### Neo4j Feature Support
+
+| **Feature**          | **Supported?** |
+|----------------------|----------------|
+| Auth                 |  Yes      |
+| Remote Cypher        |  Yes      |
+| Transactions         |  Yes      |
+| High Availability    |  Yes      |
+| Embedded JVM support |  No       |
 
 ### Requirements
 
