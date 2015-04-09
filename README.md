@@ -9,9 +9,6 @@
 [![License](https://poser.pugx.org/neoxygen/neoclient/license.svg)](https://packagist.org/packages/neoxygen/neoclient)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/bac840f0-7b30-4206-a0e0-c6f4ca320077/big.png)](https://insight.sensiolabs.com/projects/bac840f0-7b30-4206-a0e0-c6f4ca320077)
 
-+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/neoxygen/neo4j-neoclient?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-
 
 ## Introduction
 
@@ -51,6 +48,15 @@ Neo4j is a transactional, open-source graph database. A graph database manages d
 * PHP 5.4+
 * A Neo4j database (minimum version 2.1.6)
 
+### Getting Help
+
+You can:
+
+ * Check out an [example application build with NeoClient](https://github.com/neo4j-contrib/developer-resources/tree/gh-pages/language-guides/php/neoclient)
+ * [Ask a question on StackOverflow](http://stackoverflow.com/questions/ask?tags=neo4j-neoclient-php,php,neo4j)
+ * Chat with us on Gitter: [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/neoxygen/neo4j-neoclient?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+ * For bugs, please feel free to create a [new issue on GitHub](https://github.com/neoxygen/neo4j-neoclient/issues/new)
+ 
 ## Installation and basic usage
 
 ### Installation
