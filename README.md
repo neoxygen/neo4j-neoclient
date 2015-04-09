@@ -17,6 +17,10 @@
 
 NeoClient is the most advanced and flexible [Neo4j](http://neo4j.com) Client for PHP. 
 
+### What is Neo4j?
+
+Neo4j is a transactional, open-source graph database. A graph database manages data in a connected data structure, capable of representing any kind of data in a very accessible way. Information is stored in nodes and relationships connecting them, both of which can have arbitrary properties. To learn more visit [What is a Graph Database](http://neo4j.com/developer/graph-database/)?
+
 ### Key features
 
 * Supports multiple connections
