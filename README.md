@@ -9,26 +9,54 @@
 [![License](https://poser.pugx.org/neoxygen/neoclient/license.svg)](https://packagist.org/packages/neoxygen/neoclient)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/bac840f0-7b30-4206-a0e0-c6f4ca320077/big.png)](https://insight.sensiolabs.com/projects/bac840f0-7b30-4206-a0e0-c6f4ca320077)
 
-+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/neoxygen/neo4j-neoclient?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-
 
 ## Introduction
 
 NeoClient is the most advanced and flexible [Neo4j](http://neo4j.com) Client for PHP. 
 
+### What is Neo4j?
+
+Neo4j is a transactional, open-source graph database. A graph database manages data in a connected data structure, capable of representing any kind of data in a very accessible way. Information is stored in nodes and relationships connecting them, both of which can have arbitrary properties. To learn more visit [What is a Graph Database](http://neo4j.com/developer/graph-database/)?
+
 ### Key features
 
-* Support multiple connections
+* Supports multiple connections
 * Built-in and automatic support for *Neo4j Enterprise HA Master-Slave Mode* with auto slaves fallback
 * Built-in mini HA Mode for Neo4j Community Edition
 * Fully extensible (You can create your own extensions)
+
+#### Neo4j Version Support
+
+| **Version** | **Tested**  |
+|-------------|-------------|
+| <= 2.1.5    |   No        |
+| >= 2.1.6    |   Yes       |
+| 2.2         |   Yes       |
+
+#### Neo4j Feature Support
+
+| **Feature**          | **Supported?** |
+|----------------------|----------------|
+| Auth                 |  Yes      |
+| Remote Cypher        |  Yes      |
+| Transactions         |  Yes      |
+| High Availability    |  Yes      |
+| Embedded JVM support |  No       |
 
 ### Requirements
 
 * PHP 5.4+
 * A Neo4j database (minimum version 2.1.6)
 
+### Getting Help
+
+You can:
+
+ * Check out an [example application build with NeoClient](https://github.com/neo4j-contrib/developer-resources/tree/gh-pages/language-guides/php/neoclient)
+ * [Ask a question on StackOverflow](http://stackoverflow.com/questions/ask?tags=neo4j-neoclient-php,php,neo4j)
+ * Chat with us on Gitter: [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/neoxygen/neo4j-neoclient?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+ * For bugs, please feel free to create a [new issue on GitHub](https://github.com/neoxygen/neo4j-neoclient/issues/new)
+ 
 ## Installation and basic usage
 
 ### Installation
