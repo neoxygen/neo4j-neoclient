@@ -51,7 +51,9 @@ class NeoClientCoreExtension extends AbstractExtension
         $command = $this->invoke('neo.get_neo4j_version', $conn);
         $httpResponse = $command->execute();
 
-        return $this->handleHttpResponse($httpResponse);
+        $response = $this->handleHttpResponse($httpResponse);
+
+        return $response->getBody()['neo4j_version'];
     }
 
     /**

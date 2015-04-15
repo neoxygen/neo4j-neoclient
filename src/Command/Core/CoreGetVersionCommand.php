@@ -21,12 +21,6 @@ class CoreGetVersionCommand extends AbstractCommand
 
     public function execute()
     {
-        $data = $this->process(self::METHOD, self::PATH, null, $this->connection);
-
-        if (!is_array($data)) {
-            $data = json_decode($data, true);
-        }
-
-        return $data['neo4j_version'];
+        return $this->process(self::METHOD, self::PATH, null, $this->connection);
     }
 }
