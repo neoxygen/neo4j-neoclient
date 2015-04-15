@@ -134,12 +134,12 @@ the parameter is not set.
 For more information on how to set up multiple connections, read the `Multiple connections` section of the documentation.
 
 
-#### getVersion | Returns the Neo4j version of the current connection
+#### getNeo4jVersion | Returns the Neo4j version of the current connection
 
 ```php
-$version = $client->getVersion();
+$version = $client->getNeo4jVersion();
 
-// Returns (string) 2.1.5
+// Returns (string) 2.2.1
 ```
 
 ## Sending Cypher Queries
