@@ -405,7 +405,7 @@ If you want to build yourself an array of statements and send it once with sendM
 ```php
 $statements = array();
 $statements[] = array('statement' => 'MATCH (n:User {id:{id}})', 'parameters' => ['id' => 123]);
-$statements[] = array('statement' => 'MATCH (n:User) RETURN count(n));
+$statements[] = array('statement' => 'MATCH (n:User) RETURN count(n)');
 $client->sendMultiple($statements);
 ```
 
