@@ -11,7 +11,8 @@
 
 namespace Neoxygen\NeoClient\Extension;
 
-use Neoxygen\NeoClient\Exception\Neo4jException;
+use Neoxygen\NeoClient\Exception\Neo4jException,
+    Neoxygen\NeoClient\Exception\CypherException;
 use Neoxygen\NeoClient\Transaction\PreparedTransaction;
 use Symfony\Component\Yaml\Yaml;
 use Neoxygen\NeoClient\Transaction\Transaction;
@@ -83,6 +84,9 @@ class NeoClientCoreExtension extends AbstractExtension
     public function sendCypherQuery($query, array $parameters = array(), $conn = null, $queryMode = null)
     {
         $command = $this->invoke('neo.send_cypher_query', $conn);
+        if (!is_string($query)) {
+            throw new CypherException('You need to send a Cypher query as a string. Usage: "$neoclient->sendCypherQuery(string $query, array $params);"');
+        }
 
         $httpResponse = $command->setArguments($query, $parameters, $this->resultDataContent, $queryMode)
             ->execute();
