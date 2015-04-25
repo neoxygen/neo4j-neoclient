@@ -21,7 +21,7 @@ class NeoClientCoreExtension extends AbstractExtension
 {
     public static function getAvailableCommands()
     {
-        return Yaml::parse(__DIR__.'/../Resources/extensions/core_commands.yml');
+        return Yaml::parse(file_get_contents(__DIR__.'/../Resources/extensions/core_commands.yml'));
     }
 
     /**
