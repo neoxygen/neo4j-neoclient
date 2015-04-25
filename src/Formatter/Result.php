@@ -193,6 +193,16 @@ class Result
         return $get;
     }
 
+    public function getIdentifiers()
+    {
+        return array_keys($this->identifiers);
+    }
+
+    public function getAllByIdentifier()
+    {
+        return $this->identifiers;
+    }
+
     public function hasIdentifier($i)
     {
         return array_key_exists($i, $this->identifiers);
