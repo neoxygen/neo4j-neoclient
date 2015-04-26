@@ -22,7 +22,7 @@ class RequestBuilder
      *
      * @return Request
      */
-    public function buildRequest($method, $path, $body = null, $queryStrings = null, $conn = null, $queryMode = null)
+    public function buildRequest($method, $path, $body = null, $queryStrings = null, $conn = null, $queryMode = null, array $headers = array())
     {
         $request = new Request();
         $connection = $this->connectionManager->getConnection($conn);
@@ -32,6 +32,7 @@ class RequestBuilder
         $request->setQueryStrings($queryStrings);
         $request->setConnection($connection->getAlias());
         $request->setQueryMode($queryMode);
+        $request->setHeaders($headers);
         if ($connection->isAuth()) {
             $request->setAuthMode(true);
             $request->setUser($connection->getAuthUser());

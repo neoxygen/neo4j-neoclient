@@ -57,6 +57,9 @@ class GuzzleHttpClient implements HttpClientInterface
         $httpRequest = $this->client->createRequest($request->getMethod(), $url, $defaults);
         $httpRequest->setHeader('Content-Type', 'application/json');
         $httpRequest->setHeader('Accept', 'application/json');
+        foreach ($request->getHeaders() as $header => $value) {
+            $httpRequest->setHeader($header, $value);
+        }
         $httpRequest->setHeader('User-Agent', $this->getUserAgent());
 
         try {
