@@ -110,6 +110,7 @@ class ResponseFormatter implements ResponseFormatterInterface
             }
         }
 
+        $this->processTableFormat($responseObject->geRows());
         $responseObject->setResult($this->result);
 
         $this->reset();
@@ -314,6 +315,17 @@ class ResponseFormatter implements ResponseFormatterInterface
         }
 
         return $rows;
+    }
+
+    private function processTableFormat(array $rows = array())
+    {
+        $table = [];
+        foreach ($rows as $k => $values) {
+            foreach ($values as $i => $val) {
+                $table[$i][$k] = $val;
+            }
+        }
+        $this->result->setTableFormat($table);
     }
 
     /**

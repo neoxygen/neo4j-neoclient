@@ -21,6 +21,8 @@ class Result
 
     protected $identifiers = [];
 
+    protected $tableFormat;
+
     public function __construct()
     {
         $this->nodes = array();
@@ -214,5 +216,15 @@ class Result
         }
 
         return $this->identifiers[$k] = $v;
+    }
+
+    public function setTableFormat(array $table)
+    {
+        $this->tableFormat = $table;
+    }
+
+    public function getTableFormat()
+    {
+        return $this->tableFormat;
     }
 }

@@ -390,6 +390,57 @@ $r = $client->sendCypherQuery($q)->getResult();
 print_r($r->get('flwers')); // Returns an array of node objects
 ```
 
+### Results in table format
+
+Sometimes you will deal with results in table format, there is a dedicated method `getTableFormat` 
+that will format the results for you :
+
+```
+$q = 'MATCH (c:Country)
+      MATCH (c)<-[:LIVES_IN]->(p)
+      RETURN c.name, count(*) as people
+      ORDER BY people DESC';
+$result = $client->sendCypherQuery($q)->getResult();
+
+print_r($result->getTableFormat());
+
+--- 
+Array
+(
+    [0] => Array
+        (
+            [c.name] => Barbados
+            [people] => 3
+        )
+
+    [1] => Array
+        (
+            [c.name] => Vietnam
+            [people] => 2
+        )
+
+    [2] => Array
+        (
+            [c.name] => Liberia
+            [people] => 2
+        )
+
+    [3] => Array
+        (
+            [c.name] => Rwanda
+            [people] => 2
+        )
+
+    [4] => Array
+        (
+            [c.name] => Canada
+            [people] => 1
+        )
+)
+---
+```
+
+
 ## Sending multiple statements in one transaction
 
 There are 3 ways for sending multiple statements in one and only transaction.
