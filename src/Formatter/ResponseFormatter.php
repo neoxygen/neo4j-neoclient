@@ -110,7 +110,9 @@ class ResponseFormatter implements ResponseFormatterInterface
             }
         }
 
-        $this->processTableFormat($responseObject->geRows());
+        if (is_array($responseObject->geRows())) {
+            $this->processTableFormat($responseObject->geRows());
+        }
         $responseObject->setResult($this->result);
 
         $this->reset();
