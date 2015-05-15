@@ -12,7 +12,7 @@
 ## Supported and Sponsored By
 
 [![GraphAware](http://graphaware.com/images/logo.png)](http://graphaware.com)
-[![GraphStory](https://media.licdn.com/media/p/7/005/05b/3b8/00c3adf.png)](https://www.graphstory.com/)
+[![GraphStory](http://i.imgur.com/ykEDw8s.png)](https://www.graphstory.com/)
 
 
 ## Introduction
