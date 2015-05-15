@@ -227,4 +227,26 @@ class Result
     {
         return $this->tableFormat;
     }
+
+    public function toGoogleDataTable()
+    {
+        $dt = [];
+        foreach ($this->getTableFormat()[0] as $k => $v) {
+            $col = [
+                'id' => strtolower($k),
+                'label' => ucfirst($k),
+                'type' => is_int($k) ? 'number' : 'string'
+            ];
+            $dt['cols'][] = $col;
+        }
+        foreach ($this->getTableFormat() as $k => $v) {
+            $row = [];
+            foreach ($v as $key => $value) {
+                $row[] = ['v' => $value];
+            }
+            $dt['rows'][] = ['c' => $row];
+        }
+
+        return json_encode($dt, JSON_PRETTY_PRINT);
+    }
 }
