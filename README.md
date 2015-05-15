@@ -9,6 +9,11 @@
 [![License](https://poser.pugx.org/neoxygen/neoclient/license.svg)](https://packagist.org/packages/neoxygen/neoclient)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/bac840f0-7b30-4206-a0e0-c6f4ca320077/big.png)](https://insight.sensiolabs.com/projects/bac840f0-7b30-4206-a0e0-c6f4ca320077)
 
+## Supported and Sponsored By
+
+[![GraphAware](http://graphaware.com/images/logo.png)](http://graphaware.com)
+[![GraphStory](https://media.licdn.com/media/p/7/005/05b/3b8/00c3adf.png)](https://www.graphstory.com/)
+
 
 ## Introduction
 
