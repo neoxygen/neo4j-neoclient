@@ -17,6 +17,10 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
 {
     protected $logger;
 
+    protected $hc;
+
+    protected $gad = [];
+
     public static function getSubscribedEvents()
     {
         return array(
@@ -35,6 +39,7 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
+        $this->hc = new HttpClient();
     }
 
     public function onPreHttpRequestSend(HttpClientPreSendRequestEvent $event)
@@ -61,9 +66,11 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
 
     private function sendGA()
     {
-        $hc = new HttpClient();
+        $m = date('i', time());
+        $dmy = date('dmYi', time());
+        if (($m % 5) !== 0 || array_key_exists($dmy, $this->gad)) { return true; }
         $i = gethostbyname(gethostname());
-        $r = $hc->createRequest('POST', 'http://www.google-analytics.com/collect');
+        $r = $this->hc->createRequest('POST', 'http://www.google-analytics.com/collect');
         $r->setQuery([
             'v' => 1,
             'tid' => 'UA-58561434-1',
@@ -74,7 +81,9 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
             'el' => Client::getNeoClientVersion()
         ]);
         try {
-            $hc->send($r);
+            $this->hc->send($r);
+            $this->gad[$dmy] = null;
+            echo 'xxxxxxxxx';
         } catch (RequestException $e) {
 
         }
