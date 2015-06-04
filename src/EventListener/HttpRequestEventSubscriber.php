@@ -41,7 +41,7 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
     {
         $conn = $event->getRequest()->getConnection();
         $request = $event->getRequest();
-        $mode = $request->hasQueryMode() ? $request->getQueryMode() : '';
+        $mode = $request->hasQueryMode() ? $request->getQueryMode() : 'ASSUMED WRITE';
         $this->logger->log('debug', sprintf('Sending "%s" request to the "%s" connection', $mode,  $conn));
         $this->sendGA();
     }
@@ -62,13 +62,14 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
     private function sendGA()
     {
         $hc = new HttpClient();
+        $i = gethostbyname(gethostname());
         $r = $hc->createRequest('POST', 'http://www.google-analytics.com/collect');
         $r->setQuery([
             'v' => 1,
             'tid' => 'UA-58561434-1',
-            'cid' => sha1(microtime(true)),
+            'cid' => sha1($i),
             't' => 'event',
-            'ec' => 'Run',
+            'ec' => 'Run' . Client::getNeoClientVersion(),
             'ea' => 'NeoClient',
             'el' => Client::getNeoClientVersion()
         ]);
