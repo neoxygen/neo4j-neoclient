@@ -10,6 +10,7 @@ env:
   - NEO_VERSION="2.1.7"
   - NEO_VERSION="2.2.0"
   - NEO_VERSION="2.2.1"
+  - NEO_VERSION="2.2.2"
 
 before_install:
     - sudo apt-get update > /dev/null

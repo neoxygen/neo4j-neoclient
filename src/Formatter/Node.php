@@ -265,7 +265,7 @@ class Node
     public function getConnectedNodes($direction = null, $relationshipTypes = null)
     {
         $nodes = [];
-        $relationships = $this->getRelationships($direction, $relationshipTypes);
+        $relationships = $this->getRelationships($relationshipTypes, $direction);
         foreach ($relationships as $rel) {
             $nodes[] = $rel->getOtherNode($this);
         }

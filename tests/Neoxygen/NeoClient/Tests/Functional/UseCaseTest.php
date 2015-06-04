@@ -179,11 +179,13 @@ class UseCaseTest extends \PHPUnit_Framework_TestCase
     {
         $client = $this->getClient();
         $q = 'CREATE (a:Connected {id:1}), (b:Connected {id:2}), (c:Connected {id:3})
-        MERGE (a)-[:LINKS_TO]->(b)-[:LINKS_TO]->(c)
+        MERGE (a)-[:LINKS_TO]->(b)
+        MERGE (b)-[:LINKS_TO]->(c)
         MERGE (c)-[:LINKS_TO]->(a)';
         $client->sendCypherQuery($q);
         $q = 'MATCH (a:Connected {id:1}) OPTIONAL MATCH (a)-[r]-(b) RETURN a,r,b';
-        $a = $client->sendCypherQuery($q)->getResult()->get('a');
+        $result = $client->sendCypherQuery($q)->getResult();
+        $a = $result->get('a');
         $this->assertTrue($a->hasConnectedNodes());
         $b = $a->getConnectedNode('OUT');
         $this->assertEquals(2, $b->getProperty('id'));
