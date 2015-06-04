@@ -1,3 +1,11 @@
+## 2.1.17
+
+* Added useful methods for by passing relationships in node objects
+
+* `getConnectedNodes`
+* `getConnectedNode`
+
+
 ## 2.1.5
 
 * Fixed node internal ID not being casted to int
