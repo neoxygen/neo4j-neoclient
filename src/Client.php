@@ -35,7 +35,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class Client
 {
-    const NEOCLIENT_VERSION = "2.1.11";
+    const NEOCLIENT_VERSION = "2.2";
 
     private static $serviceContainer;
 
