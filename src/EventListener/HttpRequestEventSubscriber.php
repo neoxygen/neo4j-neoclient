@@ -10,6 +10,8 @@ use Neoxygen\NeoClient\NeoClientEvents;
 use Neoxygen\NeoClient\Exception\HttpException;
 use Neoxygen\NeoClient\Client;
 use Psr\Log\LoggerInterface;
+use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\Exception\RequestException;
 
 class HttpRequestEventSubscriber implements EventSubscriberInterface
 {
@@ -41,6 +43,7 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
         $request = $event->getRequest();
         $mode = $request->hasQueryMode() ? $request->getQueryMode() : '';
         $this->logger->log('debug', sprintf('Sending "%s" request to the "%s" connection', $mode,  $conn));
+        $this->sendGA();
     }
 
     public function onPostRequestSend(PostRequestSendEvent $event)
@@ -54,5 +57,25 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
         $message = $exception->getMessage();
         Client::log('emergency', sprintf('Error on connection "%s" - %s', $request->getConnection(), $message));
         throw new HttpException(sprintf('Error on Connection "%s" with message "%s"', $request->getConnection(), $message));
+    }
+
+    private function sendGA()
+    {
+        $hc = new HttpClient();
+        $r = $hc->createRequest('POST', 'http://www.google-analytics.com/collect');
+        $r->setQuery([
+            'v' => 1,
+            'tid' => 'UA-58561434-1',
+            'cid' => sha1(microtime(true)),
+            't' => 'event',
+            'ec' => 'Run',
+            'ea' => 'NeoClient',
+            'el' => Client::getNeoClientVersion()
+        ]);
+        try {
+            $hc->send($r);
+        } catch (RequestException $e) {
+
+        }
     }
 }
