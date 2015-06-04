@@ -63,7 +63,7 @@ class Result
             return $this->nodes[$id];
         }
 
-        return;
+        return null;
     }
 
     /**
@@ -157,11 +157,26 @@ class Result
 
     public function addNodeToIdentifier($nodeId, $identifier)
     {
+        if (isset($this->identifiers[$identifier])) {
+            foreach ($this->identifiers[$identifier] as $node) {
+                if ($node->getId() === $nodeId) {
+                    return;
+                }
+            }
+        }
         $this->identifiers[$identifier][] = $this->getNodeById($nodeId);
     }
 
     public function addRelationshipToIdentifier($relationshipId, $identifier)
     {
+        if (isset($this->identifiers[$identifier])) {
+            foreach ($this->identifiers[$identifier] as $rel) {
+                if ($rel->getId() === $relationshipId) {
+
+                    return;
+                }
+            }
+        }
         $this->identifiers[$identifier][] = $this->getRelationship($relationshipId);
     }
 

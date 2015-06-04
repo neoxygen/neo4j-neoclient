@@ -382,6 +382,18 @@ $node = $result->getNodeById(34);
 
 $nbNodes = $result->getNodesCount();
 $nbRels = $result->getRelationshipsCount();
+
+
+// Since 2.2
+// getConnectedNodes and getConnectedNode
+// Shortcut bypassing the relationship and returning the connected nodes
+
+$node->getConnectedNodes();
+$node->getConnectedNodes('IN', 'KNOWS');
+$node->getconnectedNodes('OUT', ['KNOWS','FOLLOWS']);
+//Same arguments signature for getConnectedNode
+$node->getConnectedNode(); // returns only one node
+
 ```
 
 ### Using `get`
@@ -454,7 +466,7 @@ There are 3 ways for sending multiple statements in one and only transaction.
 2. Creating an array of statements and sending it all together with the `sendMultiple` method
 3. Using a `PreparedTransaction` instance
 
-### Using sendMultiple
+### Using sendMultiple (deprecated)
 
 If you want to build yourself an array of statements and send it once with sendMultiple :
 
