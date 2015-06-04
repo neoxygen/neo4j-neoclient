@@ -107,6 +107,11 @@ class Node
         return current($this->labels);
     }
 
+
+    /**
+     * @param array $props
+     * @return array
+     */
     public function getProperties(array $props = array())
     {
         if (empty($props)) {
@@ -121,40 +126,65 @@ class Node
         return $properties;
     }
 
+    /**
+     * @param $name
+     * @return mixed
+     */
     public function getProperty($name)
     {
         if ($this->properties[$name]) {
             return $this->properties[$name];
         }
 
-        return;
+        return null;
     }
 
+    /**
+     * @param $name
+     * @return bool
+     */
     public function hasProperty($name)
     {
         return array_key_exists($name, $this->properties);
     }
 
+    /**
+     * @param Relationship $relationship
+     */
     public function addInboundRelationship(Relationship $relationship)
     {
         $this->inboundRelationships[$relationship->getId()] = $relationship;
     }
 
+    /**
+     * @param Relationship $relationship
+     */
     public function addOutboundRelationship(Relationship $relationship)
     {
         $this->outboundRelationships[$relationship->getId()] = $relationship;
     }
 
+    /**
+     * @return array[Relationship]
+     */
     public function getInboundRelationships()
     {
         return $this->inboundRelationships;
     }
 
+    /**
+     * @return array[Relationship]
+     */
     public function getOutboundRelationships()
     {
         return $this->outboundRelationships;
     }
 
+    /**
+     * @param null $type
+     * @param null $direction
+     * @return array[Relationship]
+     */
     public function getRelationships($type = null, $direction = null)
     {
         if (null === $direction) {
@@ -181,6 +211,11 @@ class Node
         return $collection;
     }
 
+    /**
+     * @param null $type
+     * @param null $direction
+     * @return mixed
+     */
     public function getSingleRelationship($type = null, $direction = null)
     {
         $relationships = $this->getRelationships($type, $direction);
@@ -189,6 +224,9 @@ class Node
         return current($relationships);
     }
 
+    /**
+     * @return bool
+     */
     public function hasRelationships()
     {
         if (!empty($this->inboundRelationships) || !empty($this->outboundRelationships)) {
@@ -198,8 +236,55 @@ class Node
         return false;
     }
 
+    /**
+     * @return int
+     */
     public function getRelationshipsCount()
     {
         return count($this->getRelationships());
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasConnectedNodes()
+    {
+        if (!empty($this->inboundRelationships) || !empty($this->outboundRelationships)) {
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param null $direction
+     * @param null $relationshipTypes
+     * @return array[Node]
+     */
+    public function getConnectedNodes($direction = null, $relationshipTypes = null)
+    {
+        $nodes = [];
+        $relationships = $this->getRelationships($direction, $relationshipTypes);
+        foreach ($relationships as $rel) {
+            $nodes[] = $rel->getOtherNode($this);
+        }
+
+        return $nodes;
+    }
+
+    /**
+     * @param null $direction
+     * @param null $relationshipTypes
+     * @return null|Node
+     */
+    public function getConnectedNode($direction = null, $relationshipTypes = null)
+    {
+        $nodes = $this->getConnectedNodes($direction, $relationshipTypes);
+        if (count($nodes) < 1) {
+            return null;
+        }
+
+        return $nodes[0];
     }
 }
