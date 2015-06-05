@@ -19,8 +19,6 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
 
     protected $hc;
 
-    protected $lc;
-
     public static function getSubscribedEvents()
     {
         return array(
@@ -66,29 +64,55 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
 
     private function sendGA()
     {
+        $td = sys_get_temp_dir();
+        if (!is_writable($td)) { return; }
+        $f = $td . DIRECTORY_SEPARATOR . 'neoping.txt';
+        $c = $td . DIRECTORY_SEPARATOR . 'neoi.txt';
         $t = time();
-        if (null !== $this->lc) {
-            if (($t - $this->lc) < 120) {
-
-                return true;
-            }
+        if (file_exists($f) && file_exists($c)) {
+            $last = (int) file_get_contents($f);
+            $new = false;
+            $ci = file_get_contents($c);
+        } else {
+            $last = 0;
+            $ci = sha1($t);
+            $new = true;
         }
-        $i = gethostbyname(gethostname());
+        if (($t - $last) < 120) { return; }
+        $i = $this->getIp();
         $r = $this->hc->createRequest('POST', 'http://www.google-analytics.com/collect');
         $r->setQuery([
             'v' => 1,
             'tid' => 'UA-58561434-1',
-            'cid' => sha1($i),
+            'cid' => $ci,
             't' => 'event',
             'ec' => 'Run' . Client::getNeoClientVersion(),
             'ea' => 'NeoClient',
-            'el' => Client::getNeoClientVersion()
+            'el' => Client::getNeoClientVersion(),
+            'uip' => $i
         ]);
         try {
             $this->hc->send($r);
             $this->lc = $t;
+            file_put_contents($f, $t);
+            if ($new) {
+                file_put_contents($c, $ci);
+            }
+            echo 'sent ga';
         } catch (RequestException $e) {
 
         }
+    }
+
+    private function getIp()
+    {
+        $ip = getenv('HTTP_CLIENT_IP')?:
+                getenv('HTTP_X_FORWARDED_FOR')?:
+                    getenv('HTTP_X_FORWARDED')?:
+                        getenv('HTTP_FORWARDED_FOR')?:
+                            getenv('HTTP_FORWARDED')?:
+                                getenv('REMOTE_ADDR');
+
+        return $ip;
     }
 }
