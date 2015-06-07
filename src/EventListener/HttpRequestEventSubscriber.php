@@ -98,7 +98,6 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
             if ($new) {
                 file_put_contents($c, $ci);
             }
-            echo 'sent ga';
         } catch (RequestException $e) {
 
         }
