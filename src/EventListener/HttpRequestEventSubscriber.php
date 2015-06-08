@@ -79,17 +79,10 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
             $new = true;
         }
         if (($t - $last) < 120) { return; }
-        $i = $this->getIp();
-        $r = $this->hc->createRequest('POST', 'http://www.google-analytics.com/collect');
+        $r = $this->hc->createRequest('GET', 'http://stats.neoxygen.io/collect', array('timeout' => 1));
         $r->setQuery([
-            'v' => 1,
-            'tid' => 'UA-58561434-1',
+            'v' => Client::getNeoClientVersion(),
             'cid' => $ci,
-            't' => 'event',
-            'ec' => 'Run' . Client::getNeoClientVersion(),
-            'ea' => 'NeoClient',
-            'el' => Client::getNeoClientVersion(),
-            'uip' => $i
         ]);
         try {
             $this->hc->send($r);
@@ -99,19 +92,6 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
                 file_put_contents($c, $ci);
             }
         } catch (RequestException $e) {
-
         }
-    }
-
-    private function getIp()
-    {
-        $ip = getenv('HTTP_CLIENT_IP')?:
-                getenv('HTTP_X_FORWARDED_FOR')?:
-                    getenv('HTTP_X_FORWARDED')?:
-                        getenv('HTTP_FORWARDED_FOR')?:
-                            getenv('HTTP_FORWARDED')?:
-                                getenv('REMOTE_ADDR');
-
-        return $ip;
     }
 }
