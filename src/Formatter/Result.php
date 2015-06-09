@@ -159,7 +159,7 @@ class Result
     {
         if (isset($this->identifiers[$identifier])) {
             foreach ($this->identifiers[$identifier] as $node) {
-                if ($node->getId() === $nodeId) {
+                if (null === $node || $node->getId() === $nodeId) {
                     return;
                 }
             }
