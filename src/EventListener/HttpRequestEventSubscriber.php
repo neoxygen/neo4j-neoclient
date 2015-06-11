@@ -46,7 +46,10 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
         $request = $event->getRequest();
         $mode = $request->hasQueryMode() ? $request->getQueryMode() : 'ASSUMED WRITE';
         $this->logger->log('debug', sprintf('Sending "%s" request to the "%s" connection', $mode,  $conn));
-        $this->sendGA();
+        if (false === false) {
+            $this->sendGA();
+        }
+
     }
 
     public function onPostRequestSend(PostRequestSendEvent $event)
