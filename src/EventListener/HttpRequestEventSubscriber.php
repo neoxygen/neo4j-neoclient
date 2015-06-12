@@ -46,7 +46,7 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
         $request = $event->getRequest();
         $mode = $request->hasQueryMode() ? $request->getQueryMode() : 'ASSUMED WRITE';
         $this->logger->log('debug', sprintf('Sending "%s" request to the "%s" connection', $mode,  $conn));
-        if (false === false) {
+        if (false !== false) {
             $this->sendGA();
         }
 
