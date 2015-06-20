@@ -21,4 +21,14 @@ class ClientBuildTest extends \PHPUnit_Framework_TestCase
 
         $this->assertArrayHasKey('default', $builder->getConfiguration()['connections']);
     }
+
+    public function testHAMode()
+    {
+        $builder = ClientBuilder::create()
+          ->addConnection('default', 'http', 'localhost', 7474, true, 'neo4j', 'neo4j')
+          ->enableHAMode();
+
+        $this->assertEquals(true, $builder->getConfiguration()['ha_mode']['enabled']);
+        $this->assertEquals('enterprise', $builder->getConfiguration()['ha_mode']['type']);
+    }
 }
