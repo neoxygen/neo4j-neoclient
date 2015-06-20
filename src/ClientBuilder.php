@@ -163,6 +163,18 @@ class ClientBuilder
     }
 
     /**
+     * Enables the High Availibility Mode
+     *
+     * @return $this
+     */
+    public function enableHAMode()
+    {
+        $this->configuration['ha_mode']['enabled'] = true;
+
+        return $this;
+    }
+
+    /**
      * Defines a fallback connection for a given connection.
      *
      * @param string $connectionAlias
