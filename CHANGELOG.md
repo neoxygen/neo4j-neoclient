@@ -1,3 +1,7 @@
+## 2.2.7
+
+* Added method for enabling the HA Mode without YAML Config
+
 ## 2.1.17
 
 * Added useful methods for by passing relationships in node objects
