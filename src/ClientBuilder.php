@@ -170,6 +170,7 @@ class ClientBuilder
     public function enableHAMode()
     {
         $this->configuration['ha_mode']['enabled'] = true;
+        $this->configuration['ha_mode']['type'] = 'enterprise';
 
         return $this;
     }

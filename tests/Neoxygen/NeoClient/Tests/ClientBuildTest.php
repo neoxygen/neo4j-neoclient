@@ -29,5 +29,6 @@ class ClientBuildTest extends \PHPUnit_Framework_TestCase
           ->enableHAMode();
 
         $this->assertEquals(true, $builder->getConfiguration()['ha_mode']['enabled']);
+        $this->assertEquals('enterprise', $builder->getConfiguration()['ha_mode']['type']);
     }
 }
