@@ -8,9 +8,11 @@ php:
 env:
   - NEO_VERSION="2.1.6"
   - NEO_VERSION="2.1.7"
+  - NEO_VERSION="2.1.8"
   - NEO_VERSION="2.2.0"
   - NEO_VERSION="2.2.1"
   - NEO_VERSION="2.2.2"
+  - NEO_VERSION="2.2.3"
 
 before_install:
     - sudo apt-get update > /dev/null
