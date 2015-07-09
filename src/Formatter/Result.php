@@ -13,14 +13,18 @@ namespace Neoxygen\NeoClient\Formatter;
 
 class Result
 {
+    /** @var Node[] */
     protected $nodes;
 
+    /** @var Relationship[] */
     protected $relationships;
 
     protected $errors;
 
+    /** @var array */
     protected $identifiers = [];
 
+    /** @var  array */
     protected $tableFormat;
 
     public function __construct()
@@ -39,6 +43,15 @@ class Result
         $this->relationships[$relationship->getId()] = $relationship;
     }
 
+    /**
+     * Returns all nodes if called without arguments. Returns all nodes with
+     * the given labels if called with an array of labels. Otherwise, acts
+     * identically as {@link Result::getNodesByLabels()}.
+     *
+     * @param string|string[]|null $label
+     * @param bool $labelizedKeys
+     * @return Node[]
+     */
     public function getNodes($label = null, $labelizedKeys = false)
     {
         if (null !== $label) {
@@ -57,6 +70,14 @@ class Result
         return $this->nodes;
     }
 
+    /**
+     * Returns a single node by its Neo4j node ID number, or null if the node
+     * is not present in the result.
+     *
+     * @param int $id Neo4j node ID.
+     *
+     * @return Node|null
+     */
     public function getNodeById($id)
     {
         if ($this->nodes[$id]) {
@@ -68,9 +89,11 @@ class Result
 
     /**
      * Returns a single node from the nodes collection
-     * To use when you do cypher queries returning only one node.
+     * Use when you do cypher queries returning only one node.
      *
-     * @return mixed|null
+     * @param string|null $label Return a node for this label only.
+     *
+     * @return Node|null
      */
     public function getSingleNode($label = null)
     {
@@ -95,9 +118,18 @@ class Result
             }
         }
 
-        return;
+        return null;
     }
 
+    /**
+     * Returns all nodes with the given label.
+     *
+     * @param string $name
+     * @param bool $labelizedKeys When true, the results are indexed by node
+     *                            label. Assumes only one node per label.
+     *
+     * @return Node[]
+     */
     public function getNodesByLabel($name, $labelizedKeys = false)
     {
         $collection = array();
@@ -114,6 +146,15 @@ class Result
         return $collection;
     }
 
+    /**
+     * Returns all nodes with the given labels.
+     *
+     * @param array $labels
+     * @param bool $labelizedKeys When true, the results are indexed by node
+     *                            label. Assumes one node per label.
+     *
+     * @return Node[]
+     */
     public function getNodesByLabels(array $labels = array(), $labelizedKeys = false)
     {
         $nodes = [];
@@ -131,25 +172,41 @@ class Result
         return $nodes;
     }
 
+    /**
+     * @return Relationship[]
+     */
     public function getRelationships()
     {
         return $this->relationships;
     }
 
+    /**
+     * Returns the relationship by its Neo4j ID.
+     *
+     * @param int $id The id of the relationship.
+     *
+     * @return Relationship|null
+     */
     public function getRelationship($id)
     {
         if ($this->relationships[$id]) {
             return $this->relationships[$id];
         }
 
-        return;
+        return null;
     }
 
+    /**
+     * @return int Number of nodes in the result.
+     */
     public function getNodesCount()
     {
         return count($this->nodes);
     }
 
+    /**
+     * @return int Number of relationships in the result.
+     */
     public function getRelationshipsCount()
     {
         return count($this->relationships);
@@ -185,6 +242,16 @@ class Result
         $this->identifiers[$identifier][] = $value;
     }
 
+    /**
+     * Returns the item or items bound to the given identifier, or $default
+     * if no items are bound.
+     *
+     * @param string $identifier
+     * @param mixed $default A value to return if the identifier is not bound.
+     * @param bool $singleAsArray When true, always returns a single value as
+     *                            an array.
+     * @return mixed
+     */
     public function get($identifier, $default = null, $singleAsArray = false)
     {
         if (!array_key_exists($identifier, $this->identifiers)) {
@@ -199,6 +266,14 @@ class Result
         return $this->identifiers[$identifier];
     }
 
+    /**
+     * Returns a single item bound to the given identifier, or the default if
+     * the identifier is not bound.
+     *
+     * @param string $identifier
+     * @param mixed $default A value to return if the identifier is not bound.
+     * @return mixed
+     */
     public function getSingle($identifier, $default = null)
     {
         $get = $this->get($identifier, $default);
@@ -210,16 +285,26 @@ class Result
         return $get;
     }
 
+    /**
+     * @return string[]
+     */
     public function getIdentifiers()
     {
         return array_keys($this->identifiers);
     }
 
+    /**
+     * @return array
+     */
     public function getAllByIdentifier()
     {
         return $this->identifiers;
     }
 
+    /**
+     * @param string $i Query identifier to check.
+     * @return bool
+     */
     public function hasIdentifier($i)
     {
         return array_key_exists($i, $this->identifiers);
@@ -238,6 +323,9 @@ class Result
         $this->tableFormat = $table;
     }
 
+    /**
+     * @return array
+     */
     public function getTableFormat()
     {
         return $this->tableFormat;
