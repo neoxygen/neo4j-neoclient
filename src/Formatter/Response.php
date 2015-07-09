@@ -55,7 +55,7 @@ class Response
     }
 
     /**
-     * @return array[Result]
+     * @return Result[]
      */
     public function getResults()
     {
