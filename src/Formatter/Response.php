@@ -40,6 +40,9 @@ class Response
         $this->results[] = $result;
     }
 
+    /**
+     * @return Result
+     */
     public function getResult()
     {
         if (null !== $this->results && !$this->results instanceof Result) {
@@ -51,6 +54,9 @@ class Response
         return $this->results;
     }
 
+    /**
+     * @return Result[]
+     */
     public function getResults()
     {
         return $this->results;
@@ -66,11 +72,17 @@ class Response
         return $this->errors;
     }
 
+    /**
+     * @return bool
+     */
     public function hasErrors()
     {
         return !empty($this->errors);
     }
 
+    /**
+     * @return bool
+     */
     public function containsResults()
     {
         if (isset($this->rawResponse['results']) && !empty($this->rawResponse['results'])) {
@@ -80,6 +92,9 @@ class Response
         return false;
     }
 
+    /**
+     * @return bool
+     */
     public function containsRows()
     {
         if (isset($this->rawResponse['results'][0]['columns']) && !empty($this->rawResponse['results']['0']['columns'])) {
@@ -99,6 +114,9 @@ class Response
         return $this->rows;
     }
 
+    /**
+     * @return bool
+     */
     public function hasRows()
     {
         return null !== $this->rows;
