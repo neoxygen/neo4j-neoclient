@@ -18,14 +18,13 @@
         }
     ],
     "require": {
-        "php" : ">= 5.4",
-        "symfony/console" : "~2.5",
-        "symfony/yaml" : "~2.5",
-        "symfony/config" : "~2.5",
-        "symfony/dependency-injection" : "~2.5",
-        "symfony/event-dispatcher" : "~2.5",
+        "php" : ">= 5.5",
         "guzzlehttp/guzzle" : "^5.0",
-        "monolog/monolog": "~1.1"
+        "monolog/monolog": "~1.1",
+        "symfony/yaml": "^2.7",
+        "symfony/config": "^2.7",
+        "symfony/dependency-injection": "^2.7",
+        "symfony/event-dispatcher": "^2.7"
     },
     "require-dev": {
         "phpspec/phpspec": "~2.0",
@@ -46,7 +45,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.1-dev"
+            "dev-master": "3.1-dev"
         }
     }
 }
