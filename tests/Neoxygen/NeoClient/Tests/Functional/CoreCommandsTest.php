@@ -9,7 +9,9 @@ use Neoxygen\NeoClient\ClientBuilder;
  */
 class CoreCommandsTest extends \PHPUnit_Framework_TestCase
 {
-    /* var \Neoxygen\NeoClient\Client */
+    /**
+     * @var \Neoxygen\NeoClient\Client
+     */
     protected $client;
 
     public function setUp()

@@ -24,7 +24,7 @@
         "symfony/config" : "~2.5",
         "symfony/dependency-injection" : "~2.5",
         "symfony/event-dispatcher" : "~2.5",
-        "guzzlehttp/guzzle" : "^5.0",
+        "guzzlehttp/guzzle" : "^6.0",
         "monolog/monolog": "~1.1"
     },
     "require-dev": {

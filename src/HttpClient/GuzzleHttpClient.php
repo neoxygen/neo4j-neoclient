@@ -13,7 +13,7 @@ namespace Neoxygen\NeoClient\HttpClient;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Message\Response as HttpResponse;
+use GuzzleHttp\Psr7\Response as HttpResponse;
 use Neoxygen\NeoClient\Request\Request;
 use Neoxygen\NeoClient\Request\Response;
 use Neoxygen\NeoClient\NeoClientEvents;
@@ -41,29 +41,31 @@ class GuzzleHttpClient implements HttpClientInterface
     public function sendRequest(Request $request)
     {
         $this->dispatchPreSend($request);
-        $defaults = [];
+        $options = [];
         if ($request->hasBody()) {
-            $defaults['body'] = $request->getBody();
+            $options['body'] = $request->getBody();
         }
         if ($request->hasQueryStrings()) {
-            $defaults['query'] = $request->getQueryStrings();
+            $options['query'] = $request->getQueryStrings();
         }
         if ($request->isSecured()) {
-            $defaults['auth'] = [$request->getUser(), $request->getPassword()];
+            $options['auth'] = [$request->getUser(), $request->getPassword()];
         }
-        $defaults['timeout'] = null !== $request->getTimeout() ? $request->getTimeout() : $this->defaultTimeout;
+        $options['timeout'] = null !== $request->getTimeout() ? $request->getTimeout() : $this->defaultTimeout;
+
+        $options['headers'] = [
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+            'User-Agent' => $this->getUserAgent(),
+        ];
+        foreach ($request->getHeaders() as $header => $value) {
+            $options['headers'][$header] = $value;
+        }
+
         $url = $request->getUrl();
 
-        $httpRequest = $this->client->createRequest($request->getMethod(), $url, $defaults);
-        $httpRequest->setHeader('Content-Type', 'application/json');
-        $httpRequest->setHeader('Accept', 'application/json');
-        foreach ($request->getHeaders() as $header => $value) {
-            $httpRequest->setHeader($header, $value);
-        }
-        $httpRequest->setHeader('User-Agent', $this->getUserAgent());
-
         try {
-            $response = $this->client->send($httpRequest);
+            $response = $this->client->request($request->getMethod(), $url, $options);
             $this->dispatchPostRequestSend($request, $response);
             if ($request->getUrl() !== $url) {
                 return $this->sendRequest($request);
