@@ -220,7 +220,7 @@ class UseCaseTest extends \PHPUnit_Framework_TestCase
     protected function getClient()
     {
         return ClientBuilder::create()
-            ->addConnection('default','http','localhost',7474, true, 'neo4j', 'veryCoolMax')
+            ->addConnection('default', 'http', 'localhost', 7474, true, 'neo4j', 'veryCoolMax')
             ->setAutoFormatResponse(true)
             ->build();
     }

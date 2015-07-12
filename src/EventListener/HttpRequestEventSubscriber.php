@@ -82,13 +82,15 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
             $new = true;
         }
         if (($t - $last) < 120) { return; }
-        $r = $this->hc->createRequest('GET', 'http://stats.neoxygen.io/collect', array('timeout' => 1));
-        $r->setQuery([
-            'v' => Client::getNeoClientVersion(),
-            'cid' => $ci,
-        ]);
+
         try {
-            $this->hc->send($r);
+            $this->hc->request('GET', 'http://stats.neoxygen.io/collect', [
+                'timeout' => 1,
+                'query' => [
+                    'v' => Client::getNeoClientVersion(),
+                    'cid' => $ci,
+                ]
+            ]);
             $this->lc = $t;
             file_put_contents($f, $t);
             if ($new) {
