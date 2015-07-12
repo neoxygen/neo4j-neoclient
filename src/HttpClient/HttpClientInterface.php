@@ -11,6 +11,15 @@
 
 namespace Neoxygen\NeoClient\HttpClient;
 
+use Neoxygen\NeoClient\Request\Request;
+use Neoxygen\NeoClient\Request\Response;
+
 interface HttpClientInterface
 {
+    /**
+     * @param \Neoxygen\NeoClient\Request\Request $request
+     *
+     * @return \Neoxygen\NeoClient\Request\Response
+     */
+    public function sendRequest(Request $request);
 }

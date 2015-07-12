@@ -4,7 +4,7 @@ namespace Neoxygen\NeoClient\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 use Neoxygen\NeoClient\Request\RequestInterface;
-use GuzzleHttp\Message\Response;
+use GuzzleHttp\Psr7\Response;
 
 class PostRequestSendEvent extends Event
 {
