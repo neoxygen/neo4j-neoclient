@@ -49,7 +49,7 @@ Neo4j is a transactional, open-source graph database. A graph database manages d
 
 ### Requirements
 
-* PHP 5.4+
+* PHP 5.5+
 * A Neo4j database (minimum version 2.1.6)
 
 ### Getting Help
@@ -65,14 +65,10 @@ You can:
 
 ### Installation
 
-Add the library to your `composer.json` file :
+Add the library to your composer dependencies :
 
-```json
-{
-    "require": {
-        "neoxygen/neoclient": "~2.1"
-    }
-}
+```bash
+composer require neoxygen/neoclient
 ```
 
 Require the composer autoloader, configure your connection by providing a connection alias and your connection settings :
@@ -459,22 +455,11 @@ Array
 
 ## Sending multiple statements in one transaction
 
-There are 3 ways for sending multiple statements in one and only transaction.
+There are 2 ways for sending multiple statements in one and only transaction.
 
 1. Using an open transaction throughout the process (see the next section "Transaction Management")
-2. Creating an array of statements and sending it all together with the `sendMultiple` method
-3. Using a `PreparedTransaction` instance
+2. Using a `PreparedTransaction` instance
 
-### Using sendMultiple (deprecated)
-
-If you want to build yourself an array of statements and send it once with sendMultiple :
-
-```php
-$statements = array();
-$statements[] = array('statement' => 'MATCH (n:User {id:{id}})', 'parameters' => ['id' => 123]);
-$statements[] = array('statement' => 'MATCH (n:User) RETURN count(n)');
-$client->sendMultiple($statements);
-```
 
 ### PreparedTransaction
 
