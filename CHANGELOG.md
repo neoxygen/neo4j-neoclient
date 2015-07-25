@@ -1,3 +1,8 @@
+## 3.1.0
+
+* Added the possibility to add have headers to define query mode
+* Fixed builder preventing setting a custom formatter class via non-yml way
+
 ## 2.2.7
 
 * Added method for enabling the HA Mode without YAML Config

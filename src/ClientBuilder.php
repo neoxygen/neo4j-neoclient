@@ -175,6 +175,13 @@ class ClientBuilder
         return $this;
     }
 
+    public function configureHAQueryModeHeaders($headerKey, $writeModeHeaderValue, $readModeHeaderValue)
+    {
+        $this->configuration['ha_mode']['query_mode_header_key'] = $headerKey;
+        $this->configuration['ha_mode']['write_mode_header_value'] = $writeModeHeaderValue;
+        $this->configuration['ha_mode']['read_mode_header_value'] = $readModeHeaderValue;
+    }
+
     /**
      * Defines a fallback connection for a given connection.
      *
@@ -230,6 +237,8 @@ class ClientBuilder
         }
 
         $this->configuration['response_formatter_class'] = $class;
+
+        return $this;
     }
 
     /**
