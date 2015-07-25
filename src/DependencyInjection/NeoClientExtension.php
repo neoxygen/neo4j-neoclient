@@ -70,6 +70,9 @@ class NeoClientExtension implements  ExtensionInterface
                         ->addArgument($connectionManager)
                         ->addArgument($commandManager)
                         ->addArgument($httpClient)
+                        ->addArgument($config['ha_mode']['query_mode_header_key'])
+                        ->addArgument($config['ha_mode']['write_mode_header_value'])
+                        ->addArgument($config['ha_mode']['read_mode_header_value'])
                         ->addTag('neoclient.service_event_subscriber');
                     $container->setDefinition('neoclient.ha_manager', $definition);
                     break;

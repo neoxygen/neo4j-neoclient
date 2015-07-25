@@ -104,11 +104,14 @@ class HAEnterpriseManager implements EventSubscriberInterface
      * @param \Neoxygen\NeoClient\Command\CommandManager $commandManager
      * @param \Neoxygen\NeoClient\HttpClient\GuzzleHttpClient $httpClient
      */
-    public function __construct(ConnectionManager $connectionManager, CommandManager $commandManager, GuzzleHttpClient $httpClient)
+    public function __construct(ConnectionManager $connectionManager, CommandManager $commandManager, GuzzleHttpClient $httpClient, $queryModeKey, $writeQueryKeyValue, $readQueryKeyValue)
     {
         $this->connectionManager = $connectionManager;
         $this->commandManager = $commandManager;
         $this->httpClient = $httpClient;
+        $this->queryModeHeaderName = $queryModeKey;
+        $this->queryModeWriteQueryHeaderValue = $writeQueryKeyValue;
+        $this->queryModeReadQueryHeaderValue = $readQueryKeyValue;
     }
 
     /**
@@ -192,9 +195,9 @@ class HAEnterpriseManager implements EventSubscriberInterface
     public function onPreSendHAHeaders(HttpClientPreSendRequestEvent $event)
     {
         if ($event->getRequest()->getQueryMode() == 'WRITE') {
-            $event->getRequest()->setHeader('Neo4j-Query-Mode', 'NEO4J_QUERY_WRITE');
+            $event->getRequest()->setHeader($this->queryModeHeaderName, $this->queryModeWriteQueryHeaderValue);
         } elseif ($event->getRequest()->getQueryMode() == 'READ') {
-            $event->getRequest()->setHeader('Neo4j-Query-Mode', 'NEO4J_QUERY_READ');
+            $event->getRequest()->setHeader($this->queryModeHeaderName, $this->queryModeReadQueryHeaderValue);
         }
     }
 
