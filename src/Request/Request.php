@@ -25,7 +25,7 @@ class Request implements RequestInterface
 
     private $queryStrings;
 
-    private $headers;
+    private $headers = [];
 
     private $options;
 
@@ -214,6 +214,11 @@ class Request implements RequestInterface
     public function setHeaders(array $headers)
     {
         $this->headers = $headers;
+    }
+
+    public function setHeader($name, $value)
+    {
+        $this->headers[$name] = $value;
     }
 
     public function getOptions()

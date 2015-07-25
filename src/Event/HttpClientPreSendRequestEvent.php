@@ -7,6 +7,9 @@ use Neoxygen\NeoClient\Request\RequestInterface;
 
 class HttpClientPreSendRequestEvent extends Event
 {
+    /**
+     * @var \Neoxygen\NeoClient\Request\Request
+     */
     protected $request;
 
     public function __construct(RequestInterface $request)
@@ -14,6 +17,9 @@ class HttpClientPreSendRequestEvent extends Event
         $this->request = $request;
     }
 
+    /**
+     * @return \Neoxygen\NeoClient\Request\Request
+     */
     public function getRequest()
     {
         return $this->request;

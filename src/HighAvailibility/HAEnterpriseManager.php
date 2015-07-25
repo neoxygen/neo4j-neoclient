@@ -18,24 +18,69 @@ use Symfony\Component\Yaml\Yaml;
 
 class HAEnterpriseManager implements EventSubscriberInterface
 {
+    /**
+     * @var \Neoxygen\NeoClient\Connection\ConnectionManager
+     */
     protected $connectionManager;
 
+    /**
+     * @var \Neoxygen\NeoClient\Command\CommandManager
+     */
     protected $commandManager;
 
+    /**
+     * @var \Neoxygen\NeoClient\HttpClient\GuzzleHttpClient
+     */
     protected $httpClient;
 
+    /**
+     * @var array
+     */
     protected $slavesUsed = [];
 
+    /**
+     * @var array
+     */
     protected $writeReplicationUsed = [];
 
+    /**
+     * @var
+     */
     protected $masterUsed;
 
+    /**
+     * @var array
+     */
     protected $fails = [];
 
+    /**
+     * @var null
+     */
     protected $masterWriteFails = null;
 
+    /**
+     * @var
+     */
     protected $newMasterDetected;
 
+    /**
+     * @var string
+     */
+    protected $queryModeHeaderName;
+
+    /**
+     * @var string
+     */
+    protected $queryModeWriteQueryHeaderValue;
+
+    /**
+     * @var string
+     */
+    protected $queryModeReadQueryHeaderValue;
+
+    /**
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         return array(
@@ -45,12 +90,20 @@ class HAEnterpriseManager implements EventSubscriberInterface
             NeoClientEvents::NEO_PRE_REQUEST_SEND => array(
                 'onPreSend', 50,
             ),
+            NeoClientEvents::NEO_PRE_REQUEST_SEND => array(
+                'onPreSendHAHeaders', 10
+            ),
             NeoClientEvents::NEO_POST_REQUEST_SEND => array(
                 'onSuccessfulRequest', 30,
             ),
         );
     }
 
+    /**
+     * @param \Neoxygen\NeoClient\Connection\ConnectionManager $connectionManager
+     * @param \Neoxygen\NeoClient\Command\CommandManager $commandManager
+     * @param \Neoxygen\NeoClient\HttpClient\GuzzleHttpClient $httpClient
+     */
     public function __construct(ConnectionManager $connectionManager, CommandManager $commandManager, GuzzleHttpClient $httpClient)
     {
         $this->connectionManager = $connectionManager;
@@ -58,6 +111,9 @@ class HAEnterpriseManager implements EventSubscriberInterface
         $this->httpClient = $httpClient;
     }
 
+    /**
+     * @param \Neoxygen\NeoClient\Event\HttpExceptionEvent $event
+     */
     public function onRequestException(HttpExceptionEvent $event)
     {
         $request = $event->getRequest();
@@ -99,6 +155,9 @@ class HAEnterpriseManager implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @param \Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent $event
+     */
     public function onPreSend(HttpClientPreSendRequestEvent $event)
     {
         $request = $event->getRequest();
@@ -125,6 +184,23 @@ class HAEnterpriseManager implements EventSubscriberInterface
         }
     }
 
+    /**
+     * Add specific headers to the Request object for helping HA proxies to determine if it is a read or write query
+     *
+     * @param \Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent $event
+     */
+    public function onPreSendHAHeaders(HttpClientPreSendRequestEvent $event)
+    {
+        if ($event->getRequest()->getQueryMode() == 'WRITE') {
+            $event->getRequest()->setHeader('NEO4J_QUERY_MODE', 'NEO4J_QUERY_WRITE');
+        } elseif ($event->getRequest()->getQueryMode() == 'READ') {
+            $event->getRequest()->setHeader('NEO4J_QUERY_MODE', 'NEO4J_QUERY_READ');
+        }
+    }
+
+    /**
+     * @param \Neoxygen\NeoClient\Event\PostRequestSendEvent $event
+     */
     public function onSuccessfulRequest(PostRequestSendEvent $event)
     {
         $request = $event->getRequest();
@@ -133,6 +209,9 @@ class HAEnterpriseManager implements EventSubscriberInterface
         $this->masterUsed = null;
     }
 
+    /**
+     *
+     */
     private function detectReelectedMaster()
     {
         $slaves = $this->connectionManager->getSlaves();
@@ -147,6 +226,10 @@ class HAEnterpriseManager implements EventSubscriberInterface
         return;
     }
 
+    /**
+     * @param $connAlias
+     * @return bool
+     */
     private function isMaster($connAlias)
     {
         $command = $this->commandManager->getCommand('neo.core_get_ha_master');
@@ -163,6 +246,9 @@ class HAEnterpriseManager implements EventSubscriberInterface
         return false;
     }
 
+    /**
+     * @param array $config
+     */
     private function setHAConfigAfterFailure(array $config)
     {
         $dump = Yaml::dump($config, 4, 2);
@@ -170,6 +256,9 @@ class HAEnterpriseManager implements EventSubscriberInterface
         file_put_contents($file, $dump);
     }
 
+    /**
+     * @return array
+     */
     private function getHAConfigAfterFailure()
     {
         if (!file_exists($this->getHAFailureFile())) {
@@ -192,6 +281,9 @@ class HAEnterpriseManager implements EventSubscriberInterface
         return $file;
     }
 
+    /**
+     * @param $slaveAlias
+     */
     private function setHaPrimarySlave($slaveAlias)
     {
         $config = $this->getHAConfigAfterFailure();
@@ -199,6 +291,9 @@ class HAEnterpriseManager implements EventSubscriberInterface
         $this->setHAConfigAfterFailure($config);
     }
 
+    /**
+     * @param $masterAlias
+     */
     private function setHaNewMaster($masterAlias)
     {
         $config = $this->getHAConfigAfterFailure();
