@@ -581,6 +581,54 @@ $client->checkHASlave('server2');       // Returns true|false
 $client->checkHAAvailable('serverxxx'); // Returns master|slave|false
 ```
 
+
+### Query Mode Headers
+
+When the High Availibity Mode is enabled, an additional header will be set to the http request. This header defines the query mode of 
+the transaction : `READ` or `WRITE`.
+
+By default, all queries, live transactions and prepared transactions are assumed `WRITE`.
+
+You can define it your self by using the Client's constants `Client::NEOCLIENT_QUERY_MODE_WRITE` and `Client::NEOCLIENT_QUERY_MODE_READ` 
+or by simply passing a string with those values to the following methods:
+
+```php
+$client->sendCypherQuery($query, $params, $conn = null, $queryMode = Client::NEOCLIENT_QUERY_MODE_READ);
+
+$client->createTransaction($conn = null, Client::NEOCLIENT_QUERY_MODE_WRITE);
+
+$client->prepareTransaction($conn = null, Client::NEOCLIENT_QUERY_MODE_WRITE);
+```
+
+The default headers are the following :
+
+* The header key is `Neo4j-Query-Mode`
+* The write transactions will have a header value of : `NEO4J_QUERY_WRITE`
+* The read transactions will have a header value of : `NEO4J_QUERY_READ`
+
+You can define your own headers definition via the configuration :
+
+##### yaml
+
+```yaml
+neoclient:
+	ha_mode:
+		enabled: true
+		query_mode_header_key: MY_HEADER
+		read_mode_header_value: QUERY_READ
+		write_mode_header_value: QUERY_WRITE
+```
+
+##### php
+
+```php
+$client = ClientBuilder::create()
+	// .. other settings
+	->enableHAMode()
+	->configureHAQueryModeHeaders($headerKey, $writeModeHeaderValue, $readModeHeaderValue)
+	->build();
+```
+
 ## Secured connections
 
 ### Authenticated connection
