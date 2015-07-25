@@ -19,8 +19,15 @@ class CoreOpenTransactionCommand extends AbstractCommand
 
     const PATH = '/db/data/transaction';
 
+    protected $queryMode;
+
+    public function setArguments($queryMode)
+    {
+        $this->queryMode = $queryMode;
+    }
+
     public function execute()
     {
-        return $this->process(self::METHOD, self::PATH, null, $this->connection);
+        return $this->process(self::METHOD, self::PATH, null, $this->connection, null, $this->queryMode);
     }
 }

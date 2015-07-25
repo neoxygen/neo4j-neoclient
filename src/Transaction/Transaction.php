@@ -33,6 +33,11 @@ class Transaction
     private $transactionId;
 
     /**
+     * @var string
+     */
+    private $queryMode;
+
+    /**
      * @var array
      */
     private $results = [];
@@ -41,11 +46,12 @@ class Transaction
      * @param null $conn
      * @param \Neoxygen\NeoClient\Extension\NeoClientCoreExtension $extension
      */
-    public function __construct($conn = null, NeoClientCoreExtension $extension)
+    public function __construct($conn = null, NeoClientCoreExtension $extension, $queryMode)
     {
         $this->conn = $conn;
+        $this->queryMode = $queryMode;
         $this->client = $extension;
-        $response = $this->handleResponse($this->client->openTransaction($this->conn));
+        $response = $this->handleResponse($this->client->openTransaction($this->conn, $this->queryMode));
         $this->commitUrl = $response->getBody()['commit'];
         $this->parseTransactionId();
         $this->active = true;
@@ -94,7 +100,7 @@ class Transaction
     public function commit()
     {
         $this->checkIfOpened();
-        $response = $this->handleResponse($this->client->commitTransaction($this->transactionId));
+        $response = $this->handleResponse($this->client->commitTransaction($this->transactionId, null, array(), $this->conn, $this->queryMode));
         $this->active = false;
 
         return $response;

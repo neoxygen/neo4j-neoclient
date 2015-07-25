@@ -17,6 +17,7 @@ use Neoxygen\NeoClient\Transaction\PreparedTransaction;
 use Symfony\Component\Yaml\Yaml;
 use Neoxygen\NeoClient\Transaction\Transaction;
 use Neoxygen\NeoClient\Request\Response;
+use Neoxygen\NeoClient\Client;
 
 class NeoClientCoreExtension extends AbstractExtension
 {
@@ -354,9 +355,9 @@ class NeoClientCoreExtension extends AbstractExtension
      *
      * @return Transaction
      */
-    public function createTransaction($conn = null)
+    public function createTransaction($conn = null, $queryMode = Client::NEOCLIENT_QUERY_MODE_WRITE)
     {
-        $transaction = new Transaction($conn, $this);
+        $transaction = new Transaction($conn, $this, $queryMode);
 
         return $transaction;
     }
@@ -368,9 +369,10 @@ class NeoClientCoreExtension extends AbstractExtension
      *
      * @return mixed
      */
-    public function openTransaction($conn = null)
+    public function openTransaction($conn = null, $queryMode = self::WRITE_QUERY)
     {
         $command = $this->invoke('neo.open_transaction', $conn);
+        $command->setArguments($queryMode);
         $httpResponse = $command->execute();
 
         return $this->handleHttpResponse($httpResponse);
@@ -404,10 +406,10 @@ class NeoClientCoreExtension extends AbstractExtension
      *
      * @return mixed
      */
-    public function pushToTransaction($transactionId, $query, array $parameters = array(), $conn = null)
+    public function pushToTransaction($transactionId, $query, array $parameters = array(), $conn = null, $queryMode = Client::NEOCLIENT_QUERY_MODE_WRITE)
     {
         $httpResponse = $this->invoke('neo.push_to_transaction', $conn)
-            ->setArguments($transactionId, $query, $parameters, $this->resultDataContent)
+            ->setArguments($transactionId, $query, $parameters, $this->resultDataContent, $queryMode)
             ->execute();
 
         return $this->handleHttpResponse($httpResponse);
@@ -433,10 +435,10 @@ class NeoClientCoreExtension extends AbstractExtension
      *
      * @return mixed
      */
-    public function commitTransaction($transactionId, $query = null, array $parameters = array(), $conn = null)
+    public function commitTransaction($transactionId, $query = null, array $parameters = array(), $conn = null, $queryMode = self::WRITE_QUERY)
     {
         $response = $this->invoke('neo.commit_transaction', $conn)
-            ->setArguments($transactionId, $query, $parameters)
+            ->setArguments($transactionId, $query, $parameters, $this->resultDataContent, $queryMode)
             ->execute();
 
         return $this->handleHttpResponse($response);

@@ -31,13 +31,27 @@ class PreparedTransaction
     protected $committed;
 
     /**
-     * @param null|string $connection Connection alias
+     * @var string Transaction Query Mode can be WRITE or READ
      */
-    public function __construct($connection = null)
+    protected $queryMode;
+
+    /**
+     * @param null|string $connection Connection alias
+     * @param null|string $queryMode Transaction query Mode, can be READ or WRITE, default to WRITE
+     */
+    public function __construct($connection = null, $queryMode = Client::NEOCLIENT_QUERY_MODE_WRITE)
     {
         if (null !== $connection) {
             $this->connection = (string) $connection;
         }
+
+        if ($queryMode !== Client::NEOCLIENT_QUERY_MODE_WRITE && $queryMode !== Client::NEOCLIENT_QUERY_MODE_READ) {
+            throw new \InvalidArgumentExceptiont(sprintf(
+                'The query mode %s for the PreparedTransaction is not valid',
+                $queryMode
+            ));
+        }
+        $this->queryMode = $queryMode;
         $this->committed = false;
 
         return $this;
@@ -88,6 +102,14 @@ class PreparedTransaction
     public function getConnection()
     {
         return $this->connection;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQueryMode()
+    {
+        return $this->queryMode;
     }
 
     /**

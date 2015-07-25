@@ -36,7 +36,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class Client
 {
-    const NEOCLIENT_VERSION = "2.2.5";
+    const NEOCLIENT_VERSION = "3.1.0";
+
+    const NEOCLIENT_QUERY_MODE_WRITE = 'WRITE';
+
+    const NEOCLIENT_QUERY_MODE_READ = 'READ';
 
     private static $serviceContainer;
 
@@ -57,7 +61,7 @@ class Client
 
     public static function commitPreparedTransaction(PreparedTransaction $transaction)
     {
-        return self::call('sendMultiple', array($transaction->getStatements(), $transaction->getConnection()));
+        return self::call('sendMultiple', array($transaction->getStatements(), $transaction->getConnection(), $transaction->getQueryMode()));
     }
 
     /**

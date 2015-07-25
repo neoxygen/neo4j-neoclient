@@ -27,19 +27,22 @@ class CorePushToTransactionCommand extends AbstractCommand
 
     public $transactionId;
 
-    public function setArguments($transactionId, $query, array $parameters = array(), array $resultDataContents = array())
+    protected $queryMode;
+
+    public function setArguments($transactionId, $query, array $parameters = array(), array $resultDataContents = array(), $queryMode)
     {
         $this->transactionId = (int) $transactionId;
         $this->query = $query;
         $this->parameters = $parameters;
         $this->resultDataContents = $resultDataContents;
+        $this->queryMode = $queryMode;
 
         return $this;
     }
 
     public function execute()
     {
-        return $this->process(self::METHOD, $this->getPath(), $this->prepareBody(), $this->connection);
+        return $this->process(self::METHOD, $this->getPath(), $this->prepareBody(), $this->connection, null, $this->queryMode);
     }
 
     public function prepareBody()

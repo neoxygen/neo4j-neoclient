@@ -192,9 +192,9 @@ class HAEnterpriseManager implements EventSubscriberInterface
     public function onPreSendHAHeaders(HttpClientPreSendRequestEvent $event)
     {
         if ($event->getRequest()->getQueryMode() == 'WRITE') {
-            $event->getRequest()->setHeader('NEO4J_QUERY_MODE', 'NEO4J_QUERY_WRITE');
+            $event->getRequest()->setHeader('Neo4j-Query-Mode', 'NEO4J_QUERY_WRITE');
         } elseif ($event->getRequest()->getQueryMode() == 'READ') {
-            $event->getRequest()->setHeader('NEO4J_QUERY_MODE', 'NEO4J_QUERY_READ');
+            $event->getRequest()->setHeader('Neo4j-Query-Mode', 'NEO4J_QUERY_READ');
         }
     }
 
