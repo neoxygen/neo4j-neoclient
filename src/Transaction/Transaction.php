@@ -7,18 +7,40 @@ use Neoxygen\NeoClient\Exception\Neo4jException;
 
 class Transaction
 {
+    /**
+     * @var \Neoxygen\NeoClient\Extension\NeoClientCoreExtension
+     */
     private $client;
 
+    /**
+     * @var bool
+     */
     private $active;
 
+    /**
+     * @var null
+     */
     private $conn;
 
+    /**
+     * @var
+     */
     private $commitUrl;
 
+    /**
+     * @var
+     */
     private $transactionId;
 
+    /**
+     * @var array
+     */
     private $results = [];
 
+    /**
+     * @param null $conn
+     * @param \Neoxygen\NeoClient\Extension\NeoClientCoreExtension $extension
+     */
     public function __construct($conn = null, NeoClientCoreExtension $extension)
     {
         $this->conn = $conn;
@@ -31,23 +53,44 @@ class Transaction
         return $this;
     }
 
+    /**
+     * @param $query
+     * @param array $parameters
+     * @return $this
+     * @throws \Neoxygen\NeoClient\Exception\Neo4jException
+     */
     public function pushQuery($query, array $parameters = array())
     {
         $this->checkIfOpened();
         $response = $this->handleResponse($this->client->pushToTransaction($this->transactionId, $query, $parameters, $this->conn));
-        $this->results[] = $response->getResult();
+        $result = $response->getResult();
+        $this->results[] = $result;
 
-        return $this;
+        return $result;
     }
 
+    /**
+     * @param array $statements
+     * @return $this
+     * @throws \Neoxygen\NeoClient\Exception\Neo4jException
+     */
     public function pushMultiple(array $statements)
     {
         $this->checkIfOpened();
-        $this->client->pushMultipleToTransaction($this->getTransactionId(), $statements, $this->conn);
+        $intermediateResults = [];
+        foreach ($statements as $statement) {
+            $result = $this->pushQuery($statement['query'], $statement['params']);
+            $intermediateResults[] = $result;
+            $this->results[] = $result;
+        }
 
-        return $this;
+        return $intermediateResults;
     }
 
+    /**
+     * @return array|\Neoxygen\NeoClient\Formatter\Response|string
+     * @throws \Neoxygen\NeoClient\Exception\Neo4jException
+     */
     public function commit()
     {
         $this->checkIfOpened();
@@ -57,6 +100,10 @@ class Transaction
         return $response;
     }
 
+    /**
+     * @return array|\Neoxygen\NeoClient\Formatter\Response|string
+     * @throws \Neoxygen\NeoClient\Exception\Neo4jException
+     */
     public function rollback()
     {
         $this->checkIfOpened();
@@ -66,11 +113,17 @@ class Transaction
         return $response;
     }
 
+    /**
+     * @return array
+     */
     public function getResults()
     {
         return $this->results;
     }
 
+    /**
+     * @return mixed
+     */
     public function getLastResult()
     {
         $last = end($this->results);
@@ -79,22 +132,34 @@ class Transaction
         return $last;
     }
 
+    /**
+     * @return bool
+     */
     public function isActive()
     {
         return $this->active;
     }
 
+    /**
+     * @return mixed
+     */
     public function getTransactionId()
     {
         return $this->transactionId;
     }
 
+    /**
+     *
+     */
     private function parseTransactionId()
     {
         $expl = explode('/', $this->commitUrl);
         $this->transactionId = (int) $expl[6];
     }
 
+    /**
+     * @throws \Neoxygen\NeoClient\Exception\Neo4jException
+     */
     private function checkIfOpened()
     {
         if (!$this->isActive()) {
@@ -102,6 +167,10 @@ class Transaction
         }
     }
 
+    /**
+     * @param $httpResponse
+     * @return array|\Neoxygen\NeoClient\Formatter\Response|string
+     */
     private function handleResponse($httpResponse)
     {
         return $this->client->handleHttpResponse($httpResponse);

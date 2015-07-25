@@ -24,6 +24,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @method isIndexed($label, $propertyKey, $conn = null)
  * @method getVersion($conn = null)
  * @method openTransaction($conn = null)
+ * @method \Neoxygen\NeoClient\Transaction\Transaction createTransaction($conn = null)
  * @method rollbackTransaction($id, $conn = null)
  * @method sendCypherQuery($query, array $parameters = array(), $conn = null)
  * @method sendMultiple(array $statements, $conn = null)
