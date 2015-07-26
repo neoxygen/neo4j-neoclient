@@ -1,3 +1,7 @@
+## 3.1.1
+
+* When using getTable, if relationships should be present, their data will be returned in the corresponding row's column
+
 ## 3.1.0
 
 * Added the possibility to add have headers to define query mode

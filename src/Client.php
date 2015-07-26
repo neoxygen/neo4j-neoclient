@@ -36,7 +36,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class Client
 {
-    const NEOCLIENT_VERSION = "3.1.0";
+    const NEOCLIENT_VERSION = "3.1.1";
 
     const NEOCLIENT_QUERY_MODE_WRITE = 'WRITE';
 
