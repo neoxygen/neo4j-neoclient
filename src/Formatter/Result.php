@@ -80,11 +80,11 @@ class Result
      */
     public function getNodeById($id)
     {
-        if ($this->nodes[$id]) {
-            return $this->nodes[$id];
+        if (isset($this->nodes[$id])) {
+            return null;
         }
 
-        return null;
+        return $this->nodes[$id];
     }
 
     /**
@@ -189,11 +189,11 @@ class Result
      */
     public function getRelationship($id)
     {
-        if ($this->relationships[$id]) {
-            return $this->relationships[$id];
+        if (!isset($this->relationships[$id])) {
+            return null;
         }
 
-        return null;
+        return $this->relationships[$id];
     }
 
     /**
