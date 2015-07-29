@@ -62,7 +62,7 @@ class Transaction
     /**
      * @param $query
      * @param array $parameters
-     * @return \Neoxygen\NeoClient\Formatter\Response
+     * @return \Neoxygen\NeoClient\Formatter\Result
      * @throws \Neoxygen\NeoClient\Exception\Neo4jException
      */
     public function pushQuery($query, array $parameters = array())
