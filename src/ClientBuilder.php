@@ -243,6 +243,16 @@ class ClientBuilder
     }
 
     /**
+     * Enables the new formatting service from GraphAware
+     */
+    public function enableNewFormattingService()
+    {
+        $this->configuration['enable_new_response_format_mode'] = true;
+
+        return $this;
+    }
+
+    /**
      * Adds an event listener to an event.
      *
      * @param string          $event    The Event to listen to

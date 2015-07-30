@@ -55,6 +55,7 @@ class NeoClientExtension implements  ExtensionInterface
         $container->setParameter('neoclient.response_format', $resultDataContent);
         $container->setParameter('neoclient.auto_format_response', $config['auto_format_response']);
         $container->setParameter('neoclient.result_data_content', $resultDataContent);
+        $container->setParameter('neoclient.new_format_mode_enabled', $config['enable_new_response_format_mode']);
 
         if (isset($config['ha_mode'])) {
             $connectionManager = $container->getDefinition('neoclient.connection_manager');

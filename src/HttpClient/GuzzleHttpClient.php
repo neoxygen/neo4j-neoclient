@@ -21,6 +21,7 @@ use Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent;
 use Neoxygen\NeoClient\Event\PostRequestSendEvent;
 use Neoxygen\NeoClient\Event\HttpExceptionEvent;
 use Neoxygen\NeoClient\Client as BaseClient;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class GuzzleHttpClient implements HttpClientInterface
@@ -77,9 +78,9 @@ class GuzzleHttpClient implements HttpClientInterface
         }
     }
 
-    private function getResponse(HttpResponse $httpResponse)
+    private function getResponse(ResponseInterface $httpResponse)
     {
-        $response = new Response();
+        $response = new Response($httpResponse);
 
         if ($httpResponse->getBody()) {
             $resp = (string) $httpResponse->getBody();

@@ -3,6 +3,7 @@
 namespace Neoxygen\NeoClient\Request;
 
 use Neoxygen\NeoClient\Formatter\Result;
+use Psr\Http\Message\ResponseInterface;
 
 class Response
 {
@@ -12,8 +13,15 @@ class Response
 
     protected $result;
 
-    public function __construct()
+    /**
+     * @var \Psr\Http\Message\ResponseInterface
+     */
+    protected $raw;
+
+
+    public function __construct(ResponseInterface $responseInterface)
     {
+        $this->raw = $responseInterface;
     }
 
     public function setBody($body)
@@ -61,5 +69,13 @@ class Response
     public function setResult(Result $result = null)
     {
         $this->result = $result;
+    }
+
+    /**
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function getRaw()
+    {
+        return $this->raw;
     }
 }

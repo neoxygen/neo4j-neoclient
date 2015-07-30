@@ -266,11 +266,12 @@ class NeoClientCoreExtension extends AbstractExtension
         }
         $indexes = [];
         foreach ($labels as $label) {
-            $indexs = $this->listIndex($label, $conn)->getBody();
+            $res = $this->listIndex($label, $conn);
+            $indexs = $res->getBody();
             $indexes[$label] = $indexs;
         }
 
-        $response = new Response();
+        $response = new Response($res->getRaw());
         $response->setBody($indexes);
 
         return $response;

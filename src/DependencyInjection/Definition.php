@@ -96,7 +96,8 @@ class Definition implements ConfigurationInterface
                 ->end()
         ->end()
         ->scalarNode('response_formatter_class')->defaultValue('Neoxygen\NeoClient\Formatter\ResponseFormatter')->end()
-        ->booleanNode('auto_format_response')->defaultValue(false)
+        ->booleanNode('auto_format_response')->defaultValue(false)->end()
+        ->booleanNode('enable_new_response_format_mode')->defaultValue(false)->end()
         ->end()
         ->end();
 

@@ -22,13 +22,16 @@ class ExtensionManager
 
     private $resultDataContent;
 
-    public function __construct(CommandManager $commandManager, ConnectionManager $connectionManager, ResponseFormatterManager $responseFormatter, $autoFormatResponse, $resultDataContent)
+    protected $newFormatModeEnabled;
+
+    public function __construct(CommandManager $commandManager, ConnectionManager $connectionManager, ResponseFormatterManager $responseFormatter, $autoFormatResponse, $resultDataContent, $newFormatModeEnabled)
     {
         $this->commandManager = $commandManager;
         $this->connectionManager = $connectionManager;
         $this->responseFormatter = $responseFormatter;
         $this->autoFormatResponse = $autoFormatResponse;
         $this->resultDataContent = $resultDataContent;
+        $this->newFormatModeEnabled = $newFormatModeEnabled;
     }
 
     public function addExtension($extension)
@@ -40,7 +43,8 @@ class ExtensionManager
                 $this->connectionManager,
                 $this->responseFormatter,
                 $this->autoFormatResponse,
-                $this->resultDataContent)
+                $this->resultDataContent,
+                $this->newFormatModeEnabled)
         );
     }
 
