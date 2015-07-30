@@ -17,7 +17,6 @@ matrix:
 
 
 before_install:
-    - sudo apt-get update > /dev/null
     - wget dist.neo4j.org/neo4j-community-$NEO_VERSION-unix.tar.gz > null
     - tar -xzf neo4j-community-$NEO_VERSION-unix.tar.gz > null
     - neo4j-community-$NEO_VERSION/bin/neo4j start > null
