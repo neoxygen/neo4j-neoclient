@@ -24,7 +24,7 @@ before_install:
     - COMPOSER_ROOT_VERSION=dev-master composer install
 
 before_script:
-    - composer install --prefer-source --no-interaction
+    #- composer install --prefer-source --no-interaction
     - mv tests/database_settings.yml.dist tests/database_settings.yml
 
 script:
