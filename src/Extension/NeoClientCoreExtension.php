@@ -13,6 +13,7 @@ namespace Neoxygen\NeoClient\Extension;
 
 use Neoxygen\NeoClient\Exception\Neo4jException,
     Neoxygen\NeoClient\Exception\CypherException;
+use Neoxygen\NeoClient\Schema\Index;
 use Neoxygen\NeoClient\Transaction\PreparedTransaction;
 use Symfony\Component\Yaml\Yaml;
 use Neoxygen\NeoClient\Transaction\Transaction;
@@ -144,6 +145,14 @@ class NeoClientCoreExtension extends AbstractExtension
         return $this->sendCypherQuery($q);
     }
 
+    public function createSchemaIndex($label, $property)
+    {
+        $statement = 'CREATE INDEX ON :' . $label . '(' . $property . ')';
+        $this->sendCypherQuery($statement);
+
+        return new Index($label, $property);
+    }
+
     /**
      * Creates an index on a label.
      *
@@ -151,6 +160,7 @@ class NeoClientCoreExtension extends AbstractExtension
      * @param string|array $property
      *
      * @return bool
+     * @deprecated will be removed in 4.0
      */
     public function createIndex($label, $property)
     {
@@ -225,6 +235,7 @@ class NeoClientCoreExtension extends AbstractExtension
      * @param string|null $conn
      *
      * @return Response
+     * @deprecetad Will be removed in 4.0
      */
     public function listIndexes(array $labels = array(), $conn = null)
     {
@@ -241,6 +252,20 @@ class NeoClientCoreExtension extends AbstractExtension
         $response->setBody($indexes);
 
         return $response;
+    }
+
+    public function getSchemaIndexes($conn = null)
+    {
+        $indx = [];
+        $labels = $this->getLabels($conn)->getBody();
+        foreach ($labels as $label) {
+            $indexes = $this->listIndex($label, $conn)->getBody();
+            foreach ($indexes as $property) {
+                $indx[] = new Index($label, $property);
+            }
+        }
+
+        return $indx;
     }
 
     /**

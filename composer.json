@@ -24,7 +24,8 @@
       "symfony/yaml": "^2.7",
       "symfony/config": "^2.7",
       "symfony/dependency-injection": "^2.7",
-      "symfony/event-dispatcher": "^2.7"
+      "symfony/event-dispatcher": "^2.7",
+        "graphaware/neo4j-graphunit": "^1.0"
     },
     "require-dev": {
         "phpspec/phpspec": "~2.0",
