@@ -145,12 +145,31 @@ class NeoClientCoreExtension extends AbstractExtension
         return $this->sendCypherQuery($q);
     }
 
-    public function createSchemaIndex($label, $property)
+    /**
+     * Creates a Schema Index based on label and property
+     *
+     * @param string $label
+     * @param string $property
+     * @return \Neoxygen\NeoClient\Schema\Index
+     */
+    public function createSchemaIndex($label, $property, $conn = null)
     {
         $statement = 'CREATE INDEX ON :' . $label . '(' . $property . ')';
-        $this->sendCypherQuery($statement);
+        $this->sendCypherQuery($statement, array(), $conn = null, self::WRITE_QUERY);
 
         return new Index($label, $property);
+    }
+
+    /**
+     * Removes a Schema Index
+     *
+     * @param \Neoxygen\NeoClient\Schema\Index $index
+     * @param string|null $conn
+     */
+    public function dropSchemaIndex(Index $index, $conn = null)
+    {
+        $statement = 'DROP INDEX ON :' . $index->getLabel() . '(' . $index->getProperty() . ')';
+        $this->sendCypherQuery($statement, array(), $conn, self::WRITE_QUERY);
     }
 
     /**
