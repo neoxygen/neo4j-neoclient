@@ -25,11 +25,11 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class GuzzleHttpClient implements HttpClientInterface
 {
-    private $client;
+    protected $client;
 
-    private $eventDispatcher;
+    protected $eventDispatcher;
 
-    private $defaultTimeout;
+    protected $defaultTimeout;
 
     public function __construct($defaultTimeOut, EventDispatcherInterface $eventDispatcher)
     {
