@@ -12,7 +12,6 @@ use Neoxygen\NeoClient\HttpClient\GuzzleHttpClient;
 use Neoxygen\NeoClient\Exception\HttpException;
 use Neoxygen\NeoClient\Client;
 use Neoxygen\NeoClient\Request\Response;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Yaml\Yaml;
 
@@ -91,7 +90,7 @@ class HAEnterpriseManager implements EventSubscriberInterface
                 'onPreSend', 50,
             ),
             NeoClientEvents::NEO_PRE_REQUEST_SEND => array(
-                'onPreSendHAHeaders', 10
+                'onPreSendHAHeaders', 10,
             ),
             NeoClientEvents::NEO_POST_REQUEST_SEND => array(
                 'onSuccessfulRequest', 30,
@@ -101,8 +100,8 @@ class HAEnterpriseManager implements EventSubscriberInterface
 
     /**
      * @param \Neoxygen\NeoClient\Connection\ConnectionManager $connectionManager
-     * @param \Neoxygen\NeoClient\Command\CommandManager $commandManager
-     * @param \Neoxygen\NeoClient\HttpClient\GuzzleHttpClient $httpClient
+     * @param \Neoxygen\NeoClient\Command\CommandManager       $commandManager
+     * @param \Neoxygen\NeoClient\HttpClient\GuzzleHttpClient  $httpClient
      */
     public function __construct(ConnectionManager $connectionManager, CommandManager $commandManager, GuzzleHttpClient $httpClient, $queryModeKey, $writeQueryKeyValue, $readQueryKeyValue)
     {
@@ -120,7 +119,7 @@ class HAEnterpriseManager implements EventSubscriberInterface
     public function onRequestException(HttpExceptionEvent $event)
     {
         $request = $event->getRequest();
-        $this->fails[$request->getConnection()] = !isset($this->fails[$request->getConnection()]) ? 1 : $this->fails[$request->getConnection()] +1;
+        $this->fails[$request->getConnection()] = !isset($this->fails[$request->getConnection()]) ? 1 : $this->fails[$request->getConnection()] + 1;
         if ($request->hasQueryMode()) {
             if ($request->getQueryMode() == 'READ') {
                 $this->slavesUsed[] = $request->getConnection();
@@ -138,8 +137,7 @@ class HAEnterpriseManager implements EventSubscriberInterface
                         $request->setInfoFromConnection($master);
                         $request->setQueryMode('READ');
                         $event->stopPropagation();
-                    }
-                    else {
+                    } else {
                         Client::log('warning', sprintf('Connection "%s" unreacheable, even after trying the master', $request->getConnection()));
                     }
                 }
@@ -188,7 +186,7 @@ class HAEnterpriseManager implements EventSubscriberInterface
     }
 
     /**
-     * Add specific headers to the Request object for helping HA proxies to determine if it is a read or write query
+     * Add specific headers to the Request object for helping HA proxies to determine if it is a read or write query.
      *
      * @param \Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent $event
      */
@@ -231,6 +229,7 @@ class HAEnterpriseManager implements EventSubscriberInterface
 
     /**
      * @param $connAlias
+     *
      * @return bool
      */
     private function isMaster($connAlias)

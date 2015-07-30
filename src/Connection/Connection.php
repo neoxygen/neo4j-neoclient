@@ -29,7 +29,7 @@ class Connection
     private $host;
 
     /**
-     * @var integer The connection's port
+     * @var int The connection's port
      */
     private $port;
 

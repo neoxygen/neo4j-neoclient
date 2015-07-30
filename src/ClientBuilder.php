@@ -94,9 +94,10 @@ class ClientBuilder
     }
 
     /**
-     * Load a configuration from an external YAML file
+     * Load a configuration from an external YAML file.
      *
      * @param string $file
+     *
      * @return ClientBuilder
      */
     public function loadConfigurationFile($file)
@@ -110,11 +111,11 @@ class ClientBuilder
     }
 
     /**
-     * @param string  $alias    An alias for the connection
-     * @param string  $scheme   The scheme of the connection
-     * @param string  $host     The host of the connection
-     * @param integer $port     The port for the connection
-     * @param bool    $authMode Whether or not the connection use the authentication extension
+     * @param string $alias    An alias for the connection
+     * @param string $scheme   The scheme of the connection
+     * @param string $host     The host of the connection
+     * @param int    $port     The port for the connection
+     * @param bool   $authMode Whether or not the connection use the authentication extension
      * @param string|null Authentication login
      * @param string|null Authentication password
      *
@@ -163,7 +164,7 @@ class ClientBuilder
     }
 
     /**
-     * Enables the High Availibility Mode
+     * Enables the High Availibility Mode.
      *
      * @return $this
      */
@@ -534,7 +535,7 @@ class ClientBuilder
     private function checkConnection($alias)
     {
         if (!array_key_exists($alias, $this->configuration['connections'])) {
-            throw new Neo4jException(sprintf('The connection "%s" has not been registered', "%s"));
+            throw new Neo4jException(sprintf('The connection "%s" has not been registered', '%s'));
         }
 
         return true;

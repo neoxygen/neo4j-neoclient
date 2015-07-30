@@ -112,6 +112,6 @@ class GuzzleHttpClient implements HttpClientInterface
 
     private function getUserAgent()
     {
-        return 'NeoClient-PHP/v-' . BaseClient::getNeoClientVersion();
+        return 'NeoClient-PHP/v-'.BaseClient::getNeoClientVersion();
     }
 }

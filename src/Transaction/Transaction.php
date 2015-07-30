@@ -18,17 +18,17 @@ class Transaction
     private $active;
 
     /**
-     * @var null
+     * @var string|null
      */
     private $conn;
 
     /**
-     * @var
+     * @var string
      */
     private $commitUrl;
 
     /**
-     * @var
+     * @var int
      */
     private $transactionId;
 
@@ -38,12 +38,12 @@ class Transaction
     private $queryMode;
 
     /**
-     * @var array
+     * @var \Neoxygen\NeoClient\Formatter\Result[]
      */
     private $results = [];
 
     /**
-     * @param null $conn
+     * @param null                                                 $conn
      * @param \Neoxygen\NeoClient\Extension\NeoClientCoreExtension $extension
      */
     public function __construct($conn = null, NeoClientCoreExtension $extension, $queryMode)
@@ -62,7 +62,9 @@ class Transaction
     /**
      * @param $query
      * @param array $parameters
+     *
      * @return \Neoxygen\NeoClient\Formatter\Result
+     *
      * @throws \Neoxygen\NeoClient\Exception\Neo4jException
      */
     public function pushQuery($query, array $parameters = array())
@@ -77,7 +79,9 @@ class Transaction
 
     /**
      * @param array $statements
+     *
      * @return $this
+     *
      * @throws \Neoxygen\NeoClient\Exception\Neo4jException
      */
     public function pushMultiple(array $statements)
@@ -95,6 +99,7 @@ class Transaction
 
     /**
      * @return array|\Neoxygen\NeoClient\Formatter\Response|string
+     *
      * @throws \Neoxygen\NeoClient\Exception\Neo4jException
      */
     public function commit()
@@ -108,6 +113,7 @@ class Transaction
 
     /**
      * @return array|\Neoxygen\NeoClient\Formatter\Response|string
+     *
      * @throws \Neoxygen\NeoClient\Exception\Neo4jException
      */
     public function rollback()
@@ -120,7 +126,7 @@ class Transaction
     }
 
     /**
-     * @return array
+     * @return \Neoxygen\NeoClient\Formatter\Result[]
      */
     public function getResults()
     {
@@ -175,6 +181,7 @@ class Transaction
 
     /**
      * @param $httpResponse
+     *
      * @return array|\Neoxygen\NeoClient\Formatter\Response|string
      */
     private function handleResponse($httpResponse)

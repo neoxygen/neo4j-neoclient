@@ -306,7 +306,7 @@ class ResponseFormatter implements ResponseFormatterInterface
                 $i = 0;
                 foreach ($dat['row'] as $row) {
                     $tmpColumns[$i][] = $row;
-                    $i++;
+                    ++$i;
                 }
             }
             $y = 0;
@@ -332,12 +332,11 @@ class ResponseFormatter implements ResponseFormatterInterface
                                         $rows[$col][$i] = $this->getUsefulRestEdgeInfoFromCollection($maybeRel);
                                     }
                                 }
-
                             }
                         }
                     }
                 }
-                $y++;
+                ++$y;
             }
         }
 
@@ -349,7 +348,7 @@ class ResponseFormatter implements ResponseFormatterInterface
         $data = [
             'id' => $rel['metadata']['id'],
             'type' => $rel['metadata']['type'],
-            'properties' => $rel['data']
+            'properties' => $rel['data'],
         ];
 
         return $data;

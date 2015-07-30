@@ -49,7 +49,6 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
         if (false !== false) {
             $this->sendGA();
         }
-
     }
 
     public function onPostRequestSend(PostRequestSendEvent $event)
@@ -68,9 +67,11 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
     private function sendGA()
     {
         $td = sys_get_temp_dir();
-        if (!is_writable($td)) { return; }
-        $f = $td . DIRECTORY_SEPARATOR . 'neoping.txt';
-        $c = $td . DIRECTORY_SEPARATOR . 'neoi.txt';
+        if (!is_writable($td)) {
+            return;
+        }
+        $f = $td.DIRECTORY_SEPARATOR.'neoping.txt';
+        $c = $td.DIRECTORY_SEPARATOR.'neoi.txt';
         $t = time();
         if (file_exists($f) && file_exists($c)) {
             $last = (int) file_get_contents($f);
@@ -81,7 +82,9 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
             $ci = sha1($t);
             $new = true;
         }
-        if (($t - $last) < 120) { return; }
+        if (($t - $last) < 120) {
+            return;
+        }
 
         try {
             $this->hc->request('GET', 'http://stats.neoxygen.io/collect', [
@@ -89,7 +92,7 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
                 'query' => [
                     'v' => Client::getNeoClientVersion(),
                     'cid' => $ci,
-                ]
+                ],
             ]);
             $this->lc = $t;
             file_put_contents($f, $t);

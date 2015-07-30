@@ -27,18 +27,17 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @method openTransaction($conn = null)
  * @method \Neoxygen\NeoClient\Transaction\Transaction createTransaction($conn = null)
  * @method rollbackTransaction($id, $conn = null)
- * @method sendCypherQuery($query, array $parameters = array(), $conn = null)
+ * @method \Neoxygen\NeoClient\Formatter\Response sendCypherQuery($query, array $parameters = array(), $conn = null)
  * @method sendMultiple(array $statements, $conn = null)
  * @method sendWriteQuery($query, array $parameters = array())
  * @method sendReadQuery($query, array $parameters = array())
  * @method PreparedTransaction prepareTransaction($conn = null)
  * @method bool createIndex($label, $property)
  * @method bool createUniqueConstraint($label, $property, $removeIndexIfExist = false)
- *
  */
 class Client
 {
-    const NEOCLIENT_VERSION = "3.2.0";
+    const NEOCLIENT_VERSION = '3.2.0';
 
     const NEOCLIENT_QUERY_MODE_WRITE = 'WRITE';
 

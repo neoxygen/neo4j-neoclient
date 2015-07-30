@@ -11,7 +11,6 @@
 
 namespace Neoxygen\NeoClient\DependencyInjection;
 
-use Doctrine\Instantiator\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;

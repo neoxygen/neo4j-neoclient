@@ -37,7 +37,7 @@ class PreparedTransaction
 
     /**
      * @param null|string $connection Connection alias
-     * @param null|string $queryMode Transaction query Mode, can be READ or WRITE, default to WRITE
+     * @param null|string $queryMode  Transaction query Mode, can be READ or WRITE, default to WRITE
      */
     public function __construct($connection = null, $queryMode = Client::NEOCLIENT_QUERY_MODE_WRITE)
     {

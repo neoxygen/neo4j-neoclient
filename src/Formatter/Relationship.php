@@ -41,8 +41,8 @@ class Relationship
     /**
      * @param $id
      * @param $type
-     * @param Node $startNode
-     * @param Node $endNode
+     * @param Node  $startNode
+     * @param Node  $endNode
      * @param array $properties
      */
     public function __construct($id, $type, Node $startNode, Node $endNode, array $properties = array())
@@ -96,6 +96,7 @@ class Relationship
 
     /**
      * @param $name
+     *
      * @return mixed
      */
     public function getProperty($name)
@@ -107,6 +108,7 @@ class Relationship
 
     /**
      * @param $property
+     *
      * @return bool
      */
     public function hasProperty($property)
@@ -124,6 +126,7 @@ class Relationship
 
     /**
      * @param Node $node
+     *
      * @return Node
      */
     public function getOtherNode(Node $node)

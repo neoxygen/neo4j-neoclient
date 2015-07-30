@@ -9,7 +9,6 @@ use Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent;
 use Neoxygen\NeoClient\NeoClientEvents;
 use Neoxygen\NeoClient\HttpClient\GuzzleHttpClient;
 use Neoxygen\NeoClient\Client;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class HACommunityManager implements EventSubscriberInterface
@@ -50,7 +49,7 @@ class HACommunityManager implements EventSubscriberInterface
     public function onRequestException(HttpExceptionEvent $event)
     {
         $request = $event->getRequest();
-        $this->fails[$request->getConnection()] = !isset($this->fails[$request->getConnection()]) ? 1 : $this->fails[$request->getConnection()] +1;
+        $this->fails[$request->getConnection()] = !isset($this->fails[$request->getConnection()]) ? 1 : $this->fails[$request->getConnection()] + 1;
         if ($request->hasQueryMode()) {
             if ($request->getQueryMode() == 'READ') {
                 $this->slavesUsed[] = $request->getConnection();

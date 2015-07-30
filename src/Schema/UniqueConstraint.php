@@ -36,16 +36,16 @@ class UniqueConstraint
     /**
      * @return string
      */
-    public function getLabel() {
+    public function getLabel()
+    {
         return $this->label;
     }
 
     /**
      * @return string
      */
-    public function getProperty() {
+    public function getProperty()
+    {
         return $this->property;
     }
-
-
 }

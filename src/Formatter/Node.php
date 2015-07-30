@@ -29,12 +29,12 @@ class Node
     protected $properties;
 
     /**
-     * @var array[Neoxygen\NeoClient\Formatter\Relationship] The collection of inbound relationships
+     * @var \Neoxygen\NeoClient\Formatter\Relationship[] The collection of inbound relationships
      */
     protected $inboundRelationships;
 
     /**
-     * @var array[Neoxygen\NeoClient\Formatter\Relationship] The collection of outbound relationships
+     * @var \Neoxygen\NeoClient\Formatter\Relationship[] The collection of outbound relationships
      */
     protected $outboundRelationships;
 
@@ -107,9 +107,9 @@ class Node
         return current($this->labels);
     }
 
-
     /**
      * @param array $props
+     *
      * @return array
      */
     public function getProperties(array $props = array())
@@ -128,6 +128,7 @@ class Node
 
     /**
      * @param $name
+     *
      * @return mixed
      */
     public function getProperty($name)
@@ -136,11 +137,12 @@ class Node
             return $this->properties[$name];
         }
 
-        return null;
+        return;
     }
 
     /**
      * @param $name
+     *
      * @return bool
      */
     public function hasProperty($name)
@@ -149,7 +151,7 @@ class Node
     }
 
     /**
-     * @param Relationship $relationship
+     * @param \Neoxygen\NeoClient\Formatter\Relationship $relationship
      */
     public function addInboundRelationship(Relationship $relationship)
     {
@@ -157,7 +159,7 @@ class Node
     }
 
     /**
-     * @param Relationship $relationship
+     * @param \Neoxygen\NeoClient\Formatter\Relationship $relationship
      */
     public function addOutboundRelationship(Relationship $relationship)
     {
@@ -165,7 +167,7 @@ class Node
     }
 
     /**
-     * @return array[Relationship]
+     * @return \Neoxygen\NeoClient\Formatter\Relationship[]
      */
     public function getInboundRelationships()
     {
@@ -173,7 +175,7 @@ class Node
     }
 
     /**
-     * @return array[Relationship]
+     * @return \Neoxygen\NeoClient\Formatter\Relationship[]
      */
     public function getOutboundRelationships()
     {
@@ -183,7 +185,8 @@ class Node
     /**
      * @param null $type
      * @param null $direction
-     * @return array[Relationship]
+     *
+     * @return \Neoxygen\NeoClient\Formatter\Relationship[]
      */
     public function getRelationships($type = null, $direction = null)
     {
@@ -214,6 +217,7 @@ class Node
     /**
      * @param null $type
      * @param null $direction
+     *
      * @return mixed
      */
     public function getSingleRelationship($type = null, $direction = null)
@@ -250,7 +254,6 @@ class Node
     public function hasConnectedNodes()
     {
         if (!empty($this->inboundRelationships) || !empty($this->outboundRelationships)) {
-
             return true;
         }
 
@@ -260,7 +263,8 @@ class Node
     /**
      * @param null $direction
      * @param null $relationshipTypes
-     * @return array[Node]
+     *
+     * @return \Neoxygen\NeoClient\Formatter\Node[]
      */
     public function getConnectedNodes($direction = null, $relationshipTypes = null)
     {
@@ -276,13 +280,14 @@ class Node
     /**
      * @param null $direction
      * @param null $relationshipTypes
-     * @return null|Node
+     *
+     * @return null|\Neoxygen\NeoClient\Formatter\Node
      */
     public function getConnectedNode($direction = null, $relationshipTypes = null)
     {
         $nodes = $this->getConnectedNodes($direction, $relationshipTypes);
         if (count($nodes) < 1) {
-            return null;
+            return;
         }
 
         return $nodes[0];

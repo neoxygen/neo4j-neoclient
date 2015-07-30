@@ -12,7 +12,6 @@
 namespace Neoxygen\NeoClient\HttpClient;
 
 use Neoxygen\NeoClient\Request\Request;
-use Neoxygen\NeoClient\Request\Response;
 
 interface HttpClientInterface
 {

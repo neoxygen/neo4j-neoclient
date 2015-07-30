@@ -11,8 +11,8 @@
 
 namespace Neoxygen\NeoClient\Extension;
 
-use Neoxygen\NeoClient\Exception\Neo4jException,
-    Neoxygen\NeoClient\Exception\CypherException;
+use Neoxygen\NeoClient\Exception\Neo4jException;
+use Neoxygen\NeoClient\Exception\CypherException;
 use Neoxygen\NeoClient\Schema\Index;
 use Neoxygen\NeoClient\Schema\UniqueConstraint;
 use Neoxygen\NeoClient\Transaction\PreparedTransaction;
@@ -147,29 +147,30 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Creates a Schema Index based on label and property
+     * Creates a Schema Index based on label and property.
      *
      * @param string $label
      * @param string $property
+     *
      * @return \Neoxygen\NeoClient\Schema\Index
      */
     public function createSchemaIndex($label, $property, $conn = null)
     {
-        $statement = 'CREATE INDEX ON :' . $label . '(' . $property . ')';
+        $statement = 'CREATE INDEX ON :'.$label.'('.$property.')';
         $this->sendCypherQuery($statement, array(), $conn = null, self::WRITE_QUERY);
 
         return new Index($label, $property);
     }
 
     /**
-     * Removes a Schema Index
+     * Removes a Schema Index.
      *
      * @param \Neoxygen\NeoClient\Schema\Index $index
-     * @param string|null $conn
+     * @param string|null                      $conn
      */
     public function dropSchemaIndex(Index $index, $conn = null)
     {
-        $statement = 'DROP INDEX ON :' . $index->getLabel() . '(' . $index->getProperty() . ')';
+        $statement = 'DROP INDEX ON :'.$index->getLabel().'('.$index->getProperty().')';
         $this->sendCypherQuery($statement, array(), $conn, self::WRITE_QUERY);
     }
 
@@ -180,6 +181,7 @@ class NeoClientCoreExtension extends AbstractExtension
      * @param string|array $property
      *
      * @return bool
+     *
      * @deprecated will be removed in 4.0
      */
     public function createIndex($label, $property)
@@ -275,9 +277,10 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Returns the schema indexes live in the database
+     * Returns the schema indexes live in the database.
      *
      * @param null $conn
+     *
      * @return \Neoxygen\NeoClient\Schema\Index[]
      */
     public function getSchemaIndexes($conn = null)
@@ -378,12 +381,14 @@ class NeoClientCoreExtension extends AbstractExtension
      * @param $property
      * @param bool $transformIndexInConstraint
      * @param null $conn
+     *
      * @return \Neoxygen\NeoClient\Schema\UniqueConstraint
+     *
      * @throws \Neoxygen\NeoClient\Exception\Neo4jException
      */
     public function createSchemaUniqueConstraint($label, $property, $transformIndexInConstraint = false, $conn = null)
     {
-        $q = 'CREATE CONSTRAINT ON (n:' . $label . ') ASSERT n.' . $property . ' IS UNIQUE';
+        $q = 'CREATE CONSTRAINT ON (n:'.$label.') ASSERT n.'.$property.' IS UNIQUE';
         try {
             $this->sendCypherQuery($q);
 
@@ -398,21 +403,22 @@ class NeoClientCoreExtension extends AbstractExtension
     }
 
     /**
-     * Drops a Uniqueness constraint from the Schema
+     * Drops a Uniqueness constraint from the Schema.
      *
      * @param \Neoxygen\NeoClient\Schema\UniqueConstraint $constraint
-     * @param null $conn
+     * @param null                                        $conn
      */
     public function dropSchemaUniqueConstraint(UniqueConstraint $constraint, $conn = null)
     {
-        $q = 'DROP CONSTRAINT ON (n:' . $constraint->getLabel() . ') ASSERT n.' . $constraint->getProperty() . ' IS UNIQUE';
+        $q = 'DROP CONSTRAINT ON (n:'.$constraint->getLabel().') ASSERT n.'.$constraint->getProperty().' IS UNIQUE';
         $this->sendCypherQuery($q);
     }
 
     /**
-     * Returns a collection of Uniqueness constraints live in the schema
+     * Returns a collection of Uniqueness constraints live in the schema.
      *
      * @param null $conn
+     *
      * @return \Neoxygen\NeoClient\Schema\UniqueConstraint[]
      */
     public function getSchemaUniqueConstraints($conn = null)
@@ -733,10 +739,10 @@ class NeoClientCoreExtension extends AbstractExtension
                     $value = $value->format('Ymdhis');
                 }
                 $parameters['start_'.$key] = $value;
-                if ($i < $propsCount -1) {
+                if ($i < $propsCount - 1) {
                     $startNPattern .= ', ';
                 }
-                $i++;
+                ++$i;
             }
             $startNPattern .= '}';
         }
@@ -761,10 +767,10 @@ class NeoClientCoreExtension extends AbstractExtension
                     $value = $value->format('Ymdhis');
                 }
                 $parameters['end_'.$key] = $value;
-                if ($i < $propsCount -1) {
+                if ($i < $propsCount - 1) {
                     $endNPattern .= ', ';
                 }
-                $i++;
+                ++$i;
             }
             $endNPattern .= '}';
         }

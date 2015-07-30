@@ -49,7 +49,8 @@ class Result
      * identically as {@link Result::getNodesByLabels()}.
      *
      * @param string|string[]|null $label
-     * @param bool $labelizedKeys
+     * @param bool                 $labelizedKeys
+     *
      * @return Node[]
      */
     public function getNodes($label = null, $labelizedKeys = false)
@@ -80,8 +81,8 @@ class Result
      */
     public function getNodeById($id)
     {
-        if (isset($this->nodes[$id])) {
-            return null;
+        if (!isset($this->nodes[$id])) {
+            return;
         }
 
         return $this->nodes[$id];
@@ -118,15 +119,15 @@ class Result
             }
         }
 
-        return null;
+        return;
     }
 
     /**
      * Returns all nodes with the given label.
      *
      * @param string $name
-     * @param bool $labelizedKeys When true, the results are indexed by node
-     *                            label. Assumes only one node per label.
+     * @param bool   $labelizedKeys When true, the results are indexed by node
+     *                              label. Assumes only one node per label.
      *
      * @return Node[]
      */
@@ -150,8 +151,8 @@ class Result
      * Returns all nodes with the given labels.
      *
      * @param array $labels
-     * @param bool $labelizedKeys When true, the results are indexed by node
-     *                            label. Assumes one node per label.
+     * @param bool  $labelizedKeys When true, the results are indexed by node
+     *                             label. Assumes one node per label.
      *
      * @return Node[]
      */
@@ -190,7 +191,7 @@ class Result
     public function getRelationship($id)
     {
         if (!isset($this->relationships[$id])) {
-            return null;
+            return;
         }
 
         return $this->relationships[$id];
@@ -229,7 +230,6 @@ class Result
         if (isset($this->identifiers[$identifier])) {
             foreach ($this->identifiers[$identifier] as $rel) {
                 if ($rel->getId() === $relationshipId) {
-
                     return;
                 }
             }
@@ -247,9 +247,10 @@ class Result
      * if no items are bound.
      *
      * @param string $identifier
-     * @param mixed $default A value to return if the identifier is not bound.
-     * @param bool $singleAsArray When true, always returns a single value as
-     *                            an array.
+     * @param mixed  $default       A value to return if the identifier is not bound.
+     * @param bool   $singleAsArray When true, always returns a single value as
+     *                              an array.
+     *
      * @return mixed
      */
     public function get($identifier, $default = null, $singleAsArray = false)
@@ -259,7 +260,6 @@ class Result
         }
 
         if (is_array($this->identifiers[$identifier]) && 1 === count($this->identifiers[$identifier]) && $singleAsArray === false) {
-
             return array_values($this->identifiers[$identifier])[0];
         }
 
@@ -271,14 +271,14 @@ class Result
      * the identifier is not bound.
      *
      * @param string $identifier
-     * @param mixed $default A value to return if the identifier is not bound.
+     * @param mixed  $default    A value to return if the identifier is not bound.
+     *
      * @return mixed
      */
     public function getSingle($identifier, $default = null)
     {
         $get = $this->get($identifier, $default);
         if (is_array($get)) {
-
             return array_values($this->identifiers[$identifier])[0];
         }
 
@@ -303,6 +303,7 @@ class Result
 
     /**
      * @param string $i Query identifier to check.
+     *
      * @return bool
      */
     public function hasIdentifier($i)
@@ -310,7 +311,8 @@ class Result
         return array_key_exists($i, $this->identifiers);
     }
 
-    public function addIdentifierValue($k, $v) {
+    public function addIdentifierValue($k, $v)
+    {
         if (array_key_exists($k, $this->identifiers)) {
             return $this->addRowToIdentifier($k, $v);
         }

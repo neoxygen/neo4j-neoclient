@@ -4,11 +4,12 @@ namespace Neoxygen\NeoClient\Tests\Functional;
 
 use Neoxygen\NeoClient\ClientBuilder;
 use Neoxygen\NeoClient\Exception\Neo4jException;
+use Neoxygen\NeoClient\Tests\Schema\GraphUnitTestCase;
 
 /**
  * @group functional
  */
-class UseCaseTest extends \PHPUnit_Framework_TestCase
+class UseCaseTest extends GraphUnitTestCase
 {
     public function setUp()
     {
@@ -217,11 +218,11 @@ class UseCaseTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($client->createUniqueConstraint('Tag', 'name', true));
     }
 
+    /**
+     * @return \Neoxygen\NeoClient\Client
+     */
     protected function getClient()
     {
-        return ClientBuilder::create()
-            ->addConnection('default', 'http', 'localhost', 7474, true, 'neo4j', 'veryCoolMax')
-            ->setAutoFormatResponse(true)
-            ->build();
+        return $this->getConnection();
     }
 }
