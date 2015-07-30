@@ -14,6 +14,7 @@ namespace Neoxygen\NeoClient\Extension;
 use Neoxygen\NeoClient\Exception\Neo4jException,
     Neoxygen\NeoClient\Exception\CypherException;
 use Neoxygen\NeoClient\Schema\Index;
+use Neoxygen\NeoClient\Schema\UniqueConstraint;
 use Neoxygen\NeoClient\Transaction\PreparedTransaction;
 use Symfony\Component\Yaml\Yaml;
 use Neoxygen\NeoClient\Transaction\Transaction;
@@ -273,6 +274,12 @@ class NeoClientCoreExtension extends AbstractExtension
         return $response;
     }
 
+    /**
+     * Returns the schema indexes live in the database
+     *
+     * @param null $conn
+     * @return \Neoxygen\NeoClient\Schema\Index[]
+     */
     public function getSchemaIndexes($conn = null)
     {
         $indx = [];
@@ -364,6 +371,65 @@ class NeoClientCoreExtension extends AbstractExtension
         }
 
         return true;
+    }
+
+    /**
+     * @param $label
+     * @param $property
+     * @param bool $transformIndexInConstraint
+     * @param null $conn
+     * @return \Neoxygen\NeoClient\Schema\UniqueConstraint
+     * @throws \Neoxygen\NeoClient\Exception\Neo4jException
+     */
+    public function createSchemaUniqueConstraint($label, $property, $transformIndexInConstraint = false, $conn = null)
+    {
+        $q = 'CREATE CONSTRAINT ON (n:' . $label . ') ASSERT n.' . $property . ' IS UNIQUE';
+        try {
+            $this->sendCypherQuery($q);
+
+            return new UniqueConstraint($label, $property);
+        } catch (Neo4jException $e) {
+            if (true === $transformIndexInConstraint && 8000 === $e->getCode()) {
+                // do remove constraint
+            }
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Drops a Uniqueness constraint from the Schema
+     *
+     * @param \Neoxygen\NeoClient\Schema\UniqueConstraint $constraint
+     * @param null $conn
+     */
+    public function dropSchemaUniqueConstraint(UniqueConstraint $constraint, $conn = null)
+    {
+        $q = 'DROP CONSTRAINT ON (n:' . $constraint->getLabel() . ') ASSERT n.' . $constraint->getProperty() . ' IS UNIQUE';
+        $this->sendCypherQuery($q);
+    }
+
+    /**
+     * Returns a collection of Uniqueness constraints live in the schema
+     *
+     * @param null $conn
+     * @return \Neoxygen\NeoClient\Schema\UniqueConstraint[]
+     */
+    public function getSchemaUniqueConstraints($conn = null)
+    {
+        $command = $this->invoke('neo.get_constraints_command', $conn);
+        $httpResponse = $command->execute();
+
+        $responseO = $this->handleHttpResponse($httpResponse);
+        $response = $responseO->getBody();
+        $constraints = [];
+        foreach ($response as $constraint) {
+            foreach ($constraint['property_keys'] as $key) {
+                $constraints[] = new UniqueConstraint($constraint['label'], $key);
+            }
+        }
+
+        return $constraints;
     }
 
     /**

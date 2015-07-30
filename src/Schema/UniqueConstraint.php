@@ -11,7 +11,7 @@
 
 namespace Neoxygen\NeoClient\Schema;
 
-class Index
+class UniqueConstraint
 {
     /**
      * @var string

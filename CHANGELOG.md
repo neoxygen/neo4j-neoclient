@@ -1,3 +1,12 @@
+3.2.0
+
+* Added Schema Index and Unique Constraint objects and methods for it in the Client
+* Uses now GraphUnit for Integration testing
+
+## 3.1.2
+
+* Fixed docblock in live transaction
+
 ## 3.1.1
 
 * When using getTable, if relationships should be present, their data will be returned in the corresponding row's column

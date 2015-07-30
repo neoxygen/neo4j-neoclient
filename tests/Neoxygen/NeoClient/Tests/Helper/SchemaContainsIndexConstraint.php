@@ -7,7 +7,7 @@ use Neoxygen\NeoClient\Schema\Index;
 class SchemaContainsIndexConstraint extends \PHPUnit_Framework_Constraint
 {
     /**
-     * @var \Neoxygen\NeoClient\Schema\Index[]
+     * @var array
      */
     protected $schemaContainer;
 
@@ -26,7 +26,7 @@ class SchemaContainsIndexConstraint extends \PHPUnit_Framework_Constraint
         return 'Index is present in schema';
     }
 
-    public function checkIndexIsPresent(Index $index)
+    public function checkIndexIsPresent($index)
     {
         foreach ($this->schemaContainer as $aindex) {
             if ($aindex->getLabel() === $index->getLabel() && $aindex->getProperty() === $index->getProperty()) {

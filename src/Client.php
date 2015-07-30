@@ -18,6 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @method getRoot($conn = null)
  * @method ping($conn = null)
  * @method getLabels($conn = null)
+ * @method \Neoxygen\NeoClient\Schema\UniqueConstraint createSchemaUniqueConstraint($label, $property, $conn = null)
  * @method getConstraints($conn = null)
  * @method listIndex($label, $conn = null)
  * @method listIndexes(array $labels = array(), $conn = null)
@@ -33,10 +34,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @method PreparedTransaction prepareTransaction($conn = null)
  * @method bool createIndex($label, $property)
  * @method bool createUniqueConstraint($label, $property, $removeIndexIfExist = false)
+ *
  */
 class Client
 {
-    const NEOCLIENT_VERSION = "3.1.1";
+    const NEOCLIENT_VERSION = "3.2.0";
 
     const NEOCLIENT_QUERY_MODE_WRITE = 'WRITE';
 
