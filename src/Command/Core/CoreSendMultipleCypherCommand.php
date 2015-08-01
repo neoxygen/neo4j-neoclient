@@ -36,8 +36,6 @@ class CoreSendMultipleCypherCommand extends AbstractCommand
 
     public function execute()
     {
-        var_dump($this->queryMode);
-
         return $this->process(self::METHOD, self::PATH, $this->prepareBody(), $this->connection, null, $this->queryMode);
     }
 

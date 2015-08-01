@@ -27,7 +27,7 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
 
     protected $newFormatModeEnabled;
 
-    protected $newFormattingService;
+    public $newFormattingService;
 
     public function __construct(
         CommandManager $commandManager,

@@ -8,7 +8,7 @@ use Neoxygen\NeoClient\Exception\Neo4jException;
 class Transaction
 {
     /**
-     * @var \Neoxygen\NeoClient\Extension\NeoClientCoreExtension
+     * @var \Neoxygen\NeoClient\Extension\NeoClientCoreExtension|\Neoxygen\NeoClient\Extension\AbstractExtension
      */
     private $client;
 
@@ -79,22 +79,21 @@ class Transaction
 
     /**
      * @param array $statements
-     *
-     * @return $this
-     *
+     * @return \Neoxygen\NeoClient\Formatter\Result|\GraphAware\NeoClient\Formatter\Results[]
      * @throws \Neoxygen\NeoClient\Exception\Neo4jException
      */
     public function pushMultiple(array $statements)
     {
         $this->checkIfOpened();
-        $intermediateResults = [];
-        foreach ($statements as $statement) {
-            $result = $this->pushQuery($statement['query'], $statement['params']);
-            $intermediateResults[] = $result;
-            $this->results[] = $result;
+        $httpResponse = $this->client->pushMultipleToTransaction($this->transactionId, $statements);
+
+        $response = $this->handleResponse($httpResponse);
+
+        if ($this->client->newFormattingService) {
+            return $response->getResults();
         }
 
-        return $intermediateResults;
+        return $response->getResult();
     }
 
     /**
@@ -182,10 +181,13 @@ class Transaction
     /**
      * @param $httpResponse
      *
-     * @return array|\Neoxygen\NeoClient\Formatter\Response|string
+     * @return array|\Neoxygen\NeoClient\Formatter\Response|string|\GraphAware\NeoClient\Formatter\Response
      */
-    private function handleResponse($httpResponse)
+    private function handleResponse($response)
     {
-        return $this->client->handleHttpResponse($httpResponse);
+        if ($this->client->newFormattingService) {
+            return $response;
+        }
+        return $this->client->handleHttpResponse($response);
     }
 }

@@ -43,7 +43,14 @@ class CorePushMultipleToTransactionCommand extends AbstractCommand
     {
         $body = [];
         foreach ($this->statements as $statement) {
-            $body['statements'][] = $statement;
+            $st = [];
+            $k = isset($statement['query']) ? 'query' : 'statement';
+            $st['statement'] = $statement[$k];
+            if (isset($statement['params'])) {
+                $st['params'] = $statement['params'];
+            }
+            $st['resultDataContents'] = $this->resultDataContents;
+            $body['statements'][] = $st;
         }
 
         return json_encode($body);
