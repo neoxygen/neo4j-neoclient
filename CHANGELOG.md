@@ -1,4 +1,12 @@
-3.2.0
+## 3.3.1 & 3.3.2
+
+* Fixed some bugs concerning live transactions in respect to the send Multiple in the scope of the tx
+
+## 3.3.0
+
+* Introduced optional new response formatter by GraphAware
+
+## 3.2.0
 
 * Added Schema Index and Unique Constraint objects and methods for it in the Client
 * Uses now GraphUnit for Integration testing
