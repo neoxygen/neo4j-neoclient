@@ -47,7 +47,7 @@ class CorePushMultipleToTransactionCommand extends AbstractCommand
             $k = isset($statement['query']) ? 'query' : 'statement';
             $st['statement'] = $statement[$k];
             if (isset($statement['params'])) {
-                $st['params'] = $statement['params'];
+                $st['parameters'] = $statement['params'];
             }
             $st['resultDataContents'] = $this->resultDataContents;
             $body['statements'][] = $st;
