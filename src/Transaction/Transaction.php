@@ -79,7 +79,9 @@ class Transaction
 
     /**
      * @param array $statements
+     *
      * @return \Neoxygen\NeoClient\Formatter\Result|\GraphAware\NeoClient\Formatter\Results[]
+     *
      * @throws \Neoxygen\NeoClient\Exception\Neo4jException
      */
     public function pushMultiple(array $statements)
@@ -188,6 +190,7 @@ class Transaction
         if ($this->client->newFormattingService) {
             return $response;
         }
+
         return $this->client->handleHttpResponse($response);
     }
 }

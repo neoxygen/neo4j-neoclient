@@ -27,6 +27,9 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
 
     protected $newFormatModeEnabled;
 
+    /**
+     * @var \GraphAware\NeoClient\Formatter\ResponseFormattingService
+     */
     public $newFormattingService;
 
     public function __construct(
@@ -49,8 +52,8 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
     }
 
     /**
-     * @param $commandAlias
-     * @param null $connectionAlias
+     * @param string      $commandAlias
+     * @param null|string $connectionAlias
      *
      * @return \Neoxygen\NeoClient\Command\AbstractCommand
      */
@@ -75,7 +78,7 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
     }
 
     /**
-     * @param mixed $response
+     * @param Response $response
      *
      * @return string|array|\Neoxygen\NeoClient\Formatter\Response
      *
@@ -97,6 +100,7 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
 
             return $newResponse;
         }
+
         $this->checkResponseErrors($response->getBody());
         if ($this->autoFormatResponse) {
             $formatted = $this->formatResponse($response->getBody());

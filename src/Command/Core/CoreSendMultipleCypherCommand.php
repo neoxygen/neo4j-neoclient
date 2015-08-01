@@ -56,9 +56,4 @@ class CoreSendMultipleCypherCommand extends AbstractCommand
 
         return json_encode($body);
     }
-
-    public function getPath()
-    {
-        return $this->getBaseUrl().'/db/data/transaction/commit';
-    }
 }

@@ -18,7 +18,6 @@ class Response
      */
     protected $raw;
 
-
     public function __construct(ResponseInterface $responseInterface)
     {
         $this->raw = $responseInterface;

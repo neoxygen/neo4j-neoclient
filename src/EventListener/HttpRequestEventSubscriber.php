@@ -10,15 +10,17 @@ use Neoxygen\NeoClient\NeoClientEvents;
 use Neoxygen\NeoClient\Exception\HttpException;
 use Neoxygen\NeoClient\Client;
 use Psr\Log\LoggerInterface;
-use GuzzleHttp\Client as HttpClient;
-use GuzzleHttp\Exception\RequestException;
 
 class HttpRequestEventSubscriber implements EventSubscriberInterface
 {
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
     protected $logger;
 
-    protected $hc;
-
+    /**
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         return array(
@@ -34,27 +36,35 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
         );
     }
 
+    /**
+     * @param \Psr\Log\LoggerInterface $logger
+     */
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
-        $this->hc = new HttpClient();
     }
 
+    /**
+     * @param \Neoxygen\NeoClient\Event\HttpClientPreSendRequestEvent $event
+     */
     public function onPreHttpRequestSend(HttpClientPreSendRequestEvent $event)
     {
         $conn = $event->getRequest()->getConnection();
         $request = $event->getRequest();
         $mode = $request->hasQueryMode() ? $request->getQueryMode() : 'ASSUMED WRITE';
         $this->logger->log('debug', sprintf('Sending "%s" request to the "%s" connection', $mode,  $conn));
-        if (false !== false) {
-            $this->sendGA();
-        }
     }
 
+    /**
+     * @param \Neoxygen\NeoClient\Event\PostRequestSendEvent $event
+     */
     public function onPostRequestSend(PostRequestSendEvent $event)
     {
     }
 
+    /**
+     * @param \Neoxygen\NeoClient\Event\HttpExceptionEvent $event
+     */
     public function onHttpException(HttpExceptionEvent $event)
     {
         $request = $event->getRequest();
@@ -62,44 +72,5 @@ class HttpRequestEventSubscriber implements EventSubscriberInterface
         $message = $exception->getMessage();
         Client::log('emergency', sprintf('Error on connection "%s" - %s', $request->getConnection(), $message));
         throw new HttpException(sprintf('Error on Connection "%s" with message "%s"', $request->getConnection(), $message));
-    }
-
-    private function sendGA()
-    {
-        $td = sys_get_temp_dir();
-        if (!is_writable($td)) {
-            return;
-        }
-        $f = $td.DIRECTORY_SEPARATOR.'neoping.txt';
-        $c = $td.DIRECTORY_SEPARATOR.'neoi.txt';
-        $t = time();
-        if (file_exists($f) && file_exists($c)) {
-            $last = (int) file_get_contents($f);
-            $new = false;
-            $ci = file_get_contents($c);
-        } else {
-            $last = 0;
-            $ci = sha1($t);
-            $new = true;
-        }
-        if (($t - $last) < 120) {
-            return;
-        }
-
-        try {
-            $this->hc->request('GET', 'http://stats.neoxygen.io/collect', [
-                'timeout' => 1,
-                'query' => [
-                    'v' => Client::getNeoClientVersion(),
-                    'cid' => $ci,
-                ],
-            ]);
-            $this->lc = $t;
-            file_put_contents($f, $t);
-            if ($new) {
-                file_put_contents($c, $ci);
-            }
-        } catch (RequestException $e) {
-        }
     }
 }

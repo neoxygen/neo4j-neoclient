@@ -15,18 +15,31 @@ use Neoxygen\NeoClient\Exception\CommandException;
 
 class CommandManager
 {
+    /**
+     * @var array
+     */
     private $commands;
 
+    /**
+     *
+     */
     public function __construct()
     {
         $this->commands = array();
     }
 
+    /**
+     * @return array
+     */
     public function getCommands()
     {
         return $this->commands;
     }
 
+    /**
+     * @param string                                      $commandAlias
+     * @param \Neoxygen\NeoClient\Command\AbstractCommand $command
+     */
     public function registerCommand($commandAlias, CommandInterface $command)
     {
         if (array_key_exists($commandAlias, $this->commands)) {
@@ -35,6 +48,11 @@ class CommandManager
         $this->commands[$commandAlias] = $command;
     }
 
+    /**
+     * @param $commandAlias
+     *
+     * @return mixed
+     */
     public function getCommand($commandAlias)
     {
         if (!array_key_exists($commandAlias, $this->commands)) {
@@ -44,6 +62,11 @@ class CommandManager
         return $this->commands[$commandAlias];
     }
 
+    /**
+     * @param $commandAlias
+     *
+     * @return bool
+     */
     public function hasCommand($commandAlias)
     {
         return array_key_exists($commandAlias, $this->commands);

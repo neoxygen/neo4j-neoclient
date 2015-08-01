@@ -55,9 +55,9 @@ class ClientBuilder
     private $loggers = array();
 
     /**
-     * @var null|true if the check for a Ha Failure file have to be skipped or not
+     * @var bool if the check for a Ha Failure file have to be skipped or not
      */
-    private $skipHaFailureFileCheck;
+    private $skipHaFailureFileCheck = false;
 
     /**
      */
@@ -243,7 +243,7 @@ class ClientBuilder
     }
 
     /**
-     * Enables the new formatting service from GraphAware
+     * Enables the new formatting service from GraphAware.
      */
     public function enableNewFormattingService()
     {
@@ -504,7 +504,7 @@ class ClientBuilder
             $this->checkForHaConfig();
         }
 
-        $client = $this->serviceContainer->get('neoclient.client');
+        $client = $this->getClient();
 
         return $client;
     }
@@ -525,6 +525,11 @@ class ClientBuilder
         return true === $this->getServiceContainer()->isFrozen();
     }
 
+    /**
+     * Erases the HAFailureFile.
+     *
+     * @return $this
+     */
     public function resetHaFailureFile()
     {
         $file = sys_get_temp_dir().DIRECTORY_SEPARATOR.'neoclient_ha_config_after_failure';
@@ -535,6 +540,11 @@ class ClientBuilder
         return $this;
     }
 
+    /**
+     * Returns whether or not the check for the failure file should be done.
+     *
+     * @return $this
+     */
     public function skipHaFailureFileCheck()
     {
         $this->skipHaFailureFileCheck = true;
@@ -580,5 +590,13 @@ class ClientBuilder
             $cm->setMasterConnection($newConfig['master']);
             $cm->setSlaveConnections($newConfig['slaves']);
         }
+    }
+
+    /**
+     * @return \Neoxygen\NeoClient\Client
+     */
+    private function getClient()
+    {
+        return $this->serviceContainer->get('neoclient.client');
     }
 }
