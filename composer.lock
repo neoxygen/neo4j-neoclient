@@ -8,22 +8,23 @@
     "packages": [
         {
             "name": "graphaware/neo4j-response-formatter",
-            "version": "1.0.4",
+            "version": "1.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/graphaware/neo4j-php-response-formatter.git",
-                "reference": "917cc08851b4571a6f3a4494426adc45c1418c2f"
+                "reference": "fdf0b6928b27df4b13d77c0989cdc88fc8380a33"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/graphaware/neo4j-php-response-formatter/zipball/917cc08851b4571a6f3a4494426adc45c1418c2f",
-                "reference": "917cc08851b4571a6f3a4494426adc45c1418c2f",
+                "url": "https://api.github.com/repos/graphaware/neo4j-php-response-formatter/zipball/fdf0b6928b27df4b13d77c0989cdc88fc8380a33",
+                "reference": "fdf0b6928b27df4b13d77c0989cdc88fc8380a33",
                 "shasum": ""
             },
             "require": {
                 "psr/http-message": "^1.0"
             },
             "require-dev": {
+                "graphaware/neo4j-graphunit": "^1.0",
                 "neoxygen/neoclient": "^3.2",
                 "phpspec/prophecy": "^1.4",
                 "phpunit/phpunit": "^4.7"
@@ -45,7 +46,7 @@
                 }
             ],
             "description": "Response Formatter for NeoClient",
-            "time": "2015-08-01 00:52:36"
+            "time": "2015-08-02 22:18:57"
         },
         {
             "name": "guzzlehttp/guzzle",
