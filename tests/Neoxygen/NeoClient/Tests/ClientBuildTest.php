@@ -6,6 +6,9 @@ use Neoxygen\NeoClient\ClientBuilder;
 
 class ClientBuildTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @group config
+     */
     public function testSimpleBuild()
     {
         $client = ClientBuilder::create()
@@ -14,6 +17,9 @@ class ClientBuildTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Neoxygen\NeoClient\Client', $client);
     }
 
+    /**
+     * @group config
+     */
     public function testAddConnection()
     {
         $builder = ClientBuilder::create()
@@ -22,6 +28,9 @@ class ClientBuildTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('default', $builder->getConfiguration()['connections']);
     }
 
+    /**
+     * @group config
+     */
     public function testHAMode()
     {
         $builder = ClientBuilder::create()
@@ -30,5 +39,29 @@ class ClientBuildTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(true, $builder->getConfiguration()['ha_mode']['enabled']);
         $this->assertEquals('enterprise', $builder->getConfiguration()['ha_mode']['type']);
+    }
+
+    /**
+     * @group config
+     */
+    public function testWithConfigArrayLoading()
+    {
+        $config = array(
+            'connections' => array(
+                'default' => array(
+                    'scheme' => 'http',
+                    'host' => 'localhost',
+                    'port' => 7474,
+                    'auth' => true,
+                    'user' => 'neo4j',
+                    'password' => 'password'
+                )
+            )
+        );
+
+        $builder = ClientBuilder::create()
+          ->loadConfiguration($config);
+
+        $this->assertArrayHasKey('default', $builder->getConfiguration()['connections']);
     }
 }

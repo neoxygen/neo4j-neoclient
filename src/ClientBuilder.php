@@ -111,6 +111,20 @@ class ClientBuilder
     }
 
     /**
+     * Load a user defined configuration array
+     *
+     * @param array $configuration
+     *
+     * @return ClientBuilder
+     */
+    public function loadConfiguration(array $configuration)
+    {
+        $this->loadedConfig = $configuration;
+
+        return $this;
+    }
+
+    /**
      * @param string $alias    An alias for the connection
      * @param string $scheme   The scheme of the connection
      * @param string $host     The host of the connection
