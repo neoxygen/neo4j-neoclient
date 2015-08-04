@@ -126,6 +126,14 @@ class SchemaIntegrationTest extends GraphUnitTestCase
         $this->assertArrayHasKey('User', $constraints->getBody());
     }
 
+    /**
+     * @group schema
+     */
+    public function testListIndexesWithNewFormattingService()
+    {
+        $this->assertInternalType('array', $this->getConnection()->listIndexes()->getBody());
+    }
+
     private function assertUniqueConstraintIsLive(UniqueConstraint $index)
     {
         $indexes = $this->client->getSchemaUniqueConstraints();

@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "graphaware/neo4j-response-formatter",
-            "version": "1.1.1",
+            "version": "1.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/graphaware/neo4j-php-response-formatter.git",
-                "reference": "6d321404e9d506b224931c27363f7cd6102e3d10"
+                "reference": "1cc1ac1bc1f573aeb231ee424c55fae137beea47"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/graphaware/neo4j-php-response-formatter/zipball/6d321404e9d506b224931c27363f7cd6102e3d10",
-                "reference": "6d321404e9d506b224931c27363f7cd6102e3d10",
+                "url": "https://api.github.com/repos/graphaware/neo4j-php-response-formatter/zipball/1cc1ac1bc1f573aeb231ee424c55fae137beea47",
+                "reference": "1cc1ac1bc1f573aeb231ee424c55fae137beea47",
                 "shasum": ""
             },
             "require": {
@@ -45,7 +45,7 @@
                 }
             ],
             "description": "Response Formatter for NeoClient",
-            "time": "2015-08-04 20:15:58"
+            "time": "2015-08-04 22:19:01"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -930,20 +930,21 @@
         },
         {
             "name": "graphaware/neo4j-graphunit",
-            "version": "1.0.2",
+            "version": "1.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/graphaware/php-graphunit.git",
-                "reference": "87ef667cc89a6ae4bd4d6ccd3d8036e9bafbed22"
+                "reference": "7be1882d87162ffdb49b601229f4eebd2e263d02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/graphaware/php-graphunit/zipball/87ef667cc89a6ae4bd4d6ccd3d8036e9bafbed22",
-                "reference": "87ef667cc89a6ae4bd4d6ccd3d8036e9bafbed22",
+                "url": "https://api.github.com/repos/graphaware/php-graphunit/zipball/7be1882d87162ffdb49b601229f4eebd2e263d02",
+                "reference": "7be1882d87162ffdb49b601229f4eebd2e263d02",
                 "shasum": ""
             },
             "require": {
-                "neoxygen/neoclient": "^3.1",
+                "graphaware/neo4j-response-formatter": "^1.0",
+                "neoxygen/neoclient": "^3.3",
                 "phpunit/phpunit": "^4.7"
             },
             "type": "library",
@@ -971,7 +972,7 @@
                 "nosql",
                 "tests"
             ],
-            "time": "2015-07-30 15:07:17"
+            "time": "2015-08-04 22:29:58"
         },
         {
             "name": "phpdocumentor/reflection-docblock",

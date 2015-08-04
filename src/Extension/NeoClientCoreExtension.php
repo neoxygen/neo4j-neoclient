@@ -275,6 +275,14 @@ class NeoClientCoreExtension extends AbstractExtension
             $indexes[$label] = $indexs;
         }
 
+        if (!isset($res)){
+            if ($this->newFormatModeEnabled) {
+                $res = new \GraphAware\NeoClient\Formatter\Response(new PsrResponse(200));
+            } else {
+                $res = new Response(new PsrResponse(200));
+            }
+        }
+
         if ($res instanceof \GraphAware\NeoClient\Formatter\Response) {
             return new \GraphAware\NeoClient\Formatter\Response(new PsrResponse(200, [], json_encode($indexes)));
         }
