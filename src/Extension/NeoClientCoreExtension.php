@@ -20,6 +20,7 @@ use Symfony\Component\Yaml\Yaml;
 use Neoxygen\NeoClient\Transaction\Transaction;
 use Neoxygen\NeoClient\Request\Response;
 use Neoxygen\NeoClient\Client;
+use GuzzleHttp\Psr7\Response as PsrResponse;
 
 class NeoClientCoreExtension extends AbstractExtension
 {
@@ -337,6 +338,12 @@ class NeoClientCoreExtension extends AbstractExtension
                 $constraints[$constraint['label']][] = $key;
             }
         }
+        if ($responseO instanceof \GraphAware\NeoClient\Formatter\Response) {
+            $msg = new PsrResponse(200, array(), json_encode($constraints));
+
+            return $this->handleHttpResponse($msg);
+        }
+
         $responseO->setBody($constraints);
 
         return $responseO;

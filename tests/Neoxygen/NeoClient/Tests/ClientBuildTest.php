@@ -56,6 +56,11 @@ class ClientBuildTest extends \PHPUnit_Framework_TestCase
                     'user' => 'neo4j',
                     'password' => 'password'
                 )
+            ),
+            'ha_mode' => array(
+                'type' => 'enterprise',
+                'enabled' => true,
+                'master' => 'default'
             )
         );
 
@@ -63,5 +68,12 @@ class ClientBuildTest extends \PHPUnit_Framework_TestCase
           ->loadConfiguration($config);
 
         $this->assertArrayHasKey('default', $builder->getConfiguration()['connections']);
+
+        $client = ClientBuilder::create()
+          ->loadConfiguration($config)
+          ->build();
+
+        $conn = $client->getConnectionManager()->getWriteConnection();
+        $this->assertEquals('password', $conn->getAuthPassword());
     }
 }

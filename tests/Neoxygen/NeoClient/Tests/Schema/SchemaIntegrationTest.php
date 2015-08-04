@@ -10,7 +10,7 @@ use Neoxygen\NeoClient\Tests\Helper\SchemaContainsIndexConstraint;
 class SchemaIntegrationTest extends GraphUnitTestCase
 {
     /**
-     * @return \Neoxygen\NeoClient\Client
+     * @var \Neoxygen\NeoClient\Client
      */
     protected $client;
 
@@ -98,6 +98,18 @@ class SchemaIntegrationTest extends GraphUnitTestCase
         $this->client->createSchemaUniqueConstraint("UniqueNode", "id");
         $this->client->createSchemaUniqueConstraint("UniqueNode", "login");
         $this->assertCount(2, $this->client->getSchemaUniqueConstraints());
+    }
+
+    /**
+     * @group schema
+     * @group integration
+     * @group legacy
+     */
+    public function testLegacyUniqueConstraints()
+    {
+        $this->client->createUniqueConstraint('User', 'id');
+        $constraints = $this->client->getUniqueConstraints();
+        $this->assertArrayHasKey('User', $constraints->getBody());
     }
 
     private function assertUniqueConstraintIsLive(UniqueConstraint $index)
