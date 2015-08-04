@@ -930,16 +930,16 @@
         },
         {
             "name": "graphaware/neo4j-graphunit",
-            "version": "1.0.5",
+            "version": "1.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/graphaware/php-graphunit.git",
-                "reference": "7be1882d87162ffdb49b601229f4eebd2e263d02"
+                "reference": "653fb744980a8f05cbfab9d9d60b8242cfebea9c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/graphaware/php-graphunit/zipball/7be1882d87162ffdb49b601229f4eebd2e263d02",
-                "reference": "7be1882d87162ffdb49b601229f4eebd2e263d02",
+                "url": "https://api.github.com/repos/graphaware/php-graphunit/zipball/653fb744980a8f05cbfab9d9d60b8242cfebea9c",
+                "reference": "653fb744980a8f05cbfab9d9d60b8242cfebea9c",
                 "shasum": ""
             },
             "require": {
@@ -972,7 +972,7 @@
                 "nosql",
                 "tests"
             ],
-            "time": "2015-08-04 22:29:58"
+            "time": "2015-08-04 22:59:28"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
