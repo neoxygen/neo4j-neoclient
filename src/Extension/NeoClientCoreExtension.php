@@ -93,7 +93,7 @@ class NeoClientCoreExtension extends AbstractExtension
         }
 
         $httpResponse = $command->setArguments($query, $parameters, $this->resultDataContent, $queryMode)
-            ->execute();
+          ->execute();
 
         return $this->handleHttpResponse($httpResponse);
     }
@@ -223,6 +223,9 @@ class NeoClientCoreExtension extends AbstractExtension
                 $propertiesIndexed[] = $key;
             }
         }
+        if ($response instanceof \GraphAware\NeoClient\Formatter\Response) {
+            return new \GraphAware\NeoClient\Formatter\Response(new PsrResponse(200, array(), json_encode($propertiesIndexed)));
+        }
         $response->setBody($propertiesIndexed);
 
         return $response;
@@ -270,6 +273,10 @@ class NeoClientCoreExtension extends AbstractExtension
             $res = $this->listIndex($label, $conn);
             $indexs = $res->getBody();
             $indexes[$label] = $indexs;
+        }
+
+        if ($res instanceof \GraphAware\NeoClient\Formatter\Response) {
+            return new \GraphAware\NeoClient\Formatter\Response(new PsrResponse(200, [], json_encode($indexes)));
         }
 
         $response = new Response($res->getRaw());
@@ -340,8 +347,7 @@ class NeoClientCoreExtension extends AbstractExtension
         }
         if ($responseO instanceof \GraphAware\NeoClient\Formatter\Response) {
             $msg = new PsrResponse(200, array(), json_encode($constraints));
-
-            return $this->handleHttpResponse($msg);
+            return new \GraphAware\NeoClient\Formatter\Response($msg);
         }
 
         $responseO->setBody($constraints);
@@ -513,8 +519,8 @@ class NeoClientCoreExtension extends AbstractExtension
     public function rollBackTransaction($id, $conn = null)
     {
         $response = $this->invoke('neo.rollback_transaction', $conn)
-            ->setTransactionId($id)
-            ->execute();
+          ->setTransactionId($id)
+          ->execute();
 
         return $this->handleHttpResponse($response);
     }
@@ -533,8 +539,8 @@ class NeoClientCoreExtension extends AbstractExtension
     public function pushToTransaction($transactionId, $query, array $parameters = array(), $conn = null, $queryMode = Client::NEOCLIENT_QUERY_MODE_WRITE)
     {
         $httpResponse = $this->invoke('neo.push_to_transaction', $conn)
-            ->setArguments($transactionId, $query, $parameters, $this->resultDataContent, $queryMode)
-            ->execute();
+          ->setArguments($transactionId, $query, $parameters, $this->resultDataContent, $queryMode)
+          ->execute();
 
         return $this->handleHttpResponse($httpResponse);
     }
@@ -542,8 +548,8 @@ class NeoClientCoreExtension extends AbstractExtension
     public function pushMultipleToTransaction($transactionId, array $statements, $conn = null)
     {
         $response = $this->invoke('neo.push_multiple_to_transaction', $conn)
-            ->setArguments($transactionId, $statements, $this->resultDataContent)
-            ->execute();
+          ->setArguments($transactionId, $statements, $this->resultDataContent)
+          ->execute();
 
         return $this->handleHttpResponse($response);
     }
@@ -562,8 +568,8 @@ class NeoClientCoreExtension extends AbstractExtension
     public function commitTransaction($transactionId, $query = null, array $parameters = array(), $conn = null, $queryMode = self::WRITE_QUERY)
     {
         $response = $this->invoke('neo.commit_transaction', $conn)
-            ->setArguments($transactionId, $query, $parameters, $this->resultDataContent, $queryMode)
-            ->execute();
+          ->setArguments($transactionId, $query, $parameters, $this->resultDataContent, $queryMode)
+          ->execute();
 
         return $this->handleHttpResponse($response);
     }
@@ -571,8 +577,8 @@ class NeoClientCoreExtension extends AbstractExtension
     public function changePassword($user, $newPassword, $conn = null)
     {
         $response = $this->invoke('neo.core_change_password', $conn)
-            ->setArguments($user, $newPassword)
-            ->execute();
+          ->setArguments($user, $newPassword)
+          ->execute();
 
         return $response;
     }
@@ -585,7 +591,7 @@ class NeoClientCoreExtension extends AbstractExtension
     public function listUsers($connectionAlias = null)
     {
         $response = $this->invoke('neo.list_users', $connectionAlias)
-            ->execute();
+          ->execute();
 
         return $this->handleHttpResponse($response);
     }
@@ -601,10 +607,10 @@ class NeoClientCoreExtension extends AbstractExtension
     public function addUser($user, $password, $readOnly = false, $connectionAlias = null)
     {
         $response = $this->invoke('neo.add_user', $connectionAlias)
-            ->setReadOnly($readOnly)
-            ->setUser($user)
-            ->setPassword($password)
-            ->execute();
+          ->setReadOnly($readOnly)
+          ->setUser($user)
+          ->setPassword($password)
+          ->execute();
 
         return $this->handleHttpResponse($response);
     }
@@ -619,9 +625,9 @@ class NeoClientCoreExtension extends AbstractExtension
     public function removeUser($user, $password, $connectionAlias = null)
     {
         $response = $this->invoke('neo.remove_user', $connectionAlias)
-            ->setUser($user)
-            ->setPassword($password)
-            ->execute();
+          ->setUser($user)
+          ->setPassword($password)
+          ->execute();
 
         return $this->handleHttpResponse($response);
     }
@@ -681,7 +687,7 @@ class NeoClientCoreExtension extends AbstractExtension
     public function checkHAMaster($conn = null)
     {
         $response = $this->invoke('neo.core_get_ha_master', $conn)
-            ->execute();
+          ->execute();
 
         return $this->handleHttpResponse($response);
     }
@@ -694,7 +700,7 @@ class NeoClientCoreExtension extends AbstractExtension
     public function checkHASlave($conn = null)
     {
         $response = $this->invoke('neo.core_get_ha_slave', $conn)
-            ->execute();
+          ->execute();
 
         return $this->handleHttpResponse($response);
     }
@@ -707,7 +713,7 @@ class NeoClientCoreExtension extends AbstractExtension
     public function checkHAAvailable($conn = null)
     {
         $response = $this->invoke('neo.core_get_ha_available', $conn)
-            ->execute();
+          ->execute();
 
         return $this->handleHttpResponse($response);
     }
@@ -829,8 +835,8 @@ class NeoClientCoreExtension extends AbstractExtension
     private function checkPathNode(array $node)
     {
         if ((!isset($node['label']) || empty($node['label']))
-            && (!isset($node['properties']) || empty($node['properties']))
-            && (!isset($node['id']) || empty($node['id']))) {
+          && (!isset($node['properties']) || empty($node['properties']))
+          && (!isset($node['id']) || empty($node['id']))) {
             throw new \InvalidArgumentException('The node must contain a label or properties');
         }
     }
