@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a6516062249b3d0a9d32aee544bf7e9a",
+    "hash": "e60d2b09a5ccc646058d3081d74f563a",
     "packages": [
         {
             "name": "graphaware/neo4j-response-formatter",
@@ -927,52 +927,6 @@
                 "instantiate"
             ],
             "time": "2015-06-14 21:17:01"
-        },
-        {
-            "name": "graphaware/neo4j-graphunit",
-            "version": "1.0.6",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/graphaware/php-graphunit.git",
-                "reference": "653fb744980a8f05cbfab9d9d60b8242cfebea9c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/graphaware/php-graphunit/zipball/653fb744980a8f05cbfab9d9d60b8242cfebea9c",
-                "reference": "653fb744980a8f05cbfab9d9d60b8242cfebea9c",
-                "shasum": ""
-            },
-            "require": {
-                "graphaware/neo4j-response-formatter": "^1.0",
-                "neoxygen/neoclient": "^3.3",
-                "phpunit/phpunit": "^4.7"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "GraphAware\\Neo4j\\GraphUnit\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Christophe Willemsen",
-                    "email": "willemsen.christophe@gmail.com"
-                }
-            ],
-            "description": "Graph Database Assertion Tool for Neo4j",
-            "keywords": [
-                "assertion",
-                "database",
-                "graph",
-                "neo4j",
-                "nosql",
-                "tests"
-            ],
-            "time": "2015-08-04 22:59:28"
         },
         {
             "name": "phpdocumentor/reflection-docblock",

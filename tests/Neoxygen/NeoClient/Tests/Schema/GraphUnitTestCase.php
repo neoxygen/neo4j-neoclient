@@ -2,15 +2,16 @@
 
 namespace Neoxygen\NeoClient\Tests\Schema;
 
-use GraphAware\Neo4j\GraphUnit\Neo4jGraphDatabaseTestCase;
+use Neoxygen\NeoClient\ClientBuilder;
 
-class GraphUnitTestCase extends Neo4jGraphDatabaseTestCase
+class GraphUnitTestCase
 {
-    /**
-     * @return \Neoxygen\NeoClient\Client
-     */
     public function getConnection()
     {
-        return $this->createConnection('localhost', 7474, 'neo4j', 'veryCoolMax');
+        return ClientBuilder::create()
+          ->addConnection('default', 'http', 'localhost', 7474, true, 'neo4j', 'veryCoolMax')
+          ->setAutoFormatResponse(true)
+          ->enableNewFormattingService()
+          ->build();
     }
 }

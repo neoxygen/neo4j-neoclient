@@ -31,8 +31,7 @@
         "phpspec/phpspec": "~2.0",
         "phpunit/phpunit": "4.*",
         "bossa/phpspec2-expect": "*",
-        "behat/behat": "~3.0",
-        "graphaware/neo4j-graphunit": "^1.0"
+        "behat/behat": "~3.0"
 
     },
     "autoload": {
