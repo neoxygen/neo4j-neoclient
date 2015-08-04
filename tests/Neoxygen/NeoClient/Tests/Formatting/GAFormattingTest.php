@@ -61,4 +61,36 @@ class GAFormattingTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(3, $results);
         $this->assertInstanceOf('GraphAware\NeoClient\Formatter\Graph\Node', $results[0]->get('n', true));
     }
+
+    /**
+     * @group formatter
+     */
+    public function testLiveTxWithoutNewFormatting()
+    {
+        $client = ClientBuilder::create()
+          ->addConnection('default', 'http', 'localhost', 7474, true, 'neo4j', 'veryCoolMax')
+          ->setAutoFormatResponse(true)
+          ->build();
+
+        $tx = $client->createTransaction();
+        $result = $tx->pushQuery('CREATE (a:Test) RETURN a');
+        $tx->commit();
+        $this->assertInstanceOf('Neoxygen\NeoClient\Formatter\Result', $result);
+    }
+
+    /**
+     * @group formatter
+     */
+    public function testPreparedTxWithoutNewFormatting()
+    {
+        $client = ClientBuilder::create()
+          ->addConnection('default', 'http', 'localhost', 7474, true, 'neo4j', 'veryCoolMax')
+          ->setAutoFormatResponse(true)
+          ->build();
+
+        $tx = $client->prepareTransaction();
+        $tx->pushQuery('CREATE (a:Test) RETURN a');
+        $results = $tx->commit();
+        $this->assertInstanceOf('Neoxygen\NeoClient\Request\Response', $results);
+    }
 }

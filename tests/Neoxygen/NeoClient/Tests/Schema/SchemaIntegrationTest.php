@@ -112,6 +112,20 @@ class SchemaIntegrationTest extends GraphUnitTestCase
         $this->assertArrayHasKey('User', $constraints->getBody());
     }
 
+    /**
+     * @group legacy
+     */
+    public function tesLegacyUniqueConstraintsWithNewFormattingService()
+    {
+        $client = ClientBuilder::create()
+          ->addConnection('default', 'http', 'localhost', 7474, true, 'neo4j', 'veryCoolMax')
+          ->setAutoFormatResponse(true)
+          ->enableNewFormattingService()
+          ->build();
+        $constraints = $client->getUniqueConstraints();
+        $this->assertArrayHasKey('User', $constraints->getBody());
+    }
+
     private function assertUniqueConstraintIsLive(UniqueConstraint $index)
     {
         $indexes = $this->client->getSchemaUniqueConstraints();

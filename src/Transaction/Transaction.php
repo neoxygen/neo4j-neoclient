@@ -187,7 +187,7 @@ class Transaction
      */
     private function handleResponse($response)
     {
-        if ($this->client->newFormattingService) {
+        if ($this->client->newFormatModeEnabled === true) {
             return $response;
         }
 

@@ -25,7 +25,7 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
 
     protected $resultDataContent;
 
-    protected $newFormatModeEnabled;
+    public $newFormatModeEnabled;
 
     /**
      * @var \GraphAware\NeoClient\Formatter\ResponseFormattingService
