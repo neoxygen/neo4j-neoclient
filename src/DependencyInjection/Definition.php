@@ -37,7 +37,7 @@ class Definition implements ConfigurationInterface
                         ->end()
                     ->end()
                     ->scalarNode('host')->defaultValue('localhost')->end()
-                    ->integerNode('port')->defaultValue('7474')->end()
+                    ->scalarNode('port')->defaultValue('7474')->end()
                     ->booleanNode('auth')->defaultValue(false)->end()
                     ->scalarNode('user')->end()
                     ->scalarNode('password')->end()
