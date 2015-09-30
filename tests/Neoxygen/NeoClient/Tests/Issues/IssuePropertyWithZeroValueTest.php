@@ -12,7 +12,7 @@ class IssuePropertyWithZeroValueTest extends \PHPUnit_Framework_TestCase
     public function testPropertyWithZeroValueIsFormattedCorrectly()
     {
         $client = ClientBuilder::create()
-            ->addConnection('default', 'http', 'localhost', 8474, true, 'neo4j', 'error')
+            ->addConnection('default', 'http', 'localhost', 7474, true, 'neo4j', 'veryCoolMax')
             ->setAutoFormatResponse(true)
             ->build();
 
