@@ -131,13 +131,17 @@ class Node
      *
      * @return mixed
      */
-    public function getProperty($name)
+    public function getProperty($name, $default = '')
     {
-        if ($this->properties[$name]) {
+        if (isset($this->properties[$name])) {
             return $this->properties[$name];
         }
 
-        return;
+        if ('' !== $default) {
+            return $default;
+        }
+
+        throw new \InvalidArgumentException(sprintf('The node does not have a "%s" property', $name));
     }
 
     /**
