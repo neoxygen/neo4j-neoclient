@@ -51,7 +51,7 @@ Neo4j is a transactional, open-source graph database. A graph database manages d
 
 You can:
 
- * Check out an [example application build with NeoClient](https://github.com/neo4j-contrib/developer-resources/tree/gh-pages/language-guides/php/neoclient)
+ * Check out an [example application built with NeoClient](https://github.com/neo4j-contrib/developer-resources/tree/gh-pages/language-guides/php/neoclient)
  * [Ask a question on StackOverflow](http://stackoverflow.com/questions/ask?tags=neo4j-neoclient-php,php,neo4j)
  * Chat with us on Gitter: [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/neoxygen/neo4j-neoclient?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
  * For bugs, please feel free to create a [new issue on GitHub](https://github.com/neoxygen/neo4j-neoclient/issues/new)
@@ -63,7 +63,7 @@ You can:
 Add the library to your composer dependencies :
 
 ```bash
-composer require neoxygen/neoclient
+composer require graphaware/neo4j-php-client
 ```
 
 Require the composer autoloader, configure your connection by providing a connection alias and your connection settings :

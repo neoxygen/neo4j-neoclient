@@ -8,8 +8,8 @@ php:
 env:
   - NEO_VERSION="2.1.6"
   - NEO_VERSION="2.1.8"
-  - NEO_VERSION="2.2.2"
-  - NEO_VERSION="2.2.3"
+  - NEO_VERSION="2.2.5"
+  - NEO_VERSION="2.3.0-M03"
 
 matrix:
   allow_failures:
@@ -32,4 +32,4 @@ script:
     - vendor/bin/phpunit
 
 notifications:
-    email: "willemsen.christophe@gmail.com"
+    email: "christophe@graphaware.com"
