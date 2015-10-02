@@ -1,6 +1,6 @@
-# NeoClient
+# Neo4j-PHP-Client
 
-## A PHP HttpClient for the Neo4j ReST API with MultiDB Support
+## A PHP Client for the Neo4j ReST API with Enterprise Support
 
 [![Build Status](https://travis-ci.org/neoxygen/neo4j-neoclient.svg?branch=master)](https://travis-ci.org/neoxygen/neo4j-neoclient)
 [![Latest Stable Version](https://poser.pugx.org/neoxygen/neoclient/v/stable.svg)](https://packagist.org/packages/neoxygen/neoclient)
@@ -9,15 +9,10 @@
 [![License](https://poser.pugx.org/neoxygen/neoclient/license.svg)](https://packagist.org/packages/neoxygen/neoclient)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/bac840f0-7b30-4206-a0e0-c6f4ca320077/big.png)](https://insight.sensiolabs.com/projects/bac840f0-7b30-4206-a0e0-c6f4ca320077)
 
-## Supported and Sponsored By
-
-[![GraphAware](http://graphaware.com/images/logo.png)](http://graphaware.com)
-[![GraphStory](http://i.imgur.com/ykEDw8s.png)](https://www.graphstory.com/)
-
 
 ## Introduction
 
-NeoClient is the most advanced and flexible [Neo4j](http://neo4j.com) Client for PHP. 
+Neo4j-PHP-Client is the most advanced and flexible [Neo4j](http://neo4j.com) Client for PHP. 
 
 ### What is Neo4j?
 
