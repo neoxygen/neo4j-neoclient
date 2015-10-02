@@ -3,7 +3,7 @@
 
     <testsuites>
         <testsuite name="tests">
-            <directory>./tests/Neoxygen/NeoClient</directory>
+            <directory>./tests</directory>
         </testsuite>
     </testsuites>
     <filter>
