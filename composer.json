@@ -4,7 +4,7 @@
     "description": "Neo4j-PHP-Client is the most advanced Client for Neo4j",
     "keywords": [
         "graph",
-        "database"
+        "database",
         "neo4j",
         "cluster",
         "client",
