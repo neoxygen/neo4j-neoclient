@@ -34,6 +34,7 @@ class Statement
     {
         $this->query = (string) $query;
         $this->parameters = $parameters;
+        $this->tag = $tag;
         $this->includeStats = (bool) $includeStats;
     }
 

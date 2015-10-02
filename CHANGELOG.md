@@ -1,3 +1,8 @@
+## 4.0
+
+* new Statement object
+
+
 ## 3.3.1 & 3.3.2
 
 * Fixed some bugs concerning live transactions in respect to the send Multiple in the scope of the tx

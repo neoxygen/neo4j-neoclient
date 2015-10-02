@@ -22,6 +22,31 @@ class StatementUnitTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($st->hasIncludeStats());
     }
 
+    public function testStatementWithFullSignature()
+    {
+        $st = new Statement($this->getQuery(), ['id' => 1], 'example.tag', true);
+        $this->assertCount(1, $st->getParameters());
+        $this->assertNotNull($st->getTag());
+        $this->assertEquals(1, $st->getParameters()['id']);
+        $this->assertTrue($st->hasIncludeStats());
+        $this->assertEquals('example.tag', $st->getTag());
+    }
+
+    public function testStatementStaticCreation()
+    {
+        $st = Statement::create($this->getQuery(), ['ID' => 2], 'static.tag');
+        $this->assertInstanceOf(Statement::class, $st);
+        $this->assertEquals('static.tag', $st->getTag());
+        $this->assertEquals(2, $st->getParameters()['ID']);
+        $this->assertFalse($st->hasIncludeStats());
+    }
+
+    public function testStatementSkippingParamsAndTag()
+    {
+        $st = Statement::create($this->getQuery(), [], null, true);
+        $this->assertTrue($st->hasIncludeStats());
+    }
+
     private function getQuery()
     {
         return 'MATCH (n) RETURN count(n)';
