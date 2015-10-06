@@ -2,6 +2,7 @@
 
 namespace Neoxygen\NeoClient\Transaction;
 
+use Neoxygen\NeoClient\Exception\HttpException;
 use Neoxygen\NeoClient\Extension\NeoClientCoreExtension;
 use Neoxygen\NeoClient\Exception\Neo4jException;
 
@@ -70,11 +71,17 @@ class Transaction
     public function pushQuery($query, array $parameters = array())
     {
         $this->checkIfOpened();
-        $response = $this->handleResponse($this->client->pushToTransaction($this->transactionId, $query, $parameters, $this->conn));
-        $result = $response->getResult();
-        $this->results[] = $result;
+        try {
+            $response = $this->handleResponse($this->client->pushToTransaction($this->transactionId, $query, $parameters, $this->conn));
+            $result = $response->getResult();
+            $this->results[] = $result;
 
-        return $result;
+            return $result;
+        } catch(HttpException $e) {
+            $this->rollback();
+            throw $e;
+        }
+
     }
 
     /**
@@ -87,15 +94,20 @@ class Transaction
     public function pushMultiple(array $statements)
     {
         $this->checkIfOpened();
-        $httpResponse = $this->client->pushMultipleToTransaction($this->transactionId, $statements);
+        try {
+            $httpResponse = $this->client->pushMultipleToTransaction($this->transactionId, $statements);
 
-        $response = $this->handleResponse($httpResponse);
+            $response = $this->handleResponse($httpResponse);
 
-        if ($this->client->newFormattingService) {
-            return $response->getResults();
+            if ($this->client->newFormattingService) {
+                return $response->getResults();
+            }
+
+            return $response->getResult();
+        } catch(HttpException $e) {
+            $this->rollback();
+            throw $e;
         }
-
-        return $response->getResult();
     }
 
     /**
