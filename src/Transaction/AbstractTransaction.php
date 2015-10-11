@@ -38,7 +38,7 @@ abstract class AbstractTransaction implements TransactionInterface
     public function __construct($mode = TransactionInterface::TRANSACTION_WRITE, $tag = null)
     {
         $this->setMode($mode);
-        $this->tag = (string) $tag;
+        $this->tag = $tag;
     }
 
     /**

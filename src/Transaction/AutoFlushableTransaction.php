@@ -42,6 +42,9 @@ class AutoFlushableTransaction extends AbstractTransaction
     public function push(Statement $statement)
     {
         $this->statementsCollection->add($statement);
+        if ($this->statementsCollection->getCount() >= $this->treshold) {
+            $this->commit();
+        }
     }
 
     /**
@@ -50,7 +53,7 @@ class AutoFlushableTransaction extends AbstractTransaction
      */
     public function pushQuery($query, array $parameters = [])
     {
-        $this->statementsCollection->add(Statement::create($query, $parameters));
+        $this->push(Statement::create($query, $parameters));
     }
 
     /**
