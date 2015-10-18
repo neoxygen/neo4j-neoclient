@@ -21,10 +21,9 @@ before_install:
     - tar -xzf neo4j-community-$NEO_VERSION-unix.tar.gz > null
     - neo4j-community-$NEO_VERSION/bin/neo4j start > null
     - composer self-update
-    - COMPOSER_ROOT_VERSION=dev-master composer install
 
 before_script:
-    #- composer install --prefer-source --no-interaction
+    - composer install --prefer-source --no-interaction
     - mv tests/database_settings.yml.dist tests/database_settings.yml
 
 script:
