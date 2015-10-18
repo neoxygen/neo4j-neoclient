@@ -28,7 +28,8 @@
       "symfony/config": "^2.7",
       "symfony/dependency-injection": "^2.7",
       "symfony/event-dispatcher": "^2.7",
-      "graphaware/neo4j-response-formatter": "^1.0"
+      "graphaware/neo4j-response-formatter": "^1.0",
+        "graphaware/neo4j-common": "^1.2"
     },
     "require-dev": {
         "phpunit/phpunit": "4.*"
