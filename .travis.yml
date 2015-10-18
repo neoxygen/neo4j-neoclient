@@ -6,7 +6,7 @@ php:
     - 7.0
 
 env:
-  - NEO_VERSION="2.1.6"
+  - NEO_VERSION="2.1.8"
   - NEO_VERSION="2.2.6"
   - NEO_VERSION="2.3.0-RC1"
 
