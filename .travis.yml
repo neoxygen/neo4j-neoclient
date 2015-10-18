@@ -7,9 +7,8 @@ php:
 
 env:
   - NEO_VERSION="2.1.6"
-  - NEO_VERSION="2.1.8"
-  - NEO_VERSION="2.2.5"
-  - NEO_VERSION="2.3.0-M03"
+  - NEO_VERSION="2.2.6"
+  - NEO_VERSION="2.3.0"
 
 matrix:
   allow_failures:
@@ -17,9 +16,9 @@ matrix:
 
 
 before_install:
-    - wget dist.neo4j.org/neo4j-community-$NEO_VERSION-unix.tar.gz > null
-    - tar -xzf neo4j-community-$NEO_VERSION-unix.tar.gz > null
-    - neo4j-community-$NEO_VERSION/bin/neo4j start > null
+    - wget dist.neo4j.org/neo4j-enterprise-$NEO_VERSION-unix.tar.gz > null
+    - tar -xzf neo4j-enterprise-$NEO_VERSION-unix.tar.gz > null
+    - neo4j-enterprise-$NEO_VERSION/bin/neo4j start > null
     - composer self-update
 
 before_script:
