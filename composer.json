@@ -1,20 +1,22 @@
 {
-    "name": "neoxygen/neoclient",
+    "name": "graphaware/neo4j-php-client",
     "type": "library",
-    "description": "NeoClient is the most advanced Http Client for Neo4j",
+    "description": "Neo4jPHP is the most advanced PHP Client for Neo4j",
     "keywords": [
         "graph",
         "neo4j",
         "cluster",
         "client",
-        "high-availibility"
+        "high-availibility",
+        "bolt",
+        "binary"
     ],
-    "homepage": "http://neoxygen.io",
+    "homepage": "http://graphaware.com",
     "license": "MIT",
     "authors": [
         {
             "name": "Christophe Willemsen",
-            "email": "chris@neoxygen.io"
+            "email": "christophe@graphaware.com"
         }
     ],
     "require": {
