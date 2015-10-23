@@ -81,6 +81,7 @@ class CoreCommandsTest extends \PHPUnit_Framework_TestCase
         $this->client->createIndex('List1', 'property');
         $this->client->createIndex('List2', 'property');
         $response = $this->client->listIndexes();
+        $indexes = $response->getBody();
         $this->assertArrayHasKey('List1', $indexes);
         $this->assertArrayHasKey('List2', $indexes);
     }
