@@ -17,8 +17,8 @@ matrix:
 
 before_install:
     - wget dist.neo4j.org/neo4j-enterprise-$NEO_VERSION-unix.tar.gz > null
-    - tar -xzf neo4j-community-$NEO_VERSION-unix.tar.gz > null
-    - neo4j-community-$NEO_VERSION/bin/neo4j start > null
+    - tar -xzf neo4j-enterprise-$NEO_VERSION-unix.tar.gz > null
+    - neo4j-enterprise-$NEO_VERSION/bin/neo4j start > null
     - composer self-update
 
 before_script:
