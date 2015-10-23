@@ -1,7 +1,7 @@
 {
     "name": "graphaware/neo4j-php-client",
     "type": "library",
-    "description": "Neo4jPHP is the most advanced PHP Client for Neo4j",
+    "description": "Neo4j-PHP-Client is the most advanced PHP Client for Neo4j",
     "keywords": [
         "graph",
         "neo4j",
