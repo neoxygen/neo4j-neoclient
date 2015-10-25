@@ -37,7 +37,8 @@
     },
     "autoload": {
         "psr-4": {
-            "GraphAware\\Neo4j\\Client\\": "src/"
+            "Neoxygen\\NeoClient\\": "src/",
+            "GraphAware\\Neo4j\\": "src/"
         }
     },
     "autoload-dev": {
