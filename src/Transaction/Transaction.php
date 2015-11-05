@@ -2,6 +2,7 @@
 
 namespace Neoxygen\NeoClient\Transaction;
 
+use Neoxygen\NeoClient\Exception\HttpException;
 use Neoxygen\NeoClient\Extension\NeoClientCoreExtension;
 use Neoxygen\NeoClient\Exception\Neo4jException;
 
@@ -42,6 +43,8 @@ class Transaction
      */
     private $results = [];
 
+    private $version;
+
     /**
      * @param null                                                 $conn
      * @param \Neoxygen\NeoClient\Extension\NeoClientCoreExtension $extension
@@ -70,7 +73,17 @@ class Transaction
     public function pushQuery($query, array $parameters = array())
     {
         $this->checkIfOpened();
-        $response = $this->handleResponse($this->client->pushToTransaction($this->transactionId, $query, $parameters, $this->conn));
+        try {
+            $response = $this->handleResponse($this->client->pushToTransaction($this->transactionId, $query, $parameters, $this->conn));
+        } catch (Neo4jException $e) {
+            $this->version = $this->client->getNeo4jVersion();
+            $this->rollback();
+            throw $e;
+        } catch (HttpException $e) {
+            $this->rollback();
+            throw $e;
+        }
+
         $result = $response->getResult();
         $this->results[] = $result;
 
@@ -120,7 +133,15 @@ class Transaction
     public function rollback()
     {
         $this->checkIfOpened();
-        $response = $this->handleResponse($this->client->rollBackTransaction($this->transactionId));
+        if ($this->isAbove225Version()) {
+            $this->active = false;
+            return true;
+        }
+        try {
+            $response = $this->handleResponse($this->client->rollBackTransaction($this->transactionId));
+        } catch (HttpException $e) {
+
+        }
         $this->active = false;
 
         return $response;
@@ -192,5 +213,17 @@ class Transaction
         }
 
         return $this->client->handleHttpResponse($response);
+    }
+
+    private function isAbove225Version()
+    {
+        if (null !== $this->version) {
+            $v = (int) str_replace('.', '', trim($this->version));
+            if ($v > 225) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
