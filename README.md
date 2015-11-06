@@ -814,7 +814,7 @@ print_r($extensions);
 
 When you have a lot of commands, it may be good to create a command extension. Creating a command extension is quite simple :
 
-You need to create a class that extends the `Neoxygen\NeoClient\Extension\AbsractExtension`, and you have to
+You need to create a class that extends the `Neoxygen\NeoClient\Extension\AbstractExtension`, and you have to
 implement the `getAvailableCommands` method that return an array of command aliases bounded to command classes :
 
 ```php
