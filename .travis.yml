@@ -17,18 +17,8 @@ matrix:
 
 before_install:
     - wget dist.neo4j.org/neo4j-enterprise-$NEO_VERSION-unix.tar.gz > null
-<<<<<<< a3c1ba50e9691f3c0168942b92915d24caad202a
-<<<<<<< d4094290232cb20d8beb4eacc8aa3e57d2be5c36
     - tar -xzf neo4j-enterprise-$NEO_VERSION-unix.tar.gz > null
     - neo4j-enterprise-$NEO_VERSION/bin/neo4j start > null
-=======
-    - tar -xzf neo4j-community-$NEO_VERSION-unix.tar.gz > null
-    - neo4j-community-$NEO_VERSION/bin/neo4j start > null
->>>>>>> fixed get labels not returning unused labels in 2.3
-=======
-    - tar -xzf neo4j-enterprise-$NEO_VERSION-unix.tar.gz > null
-    - neo4j-enterprise-$NEO_VERSION/bin/neo4j start > null
->>>>>>> fix travis to use neo enterprise
     - composer self-update
 
 before_script:
