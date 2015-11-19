@@ -6,14 +6,7 @@ php:
     - 7.0
 
 env:
-  - NEO_VERSION="2.1.6"
-  - NEO_VERSION="2.2.6"
-  - NEO_VERSION="2.3.0"
-
-matrix:
-  allow_failures:
-    - php: 7.0
-
+  - NEO_VERSION="2.3.1"
 
 before_install:
     - wget dist.neo4j.org/neo4j-enterprise-$NEO_VERSION-unix.tar.gz > null
