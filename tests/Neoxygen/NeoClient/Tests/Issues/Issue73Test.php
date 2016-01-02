@@ -29,23 +29,23 @@ class Issue73Test extends \PHPUnit_Framework_TestCase
     public function testReportedIssue()
     {
         $this->prepareDB();
-        $query1 = 'MATCH (n:Node {id:1}) OPTIONAL MATCH (n)-[r]->(o) RETURN n,r,o';
-        $result = $this->getConnection()->sendCypherQuery($query1)->getResult();
-        $this->assertInstanceOf(Node::class, $result->get('n', true));
-        $this->assertInstanceOf(Node::class, $result->get('o', true));
-        $this->assertInstanceOf(Relationship::class, $result->get('r', true));
+        $q = 'MATCH (campaign:Campaign)-[created_for: CREATED_FOR]->(facebookPage:FacebookPage) ,
+            (campaign)-[happens_at:HAPPENS_AT]->(location:Location)
+            OPTIONAL MATCH (facebookAlbum:FacebookAlbum)-[opened_for:OPENED_FOR]-(campaign)
+            RETURN created_for,happens_at,opened_for,campaign,facebookPage,location,
+            collect (facebookAlbum) AS facebookAlbums LIMIT 25';
 
-        $query2 = 'MATCH (n:Node {id:3}) OPTIONAL MATCH (n)-[r]->(o) RETURN n,r,o';
-        $result2 = $this->getConnection()->sendCypherQuery($query2)->getResult();
-        $this->assertInstanceOf(Node::class, $result2->get('n', true));
-        $this->assertEquals(null, $result2->get('r'));
+        $result = $this->getConnection()->sendCypherQuery($q)->getResult();
+        $this->assertInstanceOf(Node::class, $result->get('facebookAlbums'));
 
     }
 
     public function prepareDB()
     {
         $this->getConnection()->sendCypherQuery('MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE r,n');
-        $prepare = 'CREATE (n:Node {id:1})-[:REL]->(b:Node {id:2}), (c:Node {id:3})';
+        $prepare = 'CREATE (c:Campaign)-[:CREATED_FOR]->(f:FacebookPage), (c)-[:HAPPENS_AT]->(l:Location)';
         $this->getConnection()->sendCypherQuery($prepare);
+        $p2 = 'CREATE (c:Campaign)-[:CREATED_FOR]->(f:FacebookPage), (c)-[:HAPPENS_AT]->(l:Location), (fa:FacebookAlbum)-[:OPENED_FOR]->(c)';
+        $this->getConnection()->sendCypherQuery($p2);
     }
 }

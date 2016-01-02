@@ -229,7 +229,7 @@ class Result
     {
         if (isset($this->identifiers[$identifier])) {
             foreach ($this->identifiers[$identifier] as $rel) {
-                if ($rel->getId() === $relationshipId) {
+                if ($rel instanceof Relationship && $rel->getId() === $relationshipId) {
                     return;
                 }
             }
