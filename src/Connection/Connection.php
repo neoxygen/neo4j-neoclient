@@ -1,15 +1,17 @@
 <?php
 
 /**
- * This file is part of the "-[:NEOXYGEN]->" NeoClient package.
+ * This file is part of the GraphAware Neo4j Client package.
  *
- * (c) Neoxygen.io <http://neoxygen.io>
+ * (c) GraphAware Limited <http://graphaware.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Neoxygen\NeoClient\Connection;
+namespace GraphAware\Neo4j\Connection;
+
+use GraphAware\Common\Driver\DriverInterface;
 
 class Connection
 {
@@ -19,59 +21,19 @@ class Connection
     private $alias;
 
     /**
-     * @var string The scheme to use for the Connection, could be http|https
+     * @var \GraphAware\Common\Driver\DriverInterface
      */
-    private $scheme;
+    private $driver;
 
     /**
-     * @var string The connection's host
-     */
-    private $host;
-
-    /**
-     * @var int The connection's port
-     */
-    private $port;
-
-    /**
-     * @var bool Whether or not to use Auth headers
-     */
-    private $authMode;
-
-    /**
-     * @var string The username for the authentication
-     */
-    private $authUser;
-
-    /**
-     * @var string The user's password for the authentication
-     */
-    private $authPassword;
-
-    /**
+     * Connection constructor.
      * @param $alias
-     * @param string $scheme
-     * @param string $host
-     * @param int    $port
-     * @param string $authUser     The user login when using the authentication extension
-     * @param string $authPassword The user password when using the authentication extension
+     * @param \GraphAware\Common\Driver\DriverInterface $driver
      */
-    public function __construct(
-        $alias,
-        $scheme = 'http',
-        $host = 'localhost',
-        $port = 7474,
-        $authMode = false,
-        $authUser = null,
-        $authPassword = null)
+    public function __construct($alias, DriverInterface $driver)
     {
-        $this->alias = $alias;
-        $this->scheme = $scheme;
-        $this->host = $host;
-        $this->port = $port;
-        $this->authMode = (bool) $authMode;
-        $this->authUser = $authUser;
-        $this->authPassword = $authPassword;
+        $this->alias = (string) $alias;
+        $this->driver = $driver;
     }
 
     /**
@@ -83,82 +45,10 @@ class Connection
     }
 
     /**
-     * @return string http|https
+     * @return \GraphAware\Common\Driver\DriverInterface
      */
-    public function getScheme()
+    public function getDriver()
     {
-        return $this->scheme;
-    }
-
-    /**
-     * @return string
-     */
-    public function getHost()
-    {
-        return $this->host;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPort()
-    {
-        return $this->port;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBaseUrl()
-    {
-        return $this->scheme.'://'.$this->host.':'.$this->port;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAuth()
-    {
-        return $this->authMode;
-    }
-
-    /**
-     * Sets the authentication mode to true.
-     */
-    public function setAuthMode()
-    {
-        $this->authMode = true;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAuthUser()
-    {
-        return $this->authUser;
-    }
-
-    /**
-     * @param string $username
-     */
-    public function setAuthUser($username)
-    {
-        $this->authUser = $username;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAuthPassword()
-    {
-        return $this->authPassword;
-    }
-
-    /**
-     * @param string $password
-     */
-    public function setAuthPassword($password)
-    {
-        $this->authPassword = $password;
+        return $this->driver;
     }
 }

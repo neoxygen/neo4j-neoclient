@@ -21,15 +21,13 @@
         }
     ],
     "require": {
-      "php": ">= 5.5",
-        "graphaware/neo4j-bolt": "1.0.x-dev",
+      "php": ">= 5.6",
+      "graphaware/neo4j-bolt": "1.0.x-dev",
       "guzzlehttp/guzzle": "^6.0",
       "monolog/monolog": "~1.1",
       "symfony/yaml": "^2.7",
       "symfony/config": "^2.7",
-      "symfony/dependency-injection": "^2.7",
       "symfony/event-dispatcher": "^2.7",
-      "graphaware/neo4j-response-formatter": "^1.0",
       "graphaware/neo4j-common": "^1.2"
     },
     "require-dev": {
@@ -38,13 +36,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Neoxygen\\NeoClient\\": "src/",
             "GraphAware\\Neo4j\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "GraphAware\\Neo4j\\Client\\Tests\\": "tests/"
+            "GraphAware\\Neo4j\\Tests\\": "tests/"
         }
     }
 }
