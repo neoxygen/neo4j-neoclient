@@ -99,6 +99,15 @@ class Relationship implements RelationshipInterface
     }
 
     /**
+     * @param $key
+     * @return bool
+     */
+    public function hasValue($key)
+    {
+        return array_key_exists($key, $this->properties);
+    }
+
+    /**
      * @return array
      */
     public function values()

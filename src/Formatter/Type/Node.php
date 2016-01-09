@@ -54,9 +54,22 @@ class Node implements NodeInterface
         return in_array($label, $this->labels);
     }
 
+    /**
+     * @param $key
+     * @return mixed
+     */
     public function value($key)
     {
         return $this->properties[$key];
+    }
+
+    /**
+     * @param $key
+     * @return bool
+     */
+    public function hasValue($key)
+    {
+        return array_key_exists($key, $this->properties);
     }
 
     public function values()
