@@ -4,23 +4,18 @@ php:
     - 5.6
     - 7.0
 
-env:
-  - NEO_VERSION="2.3.0"
-  - NEO_VERSION="3.0.0-M02"
-
 before_install:
-    - wget dist.neo4j.org/neo4j-enterprise-$NEO_VERSION-unix.tar.gz > null
-    - tar -xzf neo4j-enterprise-$NEO_VERSION-unix.tar.gz > null
-    - neo4j-enterprise-$NEO_VERSION/bin/neo4j start > null
+    - sudo apt-get update > /dev/null
+    # install Oracle JDK8
+    - sh -c ./build/install-jdk8.sh
+    # install and launch neo4j
+    - sh -c ./build/install-neo.sh
+    - composer install --prefer-source --no-interaction
     - composer self-update
 
-before_script:
-    - composer install --prefer-source --no-interaction
-    - mv tests/database_settings.yml.dist tests/database_settings.yml
-
 script:
-    - ./tests/setNeoToken.sh
-    - vendor/bin/phpunit
+    - vendor/bin/phpunit --exclude-group fail
+    - vendor/bin/behat
 
 notifications:
     email: "christophe@graphaware.com"
