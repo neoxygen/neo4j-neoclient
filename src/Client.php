@@ -28,8 +28,21 @@ class Client
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public static function create()
+    /**
+     * @param $query
+     * @param null $parameters
+     * @param null $tag
+     * @param null $connectionAlias
+     *
+     * @return \GraphAware\Bolt\Result\Result
+     */
+    public function run($query, $parameters = null, $tag = null, $connectionAlias = null)
     {
+        $connection = $this->connectionManager->getConnection($connectionAlias);
 
+        $session = $connection->getDriver()->session();
+        $params = is_array($parameters) ? $parameters : array();
+
+        return $session->run($query, $params);
     }
 }

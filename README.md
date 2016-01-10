@@ -82,6 +82,45 @@ You're now ready to connect to your database.
 
 NB: The build method will process configuration settings and return you a `Client` instance.
 
+### Basic Usage
+
+#### Sending a Cypher Query
+
+```php
+$client->run("CREATE (n:Person)");
+```
+
+#### Sending a Cypher Query with parameters
+
+```php
+$client->run("CREATE (n:Person) SET n += {infos}", ['infos' => ['name' => 'Ales', 'age' => 34]]);
+```
+
+#### Reading a Result
+
+```php
+$result = $client->run("MATCH (n:Person) RETURN n";
+// a result contains always a collection (array) of Record objects
+
+// get all records
+$records = $result->getRecords();
+
+// get the first or (if expected only one) the only record
+
+$record = $result->getRecord();
+```
+
+A `Record` object contains the values of one record from your Cypher query :
+
+```php
+$query = "MATCH (n:Person)-[:FOLLOWS]->(friend) RETURN n.name, collect(friend) as friends";
+$result = $client->run($query);
+
+foreach ($result->getRecords() as $record) {
+    echo sprintf('Person name is : %s and has %d number of friends', $record->value('name'), count($record->value('friends'));
+}
+```
+
 
 ### License
 

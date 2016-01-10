@@ -59,7 +59,7 @@ class ConnectionManager
     /**
      * @param string|null $alias The connection's alias
      *
-     * @return \GraphAware\Neo4j\Connection\Connection The requested connection
+     * @return \GraphAware\Neo4j\Client\Connection\Connection The requested connection
      *
      * @throws InvalidConnectionException When the connection does not exist
      */
