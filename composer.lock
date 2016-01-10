@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "34332ccdc389de21e87577476658d41e",
-    "content-hash": "cae0b5aec35afadacfa7e9a78de14d9c",
+    "hash": "a4e564cd567e911f85831bdff88daac1",
+    "content-hash": "f3b5075a133cc4ffa49a924990351128",
     "packages": [
         {
             "name": "graphaware/neo4j-bolt",
