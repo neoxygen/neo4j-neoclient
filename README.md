@@ -1,6 +1,6 @@
 # Neo4j-PHP-Client
 
-## A PHP Client for the Neo4j ReST API with Enterprise Support
+## An Enterprise Grade Client for Neo4j
 
 [![Build Status](https://travis-ci.org/graphaware/neo4j-php-client.svg?branch=master)](https://travis-ci.org/graphaware/neo4j-php-client)
 [![Latest Stable Version](https://poser.pugx.org/graphaware/neo4j-php-client/v/stable.svg)](https://packagist.org/packages/graphaware/neo4j-php-client)

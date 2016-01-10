@@ -11,6 +11,8 @@
 
 namespace Neoxygen\NeoClient;
 
+use GraphAware\Common\Result\AbstractRecordCursor;
+use GraphAware\Common\Result\RecordCursorInterface;
 use Neoxygen\NeoClient\Transaction\PreparedTransaction;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -27,7 +29,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @method openTransaction($conn = null)
  * @method \Neoxygen\NeoClient\Transaction\Transaction createTransaction($conn = null)
  * @method rollbackTransaction($id, $conn = null)
- * @method \Neoxygen\NeoClient\Formatter\Response sendCypherQuery($query, array $parameters = array(), $conn = null)
  * @method sendMultiple(array $statements, $conn = null)
  * @method sendWriteQuery($query, array $parameters = array())
  * @method sendReadQuery($query, array $parameters = array())
@@ -154,11 +155,17 @@ class Client
     }
 
     /**
-     * @return array|null
+     * @param $query
+     * @param array $parameters
+     *
+     * @return \Neoxygen\NeoClient\Formatter\Result
      */
-    public function getRows()
+    public function sendCypherQuery($query, array $parameters = array())
     {
-        return $this->lastResponse->getRows();
+        /** @var \Neoxygen\NeoClient\Formatter\Result[] $results */
+        $results = $this->call('sendCypherQuery', array($query, $parameters));
+
+        return $results[0];
     }
 
     public static function log($level = 'debug', $message, array $context = array())

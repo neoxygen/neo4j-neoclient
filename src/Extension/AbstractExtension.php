@@ -104,8 +104,8 @@ abstract class AbstractExtension implements NeoClientExtensionInterface
         $this->checkResponseErrors($response->getBody());
         if ($this->autoFormatResponse) {
             $formatted = $this->formatResponse($response->getBody());
-            $response->setResult($formatted->getResult());
-            $response->setRows($formatted->geRows());
+
+            return $formatted;
         }
 
         return $response;
