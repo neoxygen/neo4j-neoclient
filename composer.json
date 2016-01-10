@@ -26,7 +26,6 @@
       "guzzlehttp/guzzle": "^6.0",
       "monolog/monolog": "~1.1",
       "symfony/yaml": "^2.7",
-      "symfony/config": "^2.7",
       "symfony/event-dispatcher": "^2.7",
       "graphaware/neo4j-common": "^1.2"
     },
