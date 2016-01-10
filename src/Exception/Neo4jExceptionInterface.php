@@ -11,4 +11,11 @@
 
 namespace GraphAware\Neo4j\Client\Exception;
 
-interface NeoClientExceptionInterface {}
+interface Neo4jExceptionInterface extends NeoClientExceptionInterface
+{
+    const EFFECT_NONE = 'NONE';
+
+    const EFFECT_ROLLBACK = 'ROLLBACK';
+
+    public function effect();
+}

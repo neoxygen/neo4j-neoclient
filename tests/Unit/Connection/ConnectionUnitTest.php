@@ -1,10 +1,10 @@
 <?php
 
-namespace GraphAware\Neo4j\Tests\Unit\Connection;
+namespace GraphAware\Neo4j\Client\Tests\Unit\Connection;
 
 use GraphAware\Common\Driver\Protocol;
-use GraphAware\Neo4j\Connection\Connection;
-use GraphAware\Neo4j\Tests\Unit\Stub\DummyDriver;
+use GraphAware\Neo4j\Client\Connection\Connection;
+use GraphAware\Neo4j\Client\Tests\Unit\Stub\DummyDriver;
 
 /**
  * @group unit

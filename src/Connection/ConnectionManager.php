@@ -1,15 +1,15 @@
 <?php
 
 /**
- * This file is part of the "-[:NEOXYGEN]->" NeoClient package.
+ * This file is part of the GraphAware Neo4j Client package.
  *
- * (c) Neoxygen.io <http://neoxygen.io>
+ * (c) GraphAware Limited <http://graphaware.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Neoxygen\NeoClient\Connection;
+namespace GraphAware\Neo4j\Client\Connection;
 
 use Neoxygen\NeoClient\Exception\InvalidConnectionException;
 use Neoxygen\NeoClient\Exception\HttpException;
@@ -59,7 +59,7 @@ class ConnectionManager
     /**
      * @param string|null $alias The connection's alias
      *
-     * @return \Neoxygen\NeoClient\Connection\Connection The requested connection
+     * @return \GraphAware\Neo4j\Connection\Connection The requested connection
      *
      * @throws InvalidConnectionException When the connection does not exist
      */
@@ -84,7 +84,7 @@ class ConnectionManager
     }
 
     /**
-     * @return \Neoxygen\NeoClient\Connection\Connection The default Connection if defined, the first connection in the connections array otherwise
+     * @return \GraphAware\Neo4j\Connection\Connection The default Connection if defined, the first connection in the connections array otherwise
      *
      * @throws \Neoxygen\NeoClient\Exception\InvalidConnectionException If no connections are configured
      */

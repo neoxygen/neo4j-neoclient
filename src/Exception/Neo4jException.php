@@ -11,7 +11,7 @@
 
 namespace GraphAware\Neo4j\Client\Exception;
 
-abstract class Neo4jException extends \Exception implements NeoClientExceptionInterface
+abstract class Neo4jException extends \Exception implements Neo4jExceptionInterface
 {
     /**
      * @return string
@@ -22,13 +22,13 @@ abstract class Neo4jException extends \Exception implements NeoClientExceptionIn
 
         switch ($classification) {
             case 'ClientError':
-                return NeoClientExceptionInterface::EFFECT_ROLLBACK;
+                return Neo4jExceptionInterface::EFFECT_ROLLBACK;
             case 'ClientNotification':
-                return NeoClientExceptionInterface::EFFECT_NONE;
+                return Neo4jExceptionInterface::EFFECT_NONE;
             case 'DatabaseError':
-                return NeoClientExceptionInterface::EFFECT_ROLLBACK;
+                return Neo4jExceptionInterface::EFFECT_ROLLBACK;
             case 'TransientError':
-                return NeoClientExceptionInterface::EFFECT_ROLLBACK;
+                return Neo4jExceptionInterface::EFFECT_ROLLBACK;
             default:
                 throw new \InvalidArgumentException(sprintf('Invalid classification "%s" in "%s"', $classification, $this->getMessage()));
         }

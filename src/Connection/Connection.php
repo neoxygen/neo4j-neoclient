@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace GraphAware\Neo4j\Connection;
+namespace GraphAware\Neo4j\Client\Connection;
 
 use GraphAware\Common\Driver\DriverInterface;
 
@@ -27,6 +27,7 @@ class Connection
 
     /**
      * Connection constructor.
+     *
      * @param $alias
      * @param \GraphAware\Common\Driver\DriverInterface $driver
      */

@@ -1,9 +1,8 @@
 <?php
 
-namespace GraphAware\Neo4j\Tests\Unit\Stub;
+namespace GraphAware\Neo4j\Client\Tests\Unit\Stub;
 
 use GraphAware\Common\Driver\DriverInterface;
-use GraphAware\Common\Driver\Protocol;
 
 class DummyDriver implements DriverInterface
 {
