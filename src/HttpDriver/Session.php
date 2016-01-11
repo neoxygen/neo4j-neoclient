@@ -13,7 +13,6 @@ namespace GraphAware\Neo4j\Client\HttpDriver;
 
 use GraphAware\Common\Cypher\Statement;
 use GraphAware\Common\Driver\SessionInterface;
-use GraphAware\Neo4j\Client\Connection\Connection;
 use GraphAware\Neo4j\Client\Formatter\ResponseFormatter;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
