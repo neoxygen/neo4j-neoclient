@@ -5,6 +5,9 @@ namespace GraphAware\Neo4j\Client\Formatter;
 use GraphAware\Common\Result\AbstractRecordCursor;
 use GraphAware\Neo4j\Client\Formatter\Type\Node;
 use GraphAware\Neo4j\Client\Formatter\Type\Relationship;
+use GraphAware\Common\Cypher\StatementInterface;
+use GraphAware\Neo4j\Client\HttpDriver\Result\ResultSummary;
+use GraphAware\Neo4j\Client\HttpDriver\Result\StatementStatistics;
 
 class Result extends AbstractRecordCursor
 {
@@ -18,6 +21,14 @@ class Result extends AbstractRecordCursor
      */
     protected $fields = [];
 
+    protected $resultSummary;
+
+    public function __construct(StatementInterface $statement)
+    {
+        $this->resultSummary = new ResultSummary($statement);
+        parent::__construct($statement);
+    }
+
     public function setFields(array $fields)
     {
         $this->fields = $fields;
@@ -27,6 +38,11 @@ class Result extends AbstractRecordCursor
     {
         $mapped = $this->array_map_deep($data);
         $this->records[] = new RecordView($this->fields, $mapped);
+    }
+
+    public function setStats(array $stats)
+    {
+        $this->resultSummary->setStatistics(new StatementStatistics($stats));
     }
 
     /**

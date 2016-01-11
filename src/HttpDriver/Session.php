@@ -11,6 +11,7 @@
 
 namespace GraphAware\Neo4j\Client\HttpDriver;
 
+use GraphAware\Common\Cypher\Statement;
 use GraphAware\Common\Driver\SessionInterface;
 use GraphAware\Neo4j\Client\Connection\Connection;
 use GraphAware\Neo4j\Client\Formatter\ResponseFormatter;
@@ -35,14 +36,14 @@ class Session implements SessionInterface
 
     public function run($statement, $parameters, $tag = null)
     {
+        $st = Statement::create($statement, $parameters, $tag);
         $request = $this->prepareRequest($statement, $parameters);
 
         try {
             $response = $this->httpClient->send($request);
+            $results = $this->responseFormatter->format(json_decode($response->getBody(), true), array($st));
 
-            echo (string) $response->getBody();
-
-            return $this->responseFormatter->format(json_decode($response->getBody(), true));
+            return $results[0];
         } catch (RequestException $e) {
             throw $e;
         }

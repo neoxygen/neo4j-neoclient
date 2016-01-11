@@ -16,30 +16,24 @@ use GraphAware\Common\Cypher\Statement;
 class ResponseFormatter
 {
     /**
-     * Returns the Neo4j API ResultDataContent to be used during Cypher queries.
-     *
-     * @return array
-     */
-    public static function getDefaultResultDataContents()
-    {
-        return array('rest');
-    }
-
-    /**
      * Formats the Neo4j Response.
      *
-     * @param $response
+     * @param array $response
+     * @param \GraphAware\Common\Cypher\Statement[] $statements
      *
-     * @return \Neoxygen\NeoClient\Formatter\Result[]
+     * @return \GraphAware\Neo4j\Client\Formatter\Result[]
      */
-    public function format($response)
+    public function format(array $response, array $statements)
     {
         $results = [];
-        foreach ($response['results'] as $result) {
-            $resultO = new Result(Statement::create(""));
+        foreach ($response['results'] as $k => $result) {
+            $resultO = new Result($statements[$k]);
             $resultO->setFields($result['columns']);
             foreach ($result['data'] as $data) {
                 $resultO->pushRecord($data['rest']);
+            }
+            if (array_key_exists('stats', $result)) {
+                $resultO->setStats($result['stats']);
             }
             $results[] = $resultO;
         }
