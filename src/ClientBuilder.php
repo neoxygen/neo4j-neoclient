@@ -11,21 +11,19 @@
 
 namespace GraphAware\Neo4j\Client;
 
-use GraphAware\Bolt\GraphDatabase as BoltDatabase;
-use GraphAware\Neo4j\Client\HttpDriver\GraphDatabase as HttpDatabase;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use GraphAware\Neo4j\Client\Connection\ConnectionManager;
-use GraphAware\Neo4j\Client\Connection\Connection;
 
 class ClientBuilder
 {
+    const PREFLIGHT_ENV_DEFAULT = 'NEO4J_DB_VERSION';
+
     protected $config = [];
 
     protected $connectionManager;
 
     public function __construct()
     {
-        $this->connectionManager = new ConnectionManager();
+        $this->config['connection_manager']['preflight_env'] = self::PREFLIGHT_ENV_DEFAULT;
     }
 
     public static function create()
@@ -35,18 +33,22 @@ class ClientBuilder
 
     public function addConnection($alias, $uri)
     {
-        if (preg_match('/http/', $uri)) {
-            $driver = HttpDatabase::driver($uri);
-        } else {
-            $driver = BoltDatabase::driver($uri);
-        }
-        $this->connectionManager->registerConnection(new Connection($alias, $driver));
+        $this->config['connections'][$alias]['uri'] = $uri;
 
         return $this;
     }
 
+    public function preflightEnv($variable)
+    {
+        $this->config['connection_manager']['preflight_env'] = $variable;
+    }
+
     public function build()
     {
-        return new Client($this->connectionManager, new EventDispatcher());
+        $this->connectionManager = new ConnectionManager();
+        foreach ($this->config['connections'] as $alias => $conn) {
+            $this->connectionManager->registerConnection($alias, $conn['uri']);
+        }
+        return new Client($this->connectionManager);
     }
 }

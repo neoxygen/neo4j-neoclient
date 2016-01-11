@@ -11,30 +11,27 @@
 
 namespace GraphAware\Neo4j\Client;
 
-use GraphAware\Bolt\Exception\MessageFailureException;
 use GraphAware\Neo4j\Client\Connection\ConnectionManager;
-use GraphAware\Neo4j\Client\Exception\Neo4jException;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class Client
 {
     const NEOCLIENT_VERSION = '4.0.0';
 
+    /**
+     * @var \GraphAware\Neo4j\Client\Connection\ConnectionManager
+     */
     protected $connectionManager;
 
-    protected $eventDispatcher;
-
-    public function __construct(ConnectionManager $connectionManager, EventDispatcher $eventDispatcher)
+    public function __construct(ConnectionManager $connectionManager)
     {
         $this->connectionManager = $connectionManager;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
      * @param $query
-     * @param null $parameters
-     * @param null $tag
-     * @param null $connectionAlias
+     * @param null|array $parameters
+     * @param null|string $tag
+     * @param null|string $connectionAlias
      *
      * @return \GraphAware\Bolt\Result\Result
      */
@@ -42,20 +39,23 @@ class Client
     {
         $connection = $this->connectionManager->getConnection($connectionAlias);
 
-        $session = $connection->getDriver()->session();
-        $params = is_array($parameters) ? $parameters : array();
+        return $connection->run($query, $parameters, $tag);
+    }
 
-        try {
-            return $session->run($query, $params);
-        } catch (\Exception $e) {
-            if ($e instanceof MessageFailureException) {
-                $exc = new Neo4jException($e->getMessage());
-                $exc->setNeo4jStatusCode($e->getStatusCode());
+    /**
+     * @deprecated since 4.0 - will be removed in 5.0 - use <code>$client->run()</code> instead.
+     *
+     * @param $query
+     * @param null|array $parameters
+     * @param null|string $tag
+     * @param null|string $connectionAlias
+     *
+     * @return \GraphAware\Bolt\Result\Result
+     */
+    public function sendCypherQuery($query, $parameters = null, $tag = null, $connectionAlias = null)
+    {
+        $connection = $this->connectionManager->getConnection($connectionAlias);
 
-                throw $exc;
-            } else {
-                throw $e;
-            }
-        }
+        return $connection->run($query, $parameters, $tag);
     }
 }

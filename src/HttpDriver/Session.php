@@ -13,6 +13,7 @@ namespace GraphAware\Neo4j\Client\HttpDriver;
 
 use GraphAware\Common\Cypher\Statement;
 use GraphAware\Common\Driver\SessionInterface;
+use GraphAware\Neo4j\Client\Exception\Neo4jException;
 use GraphAware\Neo4j\Client\Formatter\ResponseFormatter;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -44,6 +45,18 @@ class Session implements SessionInterface
 
             return $results[0];
         } catch (RequestException $e) {
+            if ($e->hasResponse()) {
+                $body = json_decode($e->getResponse()->getBody(), true);
+                if (!isset($body['code'])) {
+                    throw $e;
+                }
+                $msg = sprintf('Neo4j Exception with code "%s" and message "%s"', $body['errors'][0]['code'], $body['errors'][0]['message']);
+                $exception = new Neo4jException($msg);
+                $exception->setNeo4jStatusCode($body['errors'][0]['code']);
+
+                throw $exception;
+            }
+
             throw $e;
         }
     }
@@ -72,14 +85,21 @@ class Session implements SessionInterface
 
         $statements['statements'][] = $st;
 
-        $headers = [
+        $options = [];
+        $options['headers'] = [
             [
                 'X-Stream' => true,
                 'Content-Type' => 'application/json'
             ]
         ];
 
-        $request = new Request("POST", $host, $headers, json_encode($statements));
+        if (isset($info['user']) && isset($info['pass'])) {
+            $options['auth'] = [$info['user'], $info['pass']];
+        }
+
+        $options['json'] = $st;
+
+        $request = new Request("POST", sprintf('%s/db/data/transaction/commit', $this->uri), $options['headers'], json_encode($statements));
 
         echo (string) $request->getBody();
 

@@ -11,7 +11,10 @@
 
 namespace GraphAware\Neo4j\Client\Connection;
 
-use GraphAware\Common\Driver\DriverInterface;
+use GraphAware\Bolt\GraphDatabase as BoltGraphDB;
+use GraphAware\Neo4j\Client\Exception\Neo4jException;
+use GraphAware\Bolt\Exception\MessageFailureException;
+use GraphAware\Neo4j\Client\HttpDriver\GraphDatabase as HttpGraphDB;
 
 class Connection
 {
@@ -21,20 +24,26 @@ class Connection
     private $alias;
 
     /**
-     * @var \GraphAware\Common\Driver\DriverInterface
+     * @var string
+     */
+    private $uri;
+
+    /**
+     * @var \GraphAware\Common\Driver\DriverInterface The configured driver
      */
     private $driver;
 
     /**
      * Connection constructor.
      *
-     * @param $alias
-     * @param \GraphAware\Common\Driver\DriverInterface $driver
+     * @param string $alias
+     * @param string $uri
      */
-    public function __construct($alias, DriverInterface $driver)
+    public function __construct($alias, $uri)
     {
         $this->alias = (string) $alias;
-        $this->driver = $driver;
+        $this->uri = (string) $uri;
+        $this->buildDriver();
     }
 
     /**
@@ -45,11 +54,30 @@ class Connection
         return $this->alias;
     }
 
-    /**
-     * @return \GraphAware\Common\Driver\DriverInterface
-     */
-    public function getDriver()
+    public function buildDriver()
     {
-        return $this->driver;
+        if (preg_match('/bolt/', $this->uri)) {
+            $this->driver = BoltGraphDB::driver($this->uri);
+        } elseif (preg_match('/http/', $this->uri)) {
+            $this->driver = HttpGraphDB::driver($this->uri);
+        } else {
+            throw new \RuntimeException(sprintf('Unable to build a driver from uri "%s"', $this->uri));
+        }
+    }
+
+    public function run($statement, $parameters, $tag)
+    {
+        $parameters = is_array($parameters) ? $parameters : array();
+        $session = $this->driver->session();
+        try {
+            $results = $session->run($statement, $parameters, $tag);
+
+            return $results;
+        } catch (MessageFailureException $e) {
+            $exception = new Neo4jException($e->getMessage());
+            $exception->setNeo4jStatusCode($e->getStatusCode());
+
+            throw $e;
+        }
     }
 }
