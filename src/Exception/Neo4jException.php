@@ -11,8 +11,21 @@
 
 namespace GraphAware\Neo4j\Client\Exception;
 
-abstract class Neo4jException extends \Exception implements Neo4jExceptionInterface
+class Neo4jException extends \Exception implements Neo4jExceptionInterface
 {
+    /**
+     * @var string
+     */
+    protected $statusCode;
+
+    /**
+     * @param string $code
+     */
+    public function setNeo4jStatusCode($code)
+    {
+        $this->statusCode = $code;
+    }
+
     /**
      * @return string
      */
@@ -39,11 +52,11 @@ abstract class Neo4jException extends \Exception implements Neo4jExceptionInterf
      */
     public function classification()
     {
-        $parts = explode('.', $this->getMessage());
-        if (!isset($parts[2])) {
-            throw new \InvalidArgumentException(sprintf('Could not parse exception message "%"', $this->getMessage()));
+        $parts = explode('.', $this->statusCode);
+        if (!isset($parts[1])) {
+            throw new \InvalidArgumentException(sprintf('Could not parse exception classification "%"', $this->statusCode));
         }
 
-        return $parts[2];
+        return $parts[1];
     }
 }

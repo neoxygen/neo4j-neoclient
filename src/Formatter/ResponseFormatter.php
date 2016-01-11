@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Neoxygen\NeoClient\Formatter;
+namespace GraphAware\Neo4j\Client\Formatter;
 
 use GraphAware\Common\Cypher\Statement;
 
-class ResponseFormatter implements ResponseFormatterInterface
+class ResponseFormatter
 {
     /**
      * Returns the Neo4j API ResultDataContent to be used during Cypher queries.

@@ -11,7 +11,9 @@
 
 namespace GraphAware\Neo4j\Client;
 
+use GraphAware\Bolt\Exception\MessageFailureException;
 use GraphAware\Neo4j\Client\Connection\ConnectionManager;
+use GraphAware\Neo4j\Client\Exception\Neo4jException;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class Client
@@ -43,6 +45,17 @@ class Client
         $session = $connection->getDriver()->session();
         $params = is_array($parameters) ? $parameters : array();
 
-        return $session->run($query, $params);
+        try {
+            return $session->run($query, $params);
+        } catch (\Exception $e) {
+            if ($e instanceof MessageFailureException) {
+                $exc = new Neo4jException($e->getMessage());
+                $exc->setNeo4jStatusCode($e->getStatusCode());
+
+                throw $exc;
+            } else {
+                throw $e;
+            }
+        }
     }
 }

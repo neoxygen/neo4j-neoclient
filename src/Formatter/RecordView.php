@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Neoxygen\NeoClient\Formatter;
+namespace GraphAware\Neo4j\Client\Formatter;
 
 use GraphAware\Common\Result\RecordViewInterface;
 use GraphAware\Common\Type\NodeInterface;
@@ -64,7 +64,7 @@ class RecordView implements RecordViewInterface
 
     /**
      * @param $key
-     * @return mixed|\Neoxygen\NeoClient\Formatter\Node|\Neoxygen\NeoClient\Formatter\Relationship
+     * @return mixed|\GraphAware\Neo4j\Client\Formatter\Node|\GraphAware\Neo4j\Client\Formatter\Relationship
      */
     public function value($key)
     {
@@ -75,7 +75,7 @@ class RecordView implements RecordViewInterface
      * Returns the Node for value <code>$key</code>. Ease IDE integration
      *
      * @param $key
-     * @return \Neoxygen\NeoClient\Formatter\Node
+     * @return \GraphAware\Neo4j\Client\Formatter\Node
      *
      * @throws \InvalidArgumentException When the value is not null or instance of Node
      */
@@ -90,7 +90,7 @@ class RecordView implements RecordViewInterface
 
     /**
      * @param $key
-     * @return \Neoxygen\NeoClient\Formatter\Relationship
+     * @return \GraphAware\Neo4j\Client\Formatter\Relationship
      *
      * @throws \InvalidArgumentException When the value is not null or instance of Relationship
      */
@@ -123,7 +123,7 @@ class RecordView implements RecordViewInterface
     }
 
     /**
-     * @return \Neoxygen\NeoClient\Formatter\RecordView
+     * @return \GraphAware\Neo4j\Client\Formatter\RecordView
      */
     public function record()
     {

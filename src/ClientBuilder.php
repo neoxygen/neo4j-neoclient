@@ -11,7 +11,8 @@
 
 namespace GraphAware\Neo4j\Client;
 
-use GraphAware\Bolt\GraphDatabase;
+use GraphAware\Bolt\GraphDatabase as BoltDatabase;
+use GraphAware\Neo4j\Client\HttpDriver\GraphDatabase as HttpDatabase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use GraphAware\Neo4j\Client\Connection\ConnectionManager;
 use GraphAware\Neo4j\Client\Connection\Connection;
@@ -34,7 +35,12 @@ class ClientBuilder
 
     public function addConnection($alias, $uri)
     {
-        $this->connectionManager->registerConnection(new Connection($alias, GraphDatabase::driver($uri)));
+        if (preg_match('/http/', $uri)) {
+            $driver = HttpDatabase::driver($uri);
+        } else {
+            $driver = BoltDatabase::driver($uri);
+        }
+        $this->connectionManager->registerConnection(new Connection($alias, $driver));
 
         return $this;
     }

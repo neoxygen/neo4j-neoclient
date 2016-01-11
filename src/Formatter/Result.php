@@ -1,10 +1,10 @@
 <?php
 
-namespace Neoxygen\NeoClient\Formatter;
+namespace GraphAware\Neo4j\Client\Formatter;
 
 use GraphAware\Common\Result\AbstractRecordCursor;
-use Neoxygen\NeoClient\Formatter\Type\Node;
-use Neoxygen\NeoClient\Formatter\Type\Relationship;
+use GraphAware\Neo4j\Client\Formatter\Type\Node;
+use GraphAware\Neo4j\Client\Formatter\Type\Relationship;
 
 class Result extends AbstractRecordCursor
 {
