@@ -5,6 +5,7 @@ namespace GraphAware\Neo4j\Client\Tests\Unit\Connection;
 use GraphAware\Common\Driver\Protocol;
 use GraphAware\Neo4j\Client\Connection\Connection;
 use GraphAware\Neo4j\Client\Tests\Unit\Stub\DummyDriver;
+use GraphAware\Neo4j\Client\HttpDriver\Driver as HttpDriver;
 
 /**
  * @group unit
@@ -14,10 +15,7 @@ class ConnectionUnitTest extends \PHPUnit_Framework_TestCase
 {
     public function testConnectionInstantiation()
     {
-        $driver = new DummyDriver('localhost', Protocol::HTTPS);
-        $connection = new Connection('default', $driver);
-
-        $this->assertEquals($driver, $connection->getDriver());
-        $this->assertEquals('default', $connection->getAlias());
+        $connection = new Connection('default', 'http://localhost:7474');
+        $this->assertInstanceOf(HttpDriver::class, $connection->getDriver());
     }
 }

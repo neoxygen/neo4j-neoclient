@@ -65,6 +65,14 @@ class Connection
         }
     }
 
+    /**
+     * @return \GraphAware\Common\Driver\DriverInterface
+     */
+    public function getDriver()
+    {
+        return $this->driver;
+    }
+
     public function run($statement, $parameters, $tag)
     {
         $parameters = is_array($parameters) ? $parameters : array();
@@ -77,7 +85,7 @@ class Connection
             $exception = new Neo4jException($e->getMessage());
             $exception->setNeo4jStatusCode($e->getStatusCode());
 
-            throw $e;
+            throw $exception;
         }
     }
 }
