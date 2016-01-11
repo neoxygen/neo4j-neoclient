@@ -4,7 +4,9 @@
 
 Neoxygen's NeoClient has been moved to https://github.com/graphaware/neo4j-php-client
 
-Version 3 of this library is still maintained for the users requiring `neoxygen/neoclient` in their composer's dependencies.
+Version 3 of this library is still maintained for bug support for the users requiring `neoxygen/neoclient` in their composer's dependencies.
+
+Version 3 End of Maintenance is planned on September 1, 2016.
 
 Version 4 (with support for the Bolt binary protocol - in current developement) will only be available on the GraphAware's repository.
 
