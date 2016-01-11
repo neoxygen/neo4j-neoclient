@@ -1,5 +1,20 @@
 # NeoClient
 
+# This repository has moved
+
+Neoxygen's NeoClient has been moved to https://github.com/graphaware/neo4j-php-client
+
+Version 3 of this library is still maintained for the users requiring `neoxygen/neoclient` in their composer's dependencies.
+
+Version 4 (with support for the Bolt binary protocol - in current developement) will only be available on the GraphAware's repository.
+
+If you are having issues for the migration, you can open an issue here : https://github.com/graphaware/neo4j-php-client/issues
+
+GraphAware's Enterprise customers can send a direct support email to their first level of support at GraphAware.
+
+---
+
+
 ## A PHP HttpClient for the Neo4j ReST API with MultiDB Support
 
 [![Build Status](https://travis-ci.org/neoxygen/neo4j-neoclient.svg?branch=master)](https://travis-ci.org/neoxygen/neo4j-neoclient)
@@ -12,7 +27,6 @@
 ## Supported and Sponsored By
 
 [![GraphAware](http://graphaware.com/images/logo.png)](http://graphaware.com)
-[![GraphStory](http://i.imgur.com/ykEDw8s.png)](https://www.graphstory.com/)
 
 
 ## Introduction
