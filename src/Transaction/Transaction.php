@@ -59,6 +59,19 @@ class Transaction
         $this->queue[] = $stack;
     }
 
+    public function runStack(Stack $stack)
+    {
+        if (!$this->driverTransaction->isOpen() && !in_array($this->driverTransaction->status(), ['COMMITED', 'ROLLED_BACK'])) {
+            $this->driverTransaction->begin();
+        }
+        $sts = [];
+        foreach ($stack->statements() as $statement) {
+            $sts[] = $statement;
+        }
+
+        return $this->driverTransaction->runMultiple($sts);
+    }
+
     public function begin()
     {
         $this->driverTransaction->begin();
