@@ -227,6 +227,73 @@ The client takes care of the hydration of Graph objects to PHP Objects, so it is
 * `values()` : returns the properties of the relationship (array)
 * `value($key)` : returns the value for the given property key
 
+### Working with Transactions
+
+The Client provides a Transaction object that ease how you would work with transactions.
+
+#### Creating a Transaction
+
+```php
+
+$tx = $client->transaction();
+```
+
+At this stage, nothing has been sent to the server yet (the statement BEGIN has not been sent), this permits to stack queries or Stack objects before commiting them.
+
+#### Stack a query
+
+```
+$tx->push("CREATE (n:Person) RETURN id(n)");
+```
+
+Again, until now nothing has been sent.
+
+#### Run a query in a Transaction
+
+Sometimes you want to get an immediate result of a statement inside the transaction, this can be done with the `run` method :
+
+```php
+
+$result = $tx->run("CREATE (n:Person) SET n.name = {name} RETURN id(n)", ['name' => 'Michal']);
+
+echo $result->getRecord()->value("id(n)");
+```
+
+If the transaction has not yet begun, the BEGIN of the transaction will be done automatically.
+```
+
+#### You can also push or run Stacks
+
+```php
+
+$stack = $client->stack();
+$stack->push('CREATE (n:Person {uuid: {uuid} })', ['uuid' => '123-fff']);
+$stack->push('MATCH (n:Person {uuid: {uuid1} }), (n2:Person {uuid: {uuid2} }) MERGE (n)-[:FOLLOWS]->(n2)', ['uuid1' => '123-fff', 'uuid2' => '456-ddd']);
+
+$tx->pushStack($stack);
+// or
+$results = $tx->runStack($stack);
+```
+
+### Commit and Rollback
+
+if you have queued statements in your transaction (those added with the `push` methods) and you have finish your job, you can commit the transaction and receive
+the results :
+
+```php
+$stack = $client->stack();
+$stack->push('CREATE (n:Person {uuid: {uuid} })', ['uuid' => '123-fff']);
+$stack->push('MATCH (n:Person {uuid: {uuid1} }), (n2:Person {uuid: {uuid2} }) MERGE (n)-[:FOLLOWS]->(n2)', ['uuid1' => '123-fff', 'uuid2' => '456-ddd']);
+
+$tx->pushStack($stack);
+$tx->pushQuery("MATCH (n) RETURN count(n)");
+
+$results = $tx->commit();
+```
+
+After a commit, you will not be able to `push` or `run` statements in this transaction.
+
+
 ### License
 
 The library is released under the MIT License, refer to the LICENSE file.
