@@ -12,9 +12,11 @@
 namespace GraphAware\Neo4j\Client\Connection;
 
 use GraphAware\Bolt\GraphDatabase as BoltGraphDB;
+use GraphAware\Common\Cypher\Statement;
 use GraphAware\Neo4j\Client\Exception\Neo4jException;
 use GraphAware\Bolt\Exception\MessageFailureException;
 use GraphAware\Neo4j\Client\HttpDriver\GraphDatabase as HttpGraphDB;
+use GraphAware\Neo4j\Client\Stack;
 
 class Connection
 {
@@ -34,6 +36,11 @@ class Connection
     private $driver;
 
     /**
+     * @var \GraphAware\Common\Driver\SessionInterface
+     */
+    private $session;
+
+    /**
      * Connection constructor.
      *
      * @param string $alias
@@ -44,6 +51,7 @@ class Connection
         $this->alias = (string) $alias;
         $this->uri = (string) $uri;
         $this->buildDriver();
+        $this->session = $this->driver->session();
     }
 
     /**
@@ -73,20 +81,24 @@ class Connection
         return $this->driver;
     }
 
-    public function createPipeline($query, $parameters, $tag)
+    /**
+     * @param null $query
+     * @param array $parameters
+     * @param null $tag
+     * @return \GraphAware\Bolt\Protocol\Pipeline|\GraphAware\Neo4j\Client\HttpDriver\Pipeline
+     */
+    public function createPipeline($query = null, $parameters = array(), $tag = null)
     {
-        $session = $this->driver->session();
         $parameters = is_array($parameters) ? $parameters : array();
 
-        return $session->createPipeline($query, $parameters, $tag);
+        return $this->session->createPipeline($query, $parameters, $tag);
     }
 
     public function run($statement, $parameters, $tag)
     {
         $parameters = is_array($parameters) ? $parameters : array();
-        $session = $this->driver->session();
         try {
-            $results = $session->run($statement, $parameters, $tag);
+            $results = $this->session->run($statement, $parameters, $tag);
 
             return $results;
         } catch (MessageFailureException $e) {
@@ -95,5 +107,34 @@ class Connection
 
             throw $exception;
         }
+    }
+
+    public function runMixed(array $queue)
+    {
+        $pipeline = $this->createPipeline();
+        foreach ($queue as $element) {
+            if ($element instanceof Stack) {
+                foreach ($element->statements() as $statement) {
+                    $pipeline->push($statement->text(), $statement->parameters(), $statement->getTag());
+                }
+            } elseif ($element instanceof Statement) {
+                $pipeline->push($element->text(), $element->parameters(), $element->getTag());
+            }
+        }
+
+        return $pipeline->run();
+    }
+
+    public function getTransaction()
+    {
+        return $this->session->transaction();
+    }
+
+    /**
+     * @return \GraphAware\Common\Driver\SessionInterface
+     */
+    public function getSession()
+    {
+        return $this->session;
     }
 }

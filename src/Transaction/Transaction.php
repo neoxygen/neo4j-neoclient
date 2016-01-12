@@ -1,229 +1,106 @@
 <?php
 
-namespace Neoxygen\NeoClient\Transaction;
+/**
+ * This file is part of the GraphAware Neo4j Client package.
+ *
+ * (c) GraphAware Limited <http://graphaware.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-use Neoxygen\NeoClient\Exception\HttpException;
-use Neoxygen\NeoClient\Extension\NeoClientCoreExtension;
-use Neoxygen\NeoClient\Exception\Neo4jException;
+namespace GraphAware\Neo4j\Client\Transaction;
 
-class Transaction
+use GraphAware\Common\Cypher\Statement;
+use GraphAware\Common\Transaction\TransactionInterface;
+use GraphAware\Neo4j\Client\Connection\Connection;
+use GraphAware\Neo4j\Client\Stack;
+
+class Transaction implements TransactionInterface
 {
-    /**
-     * @var \Neoxygen\NeoClient\Extension\NeoClientCoreExtension|\Neoxygen\NeoClient\Extension\AbstractExtension
-     */
-    private $client;
+    const OPENED = 'OPEN';
+
+    const COMMITTED = 'COMMITED';
+
+    const ROLLED_BACK = 'ROLLED_BACK';
 
     /**
-     * @var bool
+     * @var \GraphAware\Neo4j\Client\Connection\Connection
      */
-    private $active;
+    protected $connection;
 
     /**
-     * @var string|null
+     * @var null|string
      */
-    private $conn;
+    protected $state;
 
     /**
-     * @var string
+     * @var array()
      */
-    private $commitUrl;
+    protected $queue = [];
 
     /**
-     * @var int
+     * @var array
      */
-    private $transactionId;
+    protected $results = [];
 
     /**
-     * @var string
+     * @var array
      */
-    private $queryMode;
+    protected $taggedResults = [];
 
     /**
-     * @var \Neoxygen\NeoClient\Formatter\Result[]
+     * @param \GraphAware\Neo4j\Client\Connection\Connection $connection
      */
-    private $results = [];
-
-    private $version;
-
-    /**
-     * @param null                                                 $conn
-     * @param \Neoxygen\NeoClient\Extension\NeoClientCoreExtension $extension
-     */
-    public function __construct($conn = null, NeoClientCoreExtension $extension, $queryMode)
+    public function __construct(Connection $connection)
     {
-        $this->conn = $conn;
-        $this->queryMode = $queryMode;
-        $this->client = $extension;
-        $response = $this->handleResponse($this->client->openTransaction($this->conn, $this->queryMode));
-        $this->commitUrl = $response->getBody()['commit'];
-        $this->parseTransactionId();
-        $this->active = true;
-
-        return $this;
+        $this->connection = $connection;
     }
 
-    /**
-     * @param $query
-     * @param array $parameters
-     *
-     * @return \Neoxygen\NeoClient\Formatter\Result
-     *
-     * @throws \Neoxygen\NeoClient\Exception\Neo4jException
-     */
-    public function pushQuery($query, array $parameters = array())
+    public function push($statement, array $parameters = array(), $tag = null)
     {
-        $this->checkIfOpened();
-        try {
-            $response = $this->handleResponse($this->client->pushToTransaction($this->transactionId, $query, $parameters, $this->conn));
-        } catch (Neo4jException $e) {
-            $this->version = $this->client->getNeo4jVersion();
-            $this->rollback();
-            throw $e;
-        } catch (HttpException $e) {
-            $this->rollback();
-            throw $e;
+        $this->queue[] = Statement::create($statement, $parameters, $tag);
+    }
+
+    public function pushStack(Stack $stack)
+    {
+        $this->queue[] = $stack;
+    }
+
+    public function begin()
+    {
+        if ($this->state === self::ROLLED_BACK || $this->state === self::COMMITTED) {
+            throw new \RuntimeException(sprintf('Cannot begin a transaction when state is "%s"', $this->state)); // @todo change to TransactionException
         }
-
-        $result = $response->getResult();
-        $this->results[] = $result;
-
-        return $result;
     }
 
-    /**
-     * @param array $statements
-     *
-     * @return \Neoxygen\NeoClient\Formatter\Result|\GraphAware\NeoClient\Formatter\Results[]
-     *
-     * @throws \Neoxygen\NeoClient\Exception\Neo4jException
-     */
-    public function pushMultiple(array $statements)
+    public function isOpen()
     {
-        $this->checkIfOpened();
-        $httpResponse = $this->client->pushMultipleToTransaction($this->transactionId, $statements);
-
-        $response = $this->handleResponse($httpResponse);
-
-        if ($this->client->newFormattingService) {
-            return $response->getResults();
-        }
-
-        return $response->getResult();
+        return self::OPENED === $this->state;
     }
 
-    /**
-     * @return array|\Neoxygen\NeoClient\Formatter\Response|string
-     *
-     * @throws \Neoxygen\NeoClient\Exception\Neo4jException
-     */
+    public function isCommited()
+    {
+        return self::COMMITTED === $this->state;
+    }
+
+    public function isRolledBack()
+    {
+        return self::ROLLED_BACK === $this->state;
+    }
+
+    public function status()
+    {
+        return $this->state;
+    }
+
     public function commit()
     {
-        $this->checkIfOpened();
-        $response = $this->handleResponse($this->client->commitTransaction($this->transactionId, null, array(), $this->conn, $this->queryMode));
-        $this->active = false;
-
-        return $response;
+        return $this->connection->runMixed($this->queue);
     }
 
-    /**
-     * @return array|\Neoxygen\NeoClient\Formatter\Response|string
-     *
-     * @throws \Neoxygen\NeoClient\Exception\Neo4jException
-     */
     public function rollback()
     {
-        $this->checkIfOpened();
-        if ($this->isAbove225Version()) {
-            $this->active = false;
-            return true;
-        }
-        try {
-            $response = $this->handleResponse($this->client->rollBackTransaction($this->transactionId));
-        } catch (HttpException $e) {
-
-        }
-        $this->active = false;
-
-        return $response;
-    }
-
-    /**
-     * @return \Neoxygen\NeoClient\Formatter\Result[]
-     */
-    public function getResults()
-    {
-        return $this->results;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getLastResult()
-    {
-        $last = end($this->results);
-        reset($this->results);
-
-        return $last;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isActive()
-    {
-        return $this->active;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTransactionId()
-    {
-        return $this->transactionId;
-    }
-
-    /**
-     *
-     */
-    private function parseTransactionId()
-    {
-        $expl = explode('/', $this->commitUrl);
-        $this->transactionId = (int) $expl[6];
-    }
-
-    /**
-     * @throws \Neoxygen\NeoClient\Exception\Neo4jException
-     */
-    private function checkIfOpened()
-    {
-        if (!$this->isActive()) {
-            throw new Neo4jException('The transaction has not been opened or is closed');
-        }
-    }
-
-    /**
-     * @param $httpResponse
-     *
-     * @return array|\Neoxygen\NeoClient\Formatter\Response|string|\GraphAware\NeoClient\Formatter\Response
-     */
-    private function handleResponse($response)
-    {
-        if ($this->client->newFormatModeEnabled === true) {
-            return $response;
-        }
-
-        return $this->client->handleHttpResponse($response);
-    }
-
-    private function isAbove225Version()
-    {
-        if (null !== $this->version) {
-            $v = (int) str_replace('.', '', trim($this->version));
-            if ($v > 225) {
-                return true;
-            }
-        }
-
-        return false;
+        // TODO: Implement rollback() method.
     }
 }

@@ -22,7 +22,7 @@
     ],
     "require": {
       "php": ">= 5.6",
-      "graphaware/neo4j-bolt": "1.0.x-dev",
+      "graphaware/neo4j-bolt": "^1.0",
       "guzzlehttp/guzzle": "^6.0",
       "monolog/monolog": "~1.1",
       "symfony/yaml": "^2.7",

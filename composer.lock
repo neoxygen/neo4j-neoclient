@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3f7cddc8c9546bd3c902573c49d14e46",
-    "content-hash": "f5794c2bccc4fdf767b779a3874a2da6",
+    "hash": "6599051306dad19a2f1c29e45ab482b8",
+    "content-hash": "1823bb1cc76af2635c87ca2523283791",
     "packages": [
         {
             "name": "graphaware/neo4j-bolt",
-            "version": "dev-master",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/graphaware/neo4j-bolt-php.git",
-                "reference": "705ef4b14f1a66eb6089fb72a55dba5d201fa6ee"
+                "reference": "b00e0cc340ccd7ae17aab1c44f3df4737570f8ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/graphaware/neo4j-bolt-php/zipball/705ef4b14f1a66eb6089fb72a55dba5d201fa6ee",
-                "reference": "705ef4b14f1a66eb6089fb72a55dba5d201fa6ee",
+                "url": "https://api.github.com/repos/graphaware/neo4j-bolt-php/zipball/b00e0cc340ccd7ae17aab1c44f3df4737570f8ef",
+                "reference": "b00e0cc340ccd7ae17aab1c44f3df4737570f8ef",
                 "shasum": ""
             },
             "require": {
@@ -34,11 +34,6 @@
                 "symfony/stopwatch": "^2.7"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "GraphAware\\Bolt\\": "src/"
@@ -55,7 +50,7 @@
                 }
             ],
             "description": "Neo4j Bolt Binary Protocol PHP Driver",
-            "time": "2016-01-12 12:18:35"
+            "time": "2016-01-12 20:55:41"
         },
         {
             "name": "graphaware/neo4j-common",
@@ -1666,9 +1661,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "graphaware/neo4j-bolt": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

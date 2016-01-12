@@ -13,6 +13,7 @@ namespace GraphAware\Neo4j\Client\Formatter;
 
 use GraphAware\Common\Cypher\Statement;
 use GraphAware\Common\Result\ResultCollection;
+use GraphAware\Neo4j\Client\Exception\Neo4jException;
 
 class ResponseFormatter
 {
@@ -26,6 +27,12 @@ class ResponseFormatter
      */
     public function format(array $response, array $statements)
     {
+        if (isset($response['errors'][0])) {
+            $e = new Neo4jException($response['errors'][0]['message']);
+            $e->setNeo4jStatusCode($response['errors'][0]['code']);
+
+            throw $e;
+        }
         $results = new ResultCollection();
         foreach ($response['results'] as $k => $result) {
             $resultO = new Result($statements[$k]);

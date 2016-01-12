@@ -27,6 +27,8 @@ class Session implements SessionInterface
 
     protected $responseFormatter;
 
+    public $transaction;
+
     public function __construct($uri, Client $httpClient)
     {
         $this->uri = $uri;
@@ -34,8 +36,9 @@ class Session implements SessionInterface
         $this->responseFormatter = new ResponseFormatter();
     }
 
-    public function run($statement, $parameters, $tag = null)
+    public function run($statement, $parameters = array(), $tag = null)
     {
+        $parameters = is_array($parameters) ? $parameters : array();
         $pipeline = $this->createPipeline($statement, $parameters, $tag);
         $response = $pipeline->run();
 
@@ -124,4 +127,132 @@ class Session implements SessionInterface
         return $request;
     }
 
+    public function transaction()
+    {
+        if ($this->transaction instanceof Transaction) {
+            throw new \RuntimeException('A transaction is already bound to this session');
+        }
+
+        return new Transaction($this);
+    }
+
+    /**
+     * @return mixed|\Psr\Http\Message\ResponseInterface
+     * @throws \GraphAware\Neo4j\Client\Exception\Neo4jException
+     */
+    public function begin()
+    {
+        $request = new Request("POST", sprintf('%s/db/data/transaction', $this->uri));
+        try {
+            $response = $this->httpClient->send($request);
+
+            return $response;
+        } catch (RequestException $e) {
+            if ($e->hasResponse()) {
+                $body = json_decode($e->getResponse()->getBody(), true);
+                if (!isset($body['code'])) {
+                    throw $e;
+                }
+                $msg = sprintf('Neo4j Exception with code "%s" and message "%s"', $body['errors'][0]['code'], $body['errors'][0]['message']);
+                $exception = new Neo4jException($msg);
+                $exception->setNeo4jStatusCode($body['errors'][0]['code']);
+
+                throw $exception;
+            }
+
+            throw $e;
+        }
+    }
+
+    public function pushToTransaction($transactionId, array $statementsStack)
+    {
+        $statements = [];
+        foreach ($statementsStack as $statement) {
+            $st = [
+                'statement' => $statement->text(),
+                'resultDataContents' => ["REST"],
+                'includeStats' => true
+            ];
+            if (!empty($statement->parameters())) {
+                $st['parameters'] = $statement->parameters();
+            }
+            $statements[] = $st;
+        }
+
+        $headers = [
+            [
+                'X-Stream' => true,
+                'Content-Type' => 'application/json'
+            ]
+        ];
+
+        $body = json_encode([
+            'statements' => $statements
+        ]);
+        $request = new Request("POST", sprintf('%s/db/data/transaction/%d', $this->uri, $transactionId), $headers, $body);
+        try {
+            $response = $this->httpClient->send($request);
+            $results = $this->responseFormatter->format(json_decode($response->getBody(), true), $statementsStack);
+
+            return $results;
+        } catch (RequestException $e) {
+            if ($e->hasResponse()) {
+                $body = json_decode($e->getResponse()->getBody(), true);
+                if (!isset($body['code'])) {
+                    throw $e;
+                }
+                $msg = sprintf('Neo4j Exception with code "%s" and message "%s"', $body['errors'][0]['code'], $body['errors'][0]['message']);
+                $exception = new Neo4jException($msg);
+                $exception->setNeo4jStatusCode($body['errors'][0]['code']);
+
+                throw $exception;
+            }
+
+            throw $e;
+        }
+    }
+
+    public function commitTransaction($transactionId)
+    {
+        $request = new Request("POST", sprintf('%s/db/data/transaction/%d/commit', $this->uri, $transactionId));
+        try {
+            $this->httpClient->send($request);
+        } catch (RequestException $e) {
+            if ($e->hasResponse()) {
+                $body = json_decode($e->getResponse()->getBody(), true);
+                if (!isset($body['code'])) {
+                    throw $e;
+                }
+                $msg = sprintf('Neo4j Exception with code "%s" and message "%s"', $body['errors'][0]['code'], $body['errors'][0]['message']);
+                $exception = new Neo4jException($msg);
+                $exception->setNeo4jStatusCode($body['errors'][0]['code']);
+
+                throw $exception;
+            }
+
+            throw $e;
+        }
+    }
+
+    public function rollbackTransaction($transactionId)
+    {
+        $request = new Request("DELETE", sprintf('%s/db/data/transaction/%d', $this->uri, $transactionId));
+        try {
+            $this->httpClient->send($request);
+        } catch (RequestException $e) {
+            if ($e->hasResponse()) {
+                $body = json_decode($e->getResponse()->getBody(), true);
+                if (!isset($body['code'])) {
+                    throw $e;
+                }
+                $msg = sprintf('Neo4j Exception with code "%s" and message "%s"', $body['errors'][0]['code'], $body['errors'][0]['message']);
+                $exception = new Neo4jException($msg);
+                $exception->setNeo4jStatusCode($body['errors'][0]['code']);
+
+                throw $exception;
+            }
+
+            throw $e;
+        }
+    }
 }

@@ -12,6 +12,7 @@
 namespace GraphAware\Neo4j\Client;
 
 use GraphAware\Neo4j\Client\Connection\ConnectionManager;
+use GraphAware\Neo4j\Client\Transaction\Transaction;
 
 class Client
 {
@@ -64,6 +65,13 @@ class Client
         }
 
         return $pipeline->run();
+    }
+
+    public function transaction($connectionAlias = null)
+    {
+        $connection = $this->connectionManager->getConnection($connectionAlias);
+
+        return $connection->getTransaction();
     }
 
     /**
