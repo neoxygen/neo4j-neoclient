@@ -155,6 +155,32 @@ $followResult = $results->get('user_follows');
 $followRelationshipId = $followResult->getRecord()->value('relId');
 ```
 
+### Working with Result sets
+
+The `run` method returns you a single `Result` object. Other methods where you can expect multiple results returns a `ResultCollection` object which is Traversable.
+
+The `Result` object contains the `records` and the `summary` of the statement, the following methods are available in the API :
+
+```php
+
+$result->getRecord(); // Returns one record
+
+$result->records(); // Returns all recrods
+
+$result->summarize(); // Returns the ResultSummary
+```
+
+The `ResultSummary` contains the `Statement`, the Statistics and the QueryPlan if available :
+
+```php
+$summary = $result->summarize();
+
+$stats = $summary->updateStatistics();
+
+$nodesUpdated = $stats->nodesUpdated();
+$propertiesSet = $stats->propertiesSet();
+```
+
 
 ### License
 
