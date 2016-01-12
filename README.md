@@ -157,6 +157,9 @@ $followRelationshipId = $followResult->getRecord()->value('relId');
 
 ### Working with Result sets
 
+
+#### Basics
+
 The `run` method returns you a single `Result` object. Other methods where you can expect multiple results returns a `ResultCollection` object which is Traversable.
 
 The `Result` object contains the `records` and the `summary` of the statement, the following methods are available in the API :
@@ -169,6 +172,8 @@ $result->records(); // Returns all records
 
 $result->summarize(); // Returns the ResultSummary
 ```
+
+#### Summary
 
 The `ResultSummary` contains the `Statement`, the Statistics and the QueryPlan if available :
 
@@ -186,6 +191,40 @@ $propertiesSet = $stats->propertiesSet();
 $affected = $stats->containsUpdates();
 ```
 
+#### Record Values
+
+Each record contains one row of values returned by the Cypher query :
+
+```
+
+$query = "MATCH (n:Person) n, n.name as name, n.age as age";
+$result = $client->run($query);
+
+foreach ($result->records() as $record) {
+    print_r($record->value('n'); // nodes returned are automatically hydrated to Node objects
+    echo $record->value('name') . PHP_EOL;
+    echo $record->value('age') . PHP_EOL;
+}
+
+The client takes care of the hydration of Graph objects to PHP Objects, so it is for Node, Relationship and Path :
+
+##### Node
+
+* `labels()` : returns an array of labels (string)
+* `identity()` : returns the internal ID of the node
+* `values()` : returns the properties of the node (array)
+* `value($key)` : returns the value for the given property key
+* `hasLabel($label)` : returns whether or not the node has the given label (boolean)
+* `startNodeIdentity` : returns the start node id
+* `endNodeIdentity` : returns the end node id
+
+
+##### Relationship
+
+* `type()` : returns the relationship type
+* `identity()` : returns the internal ID of the relationship
+* `values()` : returns the properties of the relationship (array)
+* `value($key)` : returns the value for the given property key
 
 ### License
 
