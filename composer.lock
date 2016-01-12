@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/graphaware/neo4j-bolt-php.git",
-                "reference": "7fc4be8286ffe41a33fbfea92bdadc35698ab969"
+                "reference": "705ef4b14f1a66eb6089fb72a55dba5d201fa6ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/graphaware/neo4j-bolt-php/zipball/7fc4be8286ffe41a33fbfea92bdadc35698ab969",
-                "reference": "7fc4be8286ffe41a33fbfea92bdadc35698ab969",
+                "url": "https://api.github.com/repos/graphaware/neo4j-bolt-php/zipball/705ef4b14f1a66eb6089fb72a55dba5d201fa6ee",
+                "reference": "705ef4b14f1a66eb6089fb72a55dba5d201fa6ee",
                 "shasum": ""
             },
             "require": {
@@ -55,20 +55,20 @@
                 }
             ],
             "description": "Neo4j Bolt Binary Protocol PHP Driver",
-            "time": "2016-01-11 01:04:12"
+            "time": "2016-01-12 12:18:35"
         },
         {
             "name": "graphaware/neo4j-common",
-            "version": "1.12.1",
+            "version": "1.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/graphaware/neo4j-php-commons.git",
-                "reference": "b0713ade0458ec9b412a506a24f7aa55153e1b79"
+                "reference": "683aa323386a511409ab43ebe20fc9f8f3ad6e00"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/graphaware/neo4j-php-commons/zipball/b0713ade0458ec9b412a506a24f7aa55153e1b79",
-                "reference": "b0713ade0458ec9b412a506a24f7aa55153e1b79",
+                "url": "https://api.github.com/repos/graphaware/neo4j-php-commons/zipball/683aa323386a511409ab43ebe20fc9f8f3ad6e00",
+                "reference": "683aa323386a511409ab43ebe20fc9f8f3ad6e00",
                 "shasum": ""
             },
             "require": {
@@ -101,7 +101,7 @@
                 "neo4j",
                 "statement"
             ],
-            "time": "2016-01-05 12:54:41"
+            "time": "2016-01-12 12:15:56"
         },
         {
             "name": "guzzlehttp/guzzle",

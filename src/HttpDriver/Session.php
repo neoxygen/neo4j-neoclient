@@ -36,14 +36,42 @@ class Session implements SessionInterface
 
     public function run($statement, $parameters, $tag = null)
     {
-        $st = Statement::create($statement, $parameters, $tag);
-        $request = $this->prepareRequest($statement, $parameters);
+        $pipeline = $this->createPipeline($statement, $parameters, $tag);
+        $response = $pipeline->run();
 
+        return $response->results()[0];
+    }
+
+    /**
+     * @param string|null $query
+     * @param array $parameters
+     * @param string|null $tag
+     * @return \GraphAware\Neo4j\Client\HttpDriver\Pipeline
+     */
+    public function createPipeline($query = null, array $parameters = array(), $tag = null)
+    {
+        $pipeline = new Pipeline($this);
+        if (null !== $query) {
+            $pipeline->push($query, $parameters, $tag);
+        }
+
+        return $pipeline;
+    }
+
+    /**
+     * @param \GraphAware\Neo4j\Client\HttpDriver\Pipeline $pipeline
+     * @return \GraphAware\Common\Result\ResultCollection
+     *
+     * @throws \GraphAware\Neo4j\Client\Exception\Neo4jException
+     */
+    public function flush(Pipeline $pipeline)
+    {
+        $request = $this->prepareRequest($pipeline);
         try {
             $response = $this->httpClient->send($request);
-            $results = $this->responseFormatter->format(json_decode($response->getBody(), true), array($st));
+            $results = $this->responseFormatter->format(json_decode($response->getBody(), true), $pipeline->statements());
 
-            return $results[0];
+            return $results;
         } catch (RequestException $e) {
             if ($e->hasResponse()) {
                 $body = json_decode($e->getResponse()->getBody(), true);
@@ -66,42 +94,32 @@ class Session implements SessionInterface
         //
     }
 
-    public function prepareRequest($statement, $parameters)
+    public function prepareRequest(Pipeline $pipeline)
     {
-        $info = parse_url($this->uri);
-        $host = sprintf('%s://%s:%d/db/data/transaction/commit', $info['scheme'], $info['host'], $info['port']);
-        $statements = [
-            'statements' => []
-        ];
-        $st = [
-            'statement' => $statement,
-            'resultDataContents' => ['REST'],
-            'includeStats' => true
-        ];
-
-        if (is_array($parameters) && !empty($parameters)) {
-            $st['parameters'] = $parameters;
+        $statements = [];
+        foreach ($pipeline->statements() as $statement) {
+            $st = [
+                'statement' => $statement->text(),
+                'resultDataContents' => ["REST"],
+                'includeStats' => true
+            ];
+            if (!empty($statement->parameters())) {
+                $st['parameters'] = $statement->parameters();
+            }
+            $statements[] = $st;
         }
 
-        $statements['statements'][] = $st;
-
-        $options = [];
-        $options['headers'] = [
+        $body = json_encode([
+            'statements' => $statements
+        ]);
+        $headers = [
             [
                 'X-Stream' => true,
                 'Content-Type' => 'application/json'
             ]
         ];
 
-        if (isset($info['user']) && isset($info['pass'])) {
-            $options['auth'] = [$info['user'], $info['pass']];
-        }
-
-        $options['json'] = $st;
-
-        $request = new Request("POST", sprintf('%s/db/data/transaction/commit', $this->uri), $options['headers'], json_encode($statements));
-
-        echo (string) $request->getBody();
+        $request = new Request("POST", sprintf('%s/db/data/transaction/commit', $this->uri), $headers, $body);
 
         return $request;
     }

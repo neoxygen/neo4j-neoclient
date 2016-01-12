@@ -121,6 +121,40 @@ foreach ($result->getRecords() as $record) {
 }
 ```
 
+### Cypher statements and Stacks
+
+Ideally, you would stack your statements and issue them all at once in order to improve performance.
+
+You can create Cypher statement stacks that act as a Bag and run this stack with the client, example :
+
+```php
+
+$stack = $client->stack();
+
+$stack->push('CREATE (n:Person {uuid: {uuid} })', ['uuid' => '123-fff']);
+$stack->push('MATCH (n:Person {uuid: {uuid1} }), (n2:Person {uuid: {uuid2} }) MERGE (n)-[:FOLLOWS]->(n2)', ['uuid1' => '123-fff', 'uuid2' => '456-ddd']);
+
+$results = $client->runStack($stack);
+```
+
+### Tagging your Cypher statements
+
+Sometimes, you may want to retrieve a specific result from a Stack, an easy way to do this is to tag your Cypher statements.
+
+The tag is passed via the 3rd argument of the `run` or `push` methods :
+
+```php
+$stack = $client->stack();
+
+$stack->push('CREATE (n:Person {uuid: {uuid} })', ['uuid' => '123-fff'], 'user_create');
+$stack->push('MATCH (n:Person {uuid: {uuid1} }), (n2:Person {uuid: {uuid2} }) MERGE (n)-[r:FOLLOWS]->(n2) RETURN id(r) as relId', ['uuid1' => '123-fff', 'uuid2' => '456-ddd'], 'user_follows');
+
+$results = $client->runStack($stack);
+
+$followResult = $results->get('user_follows');
+$followRelationshipId = $followResult->getRecord()->value('relId');
+```
+
 
 ### License
 

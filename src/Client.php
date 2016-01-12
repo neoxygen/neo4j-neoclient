@@ -43,6 +43,44 @@ class Client
     }
 
     /**
+     * @param string|null $tag
+     * @return \GraphAware\Neo4j\Client\Stack
+     */
+    public function stack($tag = null, $connectionAlias = null)
+    {
+        return Stack::create($tag, $connectionAlias);
+    }
+
+    /**
+     * @param \GraphAware\Neo4j\Client\Stack $stack
+     *
+     * @return \GraphAware\Common\Result\ResultCollection
+     */
+    public function runStack(Stack $stack)
+    {
+        $pipeline = $this->pipeline($stack->getConnectionAlias());
+        foreach ($stack->statements() as $statement) {
+            $pipeline->push($statement->text(), $statement->parameters(), $statement->getTag());
+        }
+
+        return $pipeline->run();
+    }
+
+    /**
+     * @param null $query
+     * @param null $parameters
+     * @param null $tag
+     * @param null $connectionAlias
+     * @return \GraphAware\Neo4j\Client\HttpDriver\Pipeline
+     */
+    private function pipeline($query = null, $parameters = null, $tag = null, $connectionAlias = null)
+    {
+        $connection = $this->connectionManager->getConnection($connectionAlias);
+
+        return $connection->createPipeline($query, $parameters, $tag);
+    }
+
+    /**
      * @deprecated since 4.0 - will be removed in 5.0 - use <code>$client->run()</code> instead.
      *
      * @param $query

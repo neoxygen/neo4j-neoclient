@@ -12,6 +12,7 @@
 namespace GraphAware\Neo4j\Client\Formatter;
 
 use GraphAware\Common\Cypher\Statement;
+use GraphAware\Common\Result\ResultCollection;
 
 class ResponseFormatter
 {
@@ -21,11 +22,11 @@ class ResponseFormatter
      * @param array $response
      * @param \GraphAware\Common\Cypher\Statement[] $statements
      *
-     * @return \GraphAware\Neo4j\Client\Formatter\Result[]
+     * @return \GraphAware\Common\Result\ResultCollection
      */
     public function format(array $response, array $statements)
     {
-        $results = [];
+        $results = new ResultCollection();
         foreach ($response['results'] as $k => $result) {
             $resultO = new Result($statements[$k]);
             $resultO->setFields($result['columns']);
@@ -35,7 +36,7 @@ class ResponseFormatter
             if (array_key_exists('stats', $result)) {
                 $resultO->setStats($result['stats']);
             }
-            $results[] = $resultO;
+            $results->add($resultO);
         }
 
         return $results;

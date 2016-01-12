@@ -54,7 +54,7 @@ class Connection
         return $this->alias;
     }
 
-    public function buildDriver()
+    private function buildDriver()
     {
         if (preg_match('/bolt/', $this->uri)) {
             $this->driver = BoltGraphDB::driver($this->uri);
@@ -71,6 +71,14 @@ class Connection
     public function getDriver()
     {
         return $this->driver;
+    }
+
+    public function createPipeline($query, $parameters, $tag)
+    {
+        $session = $this->driver->session();
+        $parameters = is_array($parameters) ? $parameters : array();
+
+        return $session->createPipeline($query, $parameters, $tag);
     }
 
     public function run($statement, $parameters, $tag)
