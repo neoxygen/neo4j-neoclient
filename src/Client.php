@@ -70,8 +70,9 @@ class Client
     public function transaction($connectionAlias = null)
     {
         $connection = $this->connectionManager->getConnection($connectionAlias);
+        $driverTransaction = $connection->getTransaction();
 
-        return $connection->getTransaction();
+        return new Transaction($driverTransaction);
     }
 
     /**

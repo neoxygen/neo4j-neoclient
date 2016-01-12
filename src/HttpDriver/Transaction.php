@@ -86,6 +86,20 @@ class Transaction implements TransactionInterface
         }
     }
 
+    public function runMultiple(array $statements)
+    {
+        try {
+            return $this->session->pushToTransaction($this->transactionId, $statements);
+        } catch (Neo4jException $e) {
+            if ($e->effect() === Neo4jException::EFFECT_ROLLBACK) {
+                $this->closed = true;
+                $this->state = self::ROLLED_BACK;
+
+                throw $e;
+            }
+        }
+    }
+
     public function success()
     {
         $this->assertNotClosed();

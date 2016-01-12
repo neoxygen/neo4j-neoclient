@@ -13,26 +13,15 @@ namespace GraphAware\Neo4j\Client\Transaction;
 
 use GraphAware\Common\Cypher\Statement;
 use GraphAware\Common\Transaction\TransactionInterface;
-use GraphAware\Neo4j\Client\Connection\Connection;
+use GraphAware\Neo4j\Client\Exception\Neo4jException;
 use GraphAware\Neo4j\Client\Stack;
 
-class Transaction implements TransactionInterface
+class Transaction
 {
-    const OPENED = 'OPEN';
-
-    const COMMITTED = 'COMMITED';
-
-    const ROLLED_BACK = 'ROLLED_BACK';
-
     /**
-     * @var \GraphAware\Neo4j\Client\Connection\Connection
+     * @var \GraphAware\Common\Transaction\TransactionInterface
      */
-    protected $connection;
-
-    /**
-     * @var null|string
-     */
-    protected $state;
+    private $driverTransaction;
 
     /**
      * @var array()
@@ -40,28 +29,31 @@ class Transaction implements TransactionInterface
     protected $queue = [];
 
     /**
-     * @var array
+     * Transaction constructor.
+     * @param \GraphAware\Common\Transaction\TransactionInterface $driverTransaction
      */
-    protected $results = [];
-
-    /**
-     * @var array
-     */
-    protected $taggedResults = [];
-
-    /**
-     * @param \GraphAware\Neo4j\Client\Connection\Connection $connection
-     */
-    public function __construct(Connection $connection)
+    public function __construct(TransactionInterface $driverTransaction)
     {
-        $this->connection = $connection;
+        $this->driverTransaction = $driverTransaction;
     }
 
+    /**
+     * Push a statement to the queue, without actually sending it
+     *
+     * @param string $statement
+     * @param array $parameters
+     * @param string|null $tag
+     */
     public function push($statement, array $parameters = array(), $tag = null)
     {
         $this->queue[] = Statement::create($statement, $parameters, $tag);
     }
 
+    /**
+     * Push a statements Stack to the queue, without actually sending it
+     *
+     * @param \GraphAware\Neo4j\Client\Stack $stack
+     */
     public function pushStack(Stack $stack)
     {
         $this->queue[] = $stack;
@@ -69,38 +61,57 @@ class Transaction implements TransactionInterface
 
     public function begin()
     {
-        if ($this->state === self::ROLLED_BACK || $this->state === self::COMMITTED) {
-            throw new \RuntimeException(sprintf('Cannot begin a transaction when state is "%s"', $this->state)); // @todo change to TransactionException
-        }
+        $this->driverTransaction->begin();
     }
 
     public function isOpen()
     {
-        return self::OPENED === $this->state;
+        return $this->driverTransaction->isOpen();
     }
 
     public function isCommited()
     {
-        return self::COMMITTED === $this->state;
+        return $this->driverTransaction->isCommited();
     }
 
     public function isRolledBack()
     {
-        return self::ROLLED_BACK === $this->state;
+        return $this->driverTransaction->isRolledBack();
     }
 
     public function status()
     {
-        return $this->state;
+        return $this->driverTransaction->status();
     }
 
     public function commit()
     {
-        return $this->connection->runMixed($this->queue);
+        if (!$this->driverTransaction->isOpen() && !in_array($this->driverTransaction->status(), ['COMMITED', 'ROLLED_BACK'])) {
+            $this->driverTransaction->begin();
+        }
+        if (!empty($this->queue)) {
+            $stack = [];
+            foreach ($this->queue as $element) {
+                if ($element instanceof Stack) {
+                    foreach ($element->statements() as $statement) {
+                        $stack[] = $statement;
+                    }
+                } else {
+                    $stack[] = $element;
+                }
+            }
+
+            $result = $this->driverTransaction->runMultiple($stack);
+            $this->driverTransaction->commit();
+            $this->queue = [];
+            return $result;
+        } else {
+            return $this->driverTransaction->commit();
+        }
     }
 
     public function rollback()
     {
-        // TODO: Implement rollback() method.
+        return $this->driverTransaction->rollback();
     }
 }
