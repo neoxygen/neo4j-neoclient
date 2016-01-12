@@ -205,6 +205,7 @@ foreach ($result->records() as $record) {
     echo $record->value('name') . PHP_EOL;
     echo $record->value('age') . PHP_EOL;
 }
+```
 
 The client takes care of the hydration of Graph objects to PHP Objects, so it is for Node, Relationship and Path :
 
