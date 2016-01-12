@@ -2,9 +2,7 @@
 
 namespace GraphAware\Neo4j\Client\Tests\Unit\Connection;
 
-use GraphAware\Common\Driver\Protocol;
 use GraphAware\Neo4j\Client\Connection\Connection;
-use GraphAware\Neo4j\Client\Tests\Unit\Stub\DummyDriver;
 use GraphAware\Neo4j\Client\HttpDriver\Driver as HttpDriver;
 
 /**
