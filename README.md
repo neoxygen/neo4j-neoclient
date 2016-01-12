@@ -165,7 +165,7 @@ The `Result` object contains the `records` and the `summary` of the statement, t
 
 $result->getRecord(); // Returns one record
 
-$result->records(); // Returns all recrods
+$result->records(); // Returns all records
 
 $result->summarize(); // Returns the ResultSummary
 ```
@@ -175,10 +175,15 @@ The `ResultSummary` contains the `Statement`, the Statistics and the QueryPlan i
 ```php
 $summary = $result->summarize();
 
+$query = $summary->statement()->text();
+
 $stats = $summary->updateStatistics();
 
 $nodesUpdated = $stats->nodesUpdated();
 $propertiesSet = $stats->propertiesSet();
+
+// Does the statement affected the graph ?
+$affected = $stats->containsUpdates();
 ```
 
 
