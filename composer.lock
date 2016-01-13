@@ -54,16 +54,16 @@
         },
         {
             "name": "graphaware/neo4j-common",
-            "version": "1.13.1",
+            "version": "1.13.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/graphaware/neo4j-php-commons.git",
-                "reference": "683aa323386a511409ab43ebe20fc9f8f3ad6e00"
+                "reference": "4a1ebb39c51e49286cf2e391ced2f9121de876f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/graphaware/neo4j-php-commons/zipball/683aa323386a511409ab43ebe20fc9f8f3ad6e00",
-                "reference": "683aa323386a511409ab43ebe20fc9f8f3ad6e00",
+                "url": "https://api.github.com/repos/graphaware/neo4j-php-commons/zipball/4a1ebb39c51e49286cf2e391ced2f9121de876f5",
+                "reference": "4a1ebb39c51e49286cf2e391ced2f9121de876f5",
                 "shasum": ""
             },
             "require": {
@@ -96,7 +96,7 @@
                 "neo4j",
                 "statement"
             ],
-            "time": "2016-01-12 12:15:56"
+            "time": "2016-01-13 13:18:10"
         },
         {
             "name": "guzzlehttp/guzzle",
