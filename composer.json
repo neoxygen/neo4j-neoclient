@@ -18,7 +18,7 @@
         }
     ],
     "require": {
-      "php": ">= 5.5",
+      "php": "^5.5|^7.0",
       "guzzlehttp/guzzle": "^6.0",
       "monolog/monolog": "~1.1",
       "symfony/yaml": "^2.7",
