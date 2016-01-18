@@ -113,6 +113,11 @@ class RecordView implements RecordViewInterface
         return $this->values;
     }
 
+    public function hasValue($key)
+    {
+        return array_key_exists($key, $this->keyToIndexMap);
+    }
+
     /**
      * @param $index
      * @return mixed
