@@ -9,27 +9,25 @@
     "packages": [
         {
             "name": "graphaware/neo4j-bolt",
-            "version": "1.0.3",
+            "version": "1.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/graphaware/neo4j-bolt-php.git",
-                "reference": "2829e32bb40aa1b74c7f22918af074afaa5aecfe"
+                "reference": "296c352c4c21c71633b3577d2aaf7a4aff915ad3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/graphaware/neo4j-bolt-php/zipball/2829e32bb40aa1b74c7f22918af074afaa5aecfe",
-                "reference": "2829e32bb40aa1b74c7f22918af074afaa5aecfe",
+                "url": "https://api.github.com/repos/graphaware/neo4j-bolt-php/zipball/296c352c4c21c71633b3577d2aaf7a4aff915ad3",
+                "reference": "296c352c4c21c71633b3577d2aaf7a4aff915ad3",
                 "shasum": ""
             },
             "require": {
                 "graphaware/neo4j-common": "^1.7",
                 "myclabs/php-enum": "^1.4",
-                "symfony/console": "^2.7",
                 "symfony/event-dispatcher": "^2.7"
             },
             "require-dev": {
                 "behat/behat": "~3.0.4",
-                "neoxygen/neoclient": "^3.3",
                 "phpunit/phpunit": "^4.8",
                 "symfony/stopwatch": "^2.7"
             },
@@ -50,20 +48,20 @@
                 }
             ],
             "description": "Neo4j Bolt Binary Protocol PHP Driver",
-            "time": "2016-01-18 00:31:33"
+            "time": "2016-01-21 13:03:39"
         },
         {
             "name": "graphaware/neo4j-common",
-            "version": "1.13.2",
+            "version": "1.13.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/graphaware/neo4j-php-commons.git",
-                "reference": "4a1ebb39c51e49286cf2e391ced2f9121de876f5"
+                "reference": "ddda42b2d8bd5767323ab4430e99b29a7614f909"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/graphaware/neo4j-php-commons/zipball/4a1ebb39c51e49286cf2e391ced2f9121de876f5",
-                "reference": "4a1ebb39c51e49286cf2e391ced2f9121de876f5",
+                "url": "https://api.github.com/repos/graphaware/neo4j-php-commons/zipball/ddda42b2d8bd5767323ab4430e99b29a7614f909",
+                "reference": "ddda42b2d8bd5767323ab4430e99b29a7614f909",
                 "shasum": ""
             },
             "require": {
@@ -96,7 +94,7 @@
                 "neo4j",
                 "statement"
             ],
-            "time": "2016-01-13 13:18:10"
+            "time": "2016-01-13 22:44:18"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -478,77 +476,17 @@
             "time": "2012-12-21 11:40:51"
         },
         {
-            "name": "symfony/console",
-            "version": "v2.8.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/console.git",
-                "reference": "2e06a5ccb19dcf9b89f1c6a677a39a8df773635a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/2e06a5ccb19dcf9b89f1c6a677a39a8df773635a",
-                "reference": "2e06a5ccb19dcf9b89f1c6a677a39a8df773635a",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.9",
-                "symfony/polyfill-mbstring": "~1.0"
-            },
-            "require-dev": {
-                "psr/log": "~1.0",
-                "symfony/event-dispatcher": "~2.1|~3.0.0",
-                "symfony/process": "~2.1|~3.0.0"
-            },
-            "suggest": {
-                "psr/log": "For using the console logger",
-                "symfony/event-dispatcher": "",
-                "symfony/process": ""
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.8-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\Console\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Console Component",
-            "homepage": "https://symfony.com",
-            "time": "2015-12-22 10:25:57"
-        },
-        {
             "name": "symfony/event-dispatcher",
-            "version": "v2.8.1",
+            "version": "v2.8.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "a5eb815363c0388e83247e7e9853e5dbc14999cc"
+                "reference": "ee278f7c851533e58ca307f66305ccb9188aceda"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/a5eb815363c0388e83247e7e9853e5dbc14999cc",
-                "reference": "a5eb815363c0388e83247e7e9853e5dbc14999cc",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/ee278f7c851533e58ca307f66305ccb9188aceda",
+                "reference": "ee278f7c851533e58ca307f66305ccb9188aceda",
                 "shasum": ""
             },
             "require": {
@@ -595,79 +533,20 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2015-10-30 20:15:42"
-        },
-        {
-            "name": "symfony/polyfill-mbstring",
-            "version": "v1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "49ff736bd5d41f45240cec77b44967d76e0c3d25"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/49ff736bd5d41f45240cec77b44967d76e0c3d25",
-                "reference": "49ff736bd5d41f45240cec77b44967d76e0c3d25",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "suggest": {
-                "ext-mbstring": "For best performance"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Mbstring\\": ""
-                },
-                "files": [
-                    "bootstrap.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Nicolas Grekas",
-                    "email": "p@tchwork.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony polyfill for the Mbstring extension",
-            "homepage": "https://symfony.com",
-            "keywords": [
-                "compatibility",
-                "mbstring",
-                "polyfill",
-                "portable",
-                "shim"
-            ],
-            "time": "2015-11-20 09:19:13"
+            "time": "2016-01-13 10:28:07"
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.8.1",
+            "version": "v2.8.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "ac84cbb98b68a6abbc9f5149eb96ccc7b07b8966"
+                "reference": "34c8a4b51e751e7ea869b8262f883d008a2b81b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/ac84cbb98b68a6abbc9f5149eb96ccc7b07b8966",
-                "reference": "ac84cbb98b68a6abbc9f5149eb96ccc7b07b8966",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/34c8a4b51e751e7ea869b8262f883d008a2b81b8",
+                "reference": "34c8a4b51e751e7ea869b8262f883d008a2b81b8",
                 "shasum": ""
             },
             "require": {
@@ -703,7 +582,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2015-12-26 13:37:56"
+            "time": "2016-01-13 10:28:07"
         }
     ],
     "packages-dev": [
