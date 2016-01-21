@@ -35,7 +35,7 @@ class ResponseFormatter
         }
         $results = new ResultCollection();
         foreach ($response['results'] as $k => $result) {
-            $resultO = new Result($statements[$k]);
+            $resultO = new Result($statements[$k], $statements[$k]->getTag());
             $resultO->setFields($result['columns']);
             foreach ($result['data'] as $data) {
                 $resultO->pushRecord($data['rest']);
