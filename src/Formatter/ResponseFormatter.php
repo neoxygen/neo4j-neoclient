@@ -35,7 +35,7 @@ class ResponseFormatter
         }
         $results = new ResultCollection();
         foreach ($response['results'] as $k => $result) {
-            $resultO = new Result($statements[$k], $statements[$k]->getTag());
+            $resultO = new Result($statements[$k]);
             $resultO->setFields($result['columns']);
             foreach ($result['data'] as $data) {
                 $resultO->pushRecord($data['rest']);
@@ -43,7 +43,7 @@ class ResponseFormatter
             if (array_key_exists('stats', $result)) {
                 $resultO->setStats($result['stats']);
             }
-            $results->add($resultO);
+            $results->add($resultO, $statements[$k]->getTag());
         }
 
         return $results;
