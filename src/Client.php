@@ -1,168 +1,108 @@
 <?php
 
 /**
- * This file is part of the "-[:NEOXYGEN]->" NeoClient package.
+ * This file is part of the GraphAware Neo4j Client package.
  *
- * (c) Neoxygen.io <http://neoxygen.io>
+ * (c) GraphAware Limited <http://graphaware.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Neoxygen\NeoClient;
+namespace GraphAware\Neo4j\Client;
 
-use Neoxygen\NeoClient\Transaction\PreparedTransaction;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use GraphAware\Neo4j\Client\Connection\ConnectionManager;
+use GraphAware\Neo4j\Client\Transaction\Transaction;
 
-/**
- * @method getRoot($conn = null)
- * @method ping($conn = null)
- * @method getLabels($conn = null)
- * @method \Neoxygen\NeoClient\Schema\UniqueConstraint createSchemaUniqueConstraint($label, $property, $conn = null)
- * @method getConstraints($conn = null)
- * @method listIndex($label, $conn = null)
- * @method listIndexes(array $labels = array(), $conn = null)
- * @method isIndexed($label, $propertyKey, $conn = null)
- * @method getVersion($conn = null)
- * @method openTransaction($conn = null)
- * @method \Neoxygen\NeoClient\Transaction\Transaction createTransaction($conn = null)
- * @method rollbackTransaction($id, $conn = null)
- * @method \Neoxygen\NeoClient\Formatter\Response sendCypherQuery($query, array $parameters = array(), $conn = null)
- * @method sendMultiple(array $statements, $conn = null)
- * @method sendWriteQuery($query, array $parameters = array())
- * @method sendReadQuery($query, array $parameters = array())
- * @method PreparedTransaction prepareTransaction($conn = null)
- * @method bool createIndex($label, $property)
- * @method bool createUniqueConstraint($label, $property, $removeIndexIfExist = false)
- */
 class Client
 {
-    const NEOCLIENT_VERSION = '3.2.0';
+    const NEOCLIENT_VERSION = '4.0.0';
 
-    const NEOCLIENT_QUERY_MODE_WRITE = 'WRITE';
+    /**
+     * @var \GraphAware\Neo4j\Client\Connection\ConnectionManager
+     */
+    protected $connectionManager;
 
-    const NEOCLIENT_QUERY_MODE_READ = 'READ';
-
-    private static $serviceContainer;
-
-    public static $logger;
-
-    private $lastResponse;
-
-    public function __construct(ContainerInterface $container)
+    public function __construct(ConnectionManager $connectionManager)
     {
-        self::$serviceContainer = $container;
-        self::$logger = $container->get('logger');
-    }
-
-    public static function getNeoClientVersion()
-    {
-        return self::NEOCLIENT_VERSION;
-    }
-
-    public static function commitPreparedTransaction(PreparedTransaction $transaction)
-    {
-        return self::call('sendMultiple', array($transaction->getStatements(), $transaction->getConnection(), $transaction->getQueryMode()));
+        $this->connectionManager = $connectionManager;
     }
 
     /**
-     * @param $method
-     * @param $attributes
+     * @param $query
+     * @param null|array $parameters
+     * @param null|string $tag
+     * @param null|string $connectionAlias
      *
-     * @return \Neoxygen\NeoClient\Request\Response
+     * @return \GraphAware\Bolt\Result\Result
      */
-    private static function call($method, $attributes)
+    public function run($query, $parameters = null, $tag = null, $connectionAlias = null)
     {
-        $extManager = self::$serviceContainer->get('neoclient.extension_manager');
+        $connection = $this->connectionManager->getConnection($connectionAlias);
 
-        $response = $extManager->execute($method, $attributes);
-
-        return $response;
+        return $connection->run($query, $parameters, $tag);
     }
 
     /**
-     * Returns the ConnectionManager Service.
+     * @param string|null $tag
+     * @return \GraphAware\Neo4j\Client\Stack
+     */
+    public function stack($tag = null, $connectionAlias = null)
+    {
+        return Stack::create($tag, $connectionAlias);
+    }
+
+    /**
+     * @param \GraphAware\Neo4j\Client\Stack $stack
      *
-     * @return \Neoxygen\NeoClient\Connection\ConnectionManager
+     * @return \GraphAware\Common\Result\ResultCollection
      */
-    public function getConnectionManager()
+    public function runStack(Stack $stack)
     {
-        return self::$serviceContainer->get('neoclient.connection_manager');
+        $pipeline = $this->pipeline($stack->getConnectionAlias());
+        foreach ($stack->statements() as $statement) {
+            $pipeline->push($statement->text(), $statement->parameters(), $statement->getTag());
+        }
+
+        return $pipeline->run();
+    }
+
+    public function transaction($connectionAlias = null)
+    {
+        $connection = $this->connectionManager->getConnection($connectionAlias);
+        $driverTransaction = $connection->getTransaction();
+
+        return new Transaction($driverTransaction);
     }
 
     /**
-     * Returns the connection bound to the alias, or the default connection if no alias is provided.
+     * @param null $query
+     * @param null $parameters
+     * @param null $tag
+     * @param null $connectionAlias
+     * @return \GraphAware\Neo4j\Client\HttpDriver\Pipeline
+     */
+    private function pipeline($query = null, $parameters = null, $tag = null, $connectionAlias = null)
+    {
+        $connection = $this->connectionManager->getConnection($connectionAlias);
+
+        return $connection->createPipeline($query, $parameters, $tag);
+    }
+
+    /**
+     * @deprecated since 4.0 - will be removed in 5.0 - use <code>$client->run()</code> instead.
      *
-     * @param string|null $alias
+     * @param $query
+     * @param null|array $parameters
+     * @param null|string $tag
+     * @param null|string $connectionAlias
      *
-     * @return \Neoxygen\NeoClient\Connection\Connection The connection with alias "$alias"
+     * @return \GraphAware\Bolt\Result\Result
      */
-    public function getConnection($alias = null)
+    public function sendCypherQuery($query, $parameters = null, $tag = null, $connectionAlias = null)
     {
-        return $this->getConnectionManager()->getConnection($alias);
-    }
+        $connection = $this->connectionManager->getConnection($connectionAlias);
 
-    /**
-     * Returns the CommandManager Service.
-     *
-     * @return \Neoxygen\NeoClient\Command\CommandManager
-     */
-    public function getCommandManager()
-    {
-        return self::$serviceContainer->get('neoclient.command_manager');
-    }
-
-    /**
-     * @return ContainerInterface
-     */
-    public function getServiceContainer()
-    {
-        return self::$serviceContainer;
-    }
-
-    /**
-     * @param $method
-     * @param $attributes
-     *
-     * @return \Neoxygen\NeoClient\Request\Response
-     */
-    public function __call($method, $attributes)
-    {
-        $extManager = $this->getServiceContainer()->get('neoclient.extension_manager');
-
-        $response = $extManager->execute($method, $attributes);
-
-        $this->lastResponse = $response;
-
-        return $response;
-    }
-
-    /**
-     * @return \Neoxygen\NeoClient\Request\Response
-     */
-    public function getResponse()
-    {
-        return $this->lastResponse;
-    }
-
-    /**
-     * @return \Neoxygen\NeoClient\Formatter\Result
-     */
-    public function getResult()
-    {
-        return $this->lastResponse->getResult();
-    }
-
-    /**
-     * @return array|null
-     */
-    public function getRows()
-    {
-        return $this->lastResponse->getRows();
-    }
-
-    public static function log($level = 'debug', $message, array $context = array())
-    {
-        return self::$logger->log($level, $message, $context);
+        return $connection->run($query, $parameters, $tag);
     }
 }
