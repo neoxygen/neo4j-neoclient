@@ -18,8 +18,8 @@ Neo4j is a transactional, open-source graph database. A graph database manages d
 ### Key features
 
 * Supports multiple connections
+* Support for Bolt binary protocol
 * Built-in and automatic support for *Neo4j Enterprise HA Master-Slave Mode* with auto slaves fallback
-* Fully extensible (You can create your own extensions)
 
 #### Neo4j Version Support
 
@@ -74,7 +74,7 @@ require_once 'vendor/autoload.php';
 use GraphAware\Neo4j\Client\ClientBuilder;
 
 $client = ClientBuilder::create()
-    ->addConnection('default', 'http://neo4j:password@localhost')
+    ->addConnection('default', 'http://neo4j:password@localhost:7474')
     ->build();
 ```
 
