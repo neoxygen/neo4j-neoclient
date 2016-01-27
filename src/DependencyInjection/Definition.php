@@ -76,7 +76,7 @@ class Definition implements ConfigurationInterface
         ->end()
         ->arrayNode('ha_mode')
             ->children()
-                ->booleanNode('enabled')->CanNotBeEmpty()->end()
+                ->booleanNode('enabled')->defaultValue(false)->end()
                 ->scalarNode('query_mode_header_key')->defaultValue('Neo4j-Query-Mode')->end()
                 ->scalarNode('write_mode_header_value')->defaultValue('NEO4J_QUERY_WRITE')->end()
                 ->scalarNode('read_mode_header_value')->defaultValue('NEO4J_QUERY_READ')->end()
