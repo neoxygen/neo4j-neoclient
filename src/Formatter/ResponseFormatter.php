@@ -279,7 +279,7 @@ class ResponseFormatter implements ResponseFormatterInterface
                 $this->processRestEltType($elt, $columns, $idx);
             }
         } else {
-            if (is_array($elts)) {
+            if (is_array($elts) && isset($elts['metadata'])) {
                 if (array_key_exists('labels', $elts)) {
                     $this->result->addNodeToIdentifier($elts['metadata']['id'], $columns[$idx]);
                 } elseif (array_key_exists('type', $elts)) {
