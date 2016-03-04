@@ -126,7 +126,7 @@ class ResponseFormatter implements ResponseFormatterInterface
             return true;
         }
 
-        if (is_array($v) && ($v[0] instanceof Path || $v[0][0] instanceof Path)) {
+        if (is_array($v) && ($v[0] instanceof Path || (isset($v[0][0]) && $v[0][0] instanceof Path))) {
             return true;
         }
 
