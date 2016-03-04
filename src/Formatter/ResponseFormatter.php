@@ -319,7 +319,7 @@ class ResponseFormatter implements ResponseFormatterInterface
                                 $el[0] = 'maybe relationship';
                                 if (isset($response['results'][0]['data'][$k])) {
                                     $maybeRel = $response['results'][0]['data'][$k]['rest'][$y];
-                                    if (isset($maybeRel['start'])) {
+                                    if (isset($maybeRel['start']) && !isset($maybeRel['directions'])) {
                                         $rows[$col][$i] = $this->getOnlyUsefulEdgeInfoFromRestFormat($maybeRel);
                                     }
                                     if (is_array($maybeRel)) {
@@ -332,6 +332,9 @@ class ResponseFormatter implements ResponseFormatterInterface
                                         if ($areRels) {
                                             $rows[$col][$i] = $this->getUsefulRestEdgeInfoFromCollection($maybeRel);
                                         }
+                                    }
+                                    if (isset($maybeRel['directions'])) { // then it's a path
+                                        $rows[$col][$i] = $this->parsePath($maybeRel);
                                     }
                                 }
 
@@ -346,8 +349,23 @@ class ResponseFormatter implements ResponseFormatterInterface
         return $rows;
     }
 
+    public function parsePath($data) {
+        $relationships = [];
+        foreach ($data['relationships'] as $rel) {
+            // get rel id
+            $expl = explode('/', $rel);
+            $relId = (int) $expl[count($expl) -1];
+            $relationships[] = $this->result->getRelationship($relId);
+        }
+
+        return new Path($data['length'], $relationships);
+    }
+
     private function getOnlyUsefulEdgeInfoFromRestFormat(array $rel)
     {
+        if (!isset($rel['metadata'])) {
+            print_r($rel);
+        }
         $data = [
             'id' => $rel['metadata']['id'],
             'type' => $rel['metadata']['type'],
