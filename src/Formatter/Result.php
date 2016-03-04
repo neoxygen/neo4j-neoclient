@@ -314,7 +314,7 @@ class Result
     public function addIdentifierValue($k, $v)
     {
         if (array_key_exists($k, $this->identifiers)) {
-            return $this->addRowToIdentifier($k, $v);
+            $this->addRowToIdentifier($v, $k);
         }
 
         return $this->identifiers[$k] = $v;

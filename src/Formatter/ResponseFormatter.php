@@ -103,7 +103,7 @@ class ResponseFormatter implements ResponseFormatterInterface
 
             if ($responseObject->containsResults()) {
                 foreach ($responseObject->geRows() as $k => $v) {
-                    if (!$this->result->hasIdentifier($k)) {
+                    if (!$this->result->hasIdentifier($k) || $this->isPaths($v)) {
                         $this->result->addIdentifierValue($k, $v);
                     }
                 }
@@ -118,6 +118,19 @@ class ResponseFormatter implements ResponseFormatterInterface
         $this->reset();
 
         return $responseObject;
+    }
+
+    public function isPaths($v)
+    {
+        if ($v instanceof Path) {
+            return true;
+        }
+
+        if (is_array($v) && ($v[0] instanceof Path || $v[0][0] instanceof Path)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -324,13 +337,25 @@ class ResponseFormatter implements ResponseFormatterInterface
                                     }
                                     if (is_array($maybeRel)) {
                                         $areRels = false;
+                                        $arePaths = false;
                                         foreach ($maybeRel as $rel) {
-                                            if (isset($rel['start'])) {
+                                            if (isset($rel['start']) && !isset($rel['directions'])) {
                                                 $areRels = true;
+                                            }
+                                            if (isset($rel['directions'])) {
+                                                $arePaths = true;
                                             }
                                         }
                                         if ($areRels) {
                                             $rows[$col][$i] = $this->getUsefulRestEdgeInfoFromCollection($maybeRel);
+                                        }
+
+                                        if ($arePaths) {
+                                            $paths = [];
+                                            foreach ($maybeRel as $p) {
+                                                $paths[] = $this->parsePath($p);
+                                            }
+                                            $rows[$col][$i] = $paths;
                                         }
                                     }
                                     if (isset($maybeRel['directions'])) { // then it's a path
@@ -363,9 +388,6 @@ class ResponseFormatter implements ResponseFormatterInterface
 
     private function getOnlyUsefulEdgeInfoFromRestFormat(array $rel)
     {
-        if (!isset($rel['metadata'])) {
-            print_r($rel);
-        }
         $data = [
             'id' => $rel['metadata']['id'],
             'type' => $rel['metadata']['type'],
