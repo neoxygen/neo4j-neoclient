@@ -52,7 +52,7 @@ Neo4j is a transactional, open-source graph database. A graph database manages d
 
 You can:
 
- * Check out an [example application built with NeoClient](https://github.com/neo4j-contrib/developer-resources/tree/gh-pages/language-guides/php/neoclient)
+ * Check out an [example application built with GraphAware Neo4j Client](https://github.com/neo4j-contrib/developer-resources/tree/gh-pages/language-guides/php/neoclient)
  * [Ask a question on StackOverflow](http://stackoverflow.com/questions/ask?tags=graphaware,php,neo4j)
  * For bugs, please feel free to create a [new issue on GitHub](https://github.com/graphaware/neo4j-php-client/issues/new)
  
@@ -63,7 +63,7 @@ You can:
 Add the library to your composer dependencies :
 
 ```bash
-omposer require graphaware/neo4j-php-client:^4.0@alpha
+composer require graphaware/neo4j-php-client:^4.0@alpha
 ```
 
 Require the composer autoloader, configure your connection by providing a connection alias and your connection settings :
