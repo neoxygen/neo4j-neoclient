@@ -17,20 +17,34 @@ class ClientBuilder
 {
     const PREFLIGHT_ENV_DEFAULT = 'NEO4J_DB_VERSION';
 
+    /**
+     * @var array
+     */
     protected $config = [];
-
-    protected $connectionManager;
 
     public function __construct()
     {
         $this->config['connection_manager']['preflight_env'] = self::PREFLIGHT_ENV_DEFAULT;
     }
 
+    /**
+     * Creates a new Client factory
+     *
+     * @return \GraphAware\Neo4j\Client\ClientBuilder
+     */
     public static function create()
     {
         return new self();
     }
 
+    /**
+     * Add a connection to the handled connections
+     *
+     * @param string $alias
+     * @param string $uri
+     *
+     * @return $this
+     */
     public function addConnection($alias, $uri)
     {
         $this->config['connections'][$alias]['uri'] = $uri;
@@ -43,12 +57,17 @@ class ClientBuilder
         $this->config['connection_manager']['preflight_env'] = $variable;
     }
 
+    /**
+     * Builds a Client based on the connections given
+     *
+     * @return \GraphAware\Neo4j\Client\Client
+     */
     public function build()
     {
-        $this->connectionManager = new ConnectionManager();
+        $connectionManager = new ConnectionManager();
         foreach ($this->config['connections'] as $alias => $conn) {
-            $this->connectionManager->registerConnection($alias, $conn['uri']);
+            $connectionManager->registerConnection($alias, $conn['uri']);
         }
-        return new Client($this->connectionManager);
+        return new Client($connectionManager);
     }
 }

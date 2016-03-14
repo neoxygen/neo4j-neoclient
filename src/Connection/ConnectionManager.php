@@ -26,6 +26,10 @@ class ConnectionManager
         $this->connections[$alias] = new Connection($alias, $uri, $config);
     }
 
+    /**
+     * @param null $alias
+     * @return \GraphAware\Neo4j\Client\Connection\Connection
+     */
     public function getConnection($alias = null)
     {
         if (null === $alias) {

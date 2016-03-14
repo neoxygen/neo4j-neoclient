@@ -34,7 +34,7 @@ class Client
      * @param null|string $tag
      * @param null|string $connectionAlias
      *
-     * @return \GraphAware\Bolt\Result\Result
+     * @return \GraphAware\Common\Result\Result
      */
     public function run($query, $parameters = null, $tag = null, $connectionAlias = null)
     {
@@ -45,6 +45,7 @@ class Client
 
     /**
      * @param string|null $tag
+     *
      * @return \GraphAware\Neo4j\Client\Stack
      */
     public function stack($tag = null, $connectionAlias = null)
@@ -67,6 +68,11 @@ class Client
         return $pipeline->run();
     }
 
+    /**
+     * @param null $connectionAlias
+     *
+     * @return \GraphAware\Neo4j\Client\Transaction\Transaction
+     */
     public function transaction($connectionAlias = null)
     {
         $connection = $this->connectionManager->getConnection($connectionAlias);
@@ -76,10 +82,11 @@ class Client
     }
 
     /**
-     * @param null $query
-     * @param null $parameters
-     * @param null $tag
-     * @param null $connectionAlias
+     * @param null|string $query
+     * @param null|array $parameters
+     * @param null|string $tag
+     * @param null|string $connectionAlias
+     *
      * @return \GraphAware\Neo4j\Client\HttpDriver\Pipeline
      */
     private function pipeline($query = null, $parameters = null, $tag = null, $connectionAlias = null)
