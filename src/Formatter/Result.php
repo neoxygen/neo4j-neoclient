@@ -239,6 +239,9 @@ class Result
 
     public function addRowToIdentifier($value, $identifier)
     {
+        if (null === $value) {
+            return;
+        }
         $this->identifiers[$identifier][] = $value;
     }
 
