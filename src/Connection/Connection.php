@@ -1,15 +1,22 @@
 <?php
 
 /**
- * This file is part of the "-[:NEOXYGEN]->" NeoClient package.
+ * This file is part of the GraphAware Neo4j Client package.
  *
- * (c) Neoxygen.io <http://neoxygen.io>
+ * (c) GraphAware Limited <http://graphaware.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Neoxygen\NeoClient\Connection;
+namespace GraphAware\Neo4j\Client\Connection;
+
+use GraphAware\Bolt\GraphDatabase as BoltGraphDB;
+use GraphAware\Common\Cypher\Statement;
+use GraphAware\Neo4j\Client\Exception\Neo4jException;
+use GraphAware\Bolt\Exception\MessageFailureException;
+use GraphAware\Neo4j\Client\HttpDriver\GraphDatabase as HttpGraphDB;
+use GraphAware\Neo4j\Client\Stack;
 
 class Connection
 {
@@ -19,59 +26,32 @@ class Connection
     private $alias;
 
     /**
-     * @var string The scheme to use for the Connection, could be http|https
+     * @var string
      */
-    private $scheme;
+    private $uri;
 
     /**
-     * @var string The connection's host
+     * @var \GraphAware\Common\Driver\DriverInterface The configured driver
      */
-    private $host;
+    private $driver;
 
     /**
-     * @var int The connection's port
+     * @var \GraphAware\Common\Driver\SessionInterface
      */
-    private $port;
+    private $session;
 
     /**
-     * @var bool Whether or not to use Auth headers
+     * Connection constructor.
+     *
+     * @param string $alias
+     * @param string $uri
      */
-    private $authMode;
-
-    /**
-     * @var string The username for the authentication
-     */
-    private $authUser;
-
-    /**
-     * @var string The user's password for the authentication
-     */
-    private $authPassword;
-
-    /**
-     * @param $alias
-     * @param string $scheme
-     * @param string $host
-     * @param int    $port
-     * @param string $authUser     The user login when using the authentication extension
-     * @param string $authPassword The user password when using the authentication extension
-     */
-    public function __construct(
-        $alias,
-        $scheme = 'http',
-        $host = 'localhost',
-        $port = 7474,
-        $authMode = false,
-        $authUser = null,
-        $authPassword = null)
+    public function __construct($alias, $uri)
     {
-        $this->alias = $alias;
-        $this->scheme = $scheme;
-        $this->host = $host;
-        $this->port = $port;
-        $this->authMode = (bool) $authMode;
-        $this->authUser = $authUser;
-        $this->authPassword = $authPassword;
+        $this->alias = (string) $alias;
+        $this->uri = (string) $uri;
+        $this->buildDriver();
+        $this->session = $this->driver->session();
     }
 
     /**
@@ -82,83 +62,79 @@ class Connection
         return $this->alias;
     }
 
-    /**
-     * @return string http|https
-     */
-    public function getScheme()
+    private function buildDriver()
     {
-        return $this->scheme;
+        if (preg_match('/bolt/', $this->uri)) {
+            $this->driver = BoltGraphDB::driver($this->uri);
+        } elseif (preg_match('/http/', $this->uri)) {
+            $this->driver = HttpGraphDB::driver($this->uri);
+        } else {
+            throw new \RuntimeException(sprintf('Unable to build a driver from uri "%s"', $this->uri));
+        }
     }
 
     /**
-     * @return string
+     * @return \GraphAware\Common\Driver\DriverInterface
      */
-    public function getHost()
+    public function getDriver()
     {
-        return $this->host;
+        return $this->driver;
     }
 
     /**
-     * @return string
+     * @param null $query
+     * @param array $parameters
+     * @param null $tag
+     * @return \GraphAware\Bolt\Protocol\Pipeline|\GraphAware\Neo4j\Client\HttpDriver\Pipeline
      */
-    public function getPort()
+    public function createPipeline($query = null, $parameters = array(), $tag = null)
     {
-        return $this->port;
+        $parameters = is_array($parameters) ? $parameters : array();
+
+        return $this->session->createPipeline($query, $parameters, $tag);
+    }
+
+    public function run($statement, $parameters, $tag)
+    {
+        $parameters = is_array($parameters) ? $parameters : array();
+        try {
+            $results = $this->session->run($statement, $parameters, $tag);
+
+            return $results;
+        } catch (MessageFailureException $e) {
+            $exception = new Neo4jException($e->getMessage());
+            $exception->setNeo4jStatusCode($e->getStatusCode());
+
+            throw $exception;
+        }
+    }
+
+    public function runMixed(array $queue)
+    {
+        $pipeline = $this->createPipeline();
+        foreach ($queue as $element) {
+            if ($element instanceof Stack) {
+                foreach ($element->statements() as $statement) {
+                    $pipeline->push($statement->text(), $statement->parameters(), $statement->getTag());
+                }
+            } elseif ($element instanceof Statement) {
+                $pipeline->push($element->text(), $element->parameters(), $element->getTag());
+            }
+        }
+
+        return $pipeline->run();
+    }
+
+    public function getTransaction()
+    {
+        return $this->session->transaction();
     }
 
     /**
-     * @return string
+     * @return \GraphAware\Common\Driver\SessionInterface
      */
-    public function getBaseUrl()
+    public function getSession()
     {
-        return $this->scheme.'://'.$this->host.':'.$this->port;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAuth()
-    {
-        return $this->authMode;
-    }
-
-    /**
-     * Sets the authentication mode to true.
-     */
-    public function setAuthMode()
-    {
-        $this->authMode = true;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAuthUser()
-    {
-        return $this->authUser;
-    }
-
-    /**
-     * @param string $username
-     */
-    public function setAuthUser($username)
-    {
-        $this->authUser = $username;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAuthPassword()
-    {
-        return $this->authPassword;
-    }
-
-    /**
-     * @param string $password
-     */
-    public function setAuthPassword($password)
-    {
-        $this->authPassword = $password;
+        return $this->session;
     }
 }
