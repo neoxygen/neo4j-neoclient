@@ -1,5 +1,12 @@
 # Neo4j-PHP-Client
 
+## NOTE TO USERS
+
+Branch 4.0 is due to be merged into master soon, while still in beta the branch is working and waiting the official
+beta release of Neo4j's Bolt binary protocol which is supported already.
+
+Branch link here : https://github.com/graphaware/neo4j-php-client/tree/4.0
+
 ## An Enterprise Grade Client for Neo4j
 
 [![Build Status](https://travis-ci.org/graphaware/neo4j-php-client.svg?branch=master)](https://travis-ci.org/graphaware/neo4j-php-client)
