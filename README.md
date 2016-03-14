@@ -7,6 +7,8 @@
 [![Total Downloads](https://poser.pugx.org/neoxygen/neoclient/downloads.svg)](https://packagist.org/packages/neoxygen/neoclient)
 [![License](https://poser.pugx.org/neoxygen/neoclient/license.svg)](https://packagist.org/packages/graphaware/neo4j-php-client)
 
+NB: This is the master development branch for 4.x (currently in Alpha), for previous versions refer to the 3.4 branch.
+
 ## Introduction
 
 Neo4j-PHP-Client is the most advanced and flexible [Neo4j](http://neo4j.com) Client for PHP. 
@@ -43,7 +45,7 @@ Neo4j is a transactional, open-source graph database. A graph database manages d
 
 ### Requirements
 
-* PHP >= 5.6, < 8.0
+* PHP >= 5.6
 * A Neo4j database (minimum version 2.2.6)
 
 ### Getting Help
@@ -296,7 +298,7 @@ After a commit, you will not be able to `push` or `run` statements in this trans
 
 ### License
 
-The library is released under the MIT License, refer to the LICENSE file.
+The library is released under the MIT License, refer to the LICENSE file bundled with this package.
 
 
 
