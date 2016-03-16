@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the GraphAware Bolt package.
+ * This file is part of the GraphAware Neo4j Client package.
  *
  * (c) Graph Aware Limited <http://graphaware.com>
  *
@@ -134,5 +134,26 @@ class RecordView implements RecordViewInterface
     {
         return clone($this);
     }
+
+    /**
+     * @param string $key
+     *
+     * @return \GraphAware\Neo4j\Client\Formatter\Node|\GraphAware\Neo4j\Client\Formatter\Relationship|mixed
+     */
+    public function get($key)
+    {
+        return $this->value($key);
+    }
+
+    /**
+     * @param int $index
+     *
+     * @return mixed
+     */
+    public function getByIndex($index)
+    {
+        return $this->valueByIndex($index);
+    }
+
 
 }

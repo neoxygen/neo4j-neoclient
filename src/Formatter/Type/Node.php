@@ -81,8 +81,45 @@ class Node implements NodeInterface
         return array_key_exists($key, $this->properties);
     }
 
+    /**
+     * @return array
+     */
     public function values()
     {
         return $this->properties;
     }
+
+    /**
+     * @return array
+     */
+    public function keys()
+    {
+        return array_keys($this->properties);
+    }
+
+    /**
+     * @param string $key
+     * @return bool
+     */
+    public function containsKey($key)
+    {
+        return array_key_exists($key, $this->properties);
+    }
+
+    /**
+     * @param $key
+     *
+     * @return mixed
+     */
+    public function get($key)
+    {
+        return $this->value($key);
+    }
+
+    public function asArray()
+    {
+        return $this->properties;
+    }
+
+
 }

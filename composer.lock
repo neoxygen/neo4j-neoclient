@@ -4,25 +4,25 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e7986e12974a9397135193737a43f348",
-    "content-hash": "7e7823f2a3d7b7d4f6761c2e89bcf473",
+    "hash": "f40b80384469305986ad8d9c5166b979",
+    "content-hash": "acf95e9978f6cb6522e82dbd4c7405a6",
     "packages": [
         {
             "name": "graphaware/neo4j-bolt",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/graphaware/neo4j-bolt-php.git",
-                "reference": "fb67e50d00632f29592c759736b034e780eeb857"
+                "reference": "0b51bfc291d0e3efe386a56e5d641301170a983a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/graphaware/neo4j-bolt-php/zipball/fb67e50d00632f29592c759736b034e780eeb857",
-                "reference": "fb67e50d00632f29592c759736b034e780eeb857",
+                "url": "https://api.github.com/repos/graphaware/neo4j-bolt-php/zipball/0b51bfc291d0e3efe386a56e5d641301170a983a",
+                "reference": "0b51bfc291d0e3efe386a56e5d641301170a983a",
                 "shasum": ""
             },
             "require": {
-                "graphaware/neo4j-common": "^1.7",
+                "graphaware/neo4j-common": "^2.0",
                 "myclabs/php-enum": "^1.4",
                 "symfony/event-dispatcher": "^2.7|^3.0"
             },
@@ -48,20 +48,20 @@
                 }
             ],
             "description": "Neo4j Bolt Binary Protocol PHP Driver",
-            "time": "2016-01-29 21:17:14"
+            "time": "2016-03-16 13:41:39"
         },
         {
             "name": "graphaware/neo4j-common",
-            "version": "1.14.0",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/graphaware/neo4j-php-commons.git",
-                "reference": "d24eaeaaacb7cb6538ae2a144be5d54ee24fc07a"
+                "reference": "3c496cda35ef3366ccacc6259316c48328960f50"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/graphaware/neo4j-php-commons/zipball/d24eaeaaacb7cb6538ae2a144be5d54ee24fc07a",
-                "reference": "d24eaeaaacb7cb6538ae2a144be5d54ee24fc07a",
+                "url": "https://api.github.com/repos/graphaware/neo4j-php-commons/zipball/3c496cda35ef3366ccacc6259316c48328960f50",
+                "reference": "3c496cda35ef3366ccacc6259316c48328960f50",
                 "shasum": ""
             },
             "require": {
@@ -94,7 +94,7 @@
                 "neo4j",
                 "statement"
             ],
-            "time": "2016-01-21 16:31:06"
+            "time": "2016-03-14 23:19:34"
         },
         {
             "name": "guzzlehttp/guzzle",
