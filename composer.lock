@@ -9,16 +9,16 @@
     "packages": [
         {
             "name": "graphaware/neo4j-bolt",
-            "version": "1.2.0",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/graphaware/neo4j-bolt-php.git",
-                "reference": "0b51bfc291d0e3efe386a56e5d641301170a983a"
+                "reference": "cce966a5f3f402a9ad2c0db5b20407ee46d88157"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/graphaware/neo4j-bolt-php/zipball/0b51bfc291d0e3efe386a56e5d641301170a983a",
-                "reference": "0b51bfc291d0e3efe386a56e5d641301170a983a",
+                "url": "https://api.github.com/repos/graphaware/neo4j-bolt-php/zipball/cce966a5f3f402a9ad2c0db5b20407ee46d88157",
+                "reference": "cce966a5f3f402a9ad2c0db5b20407ee46d88157",
                 "shasum": ""
             },
             "require": {
@@ -48,20 +48,20 @@
                 }
             ],
             "description": "Neo4j Bolt Binary Protocol PHP Driver",
-            "time": "2016-03-16 13:41:39"
+            "time": "2016-03-18 21:18:04"
         },
         {
             "name": "graphaware/neo4j-common",
-            "version": "2.0.0",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/graphaware/neo4j-php-commons.git",
-                "reference": "3c496cda35ef3366ccacc6259316c48328960f50"
+                "reference": "4ddbf8b029dadd7048897299ca3dc0ef50f0881e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/graphaware/neo4j-php-commons/zipball/3c496cda35ef3366ccacc6259316c48328960f50",
-                "reference": "3c496cda35ef3366ccacc6259316c48328960f50",
+                "url": "https://api.github.com/repos/graphaware/neo4j-php-commons/zipball/4ddbf8b029dadd7048897299ca3dc0ef50f0881e",
+                "reference": "4ddbf8b029dadd7048897299ca3dc0ef50f0881e",
                 "shasum": ""
             },
             "require": {
@@ -94,7 +94,7 @@
                 "neo4j",
                 "statement"
             ],
-            "time": "2016-03-14 23:19:34"
+            "time": "2016-03-18 21:14:19"
         },
         {
             "name": "guzzlehttp/guzzle",
