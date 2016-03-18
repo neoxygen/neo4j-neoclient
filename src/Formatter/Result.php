@@ -114,4 +114,20 @@ class Result extends AbstractRecordCursor
 
         return (int) $v;
     }
+
+    public function size()
+    {
+        return count($this->records);
+    }
+
+    public function firstRecord()
+    {
+        if (!empty($this->records)) {
+            return $this->records[0];
+        }
+
+        return null;
+    }
+
+
 }
