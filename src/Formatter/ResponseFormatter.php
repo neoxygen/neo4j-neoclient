@@ -27,6 +27,7 @@ class ResponseFormatter
      */
     public function format(array $response, array $statements)
     {
+        //print_r($response);
         if (isset($response['errors'][0])) {
             $e = new Neo4jException($response['errors'][0]['message']);
             $e->setNeo4jStatusCode($response['errors'][0]['code']);
@@ -38,7 +39,7 @@ class ResponseFormatter
             $resultO = new Result($statements[$k]);
             $resultO->setFields($result['columns']);
             foreach ($result['data'] as $data) {
-                $resultO->pushRecord($data['rest']);
+                $resultO->pushRecord($data['rest'], $data['graph']);
             }
             if (array_key_exists('stats', $result)) {
                 $resultO->setStats($result['stats']);

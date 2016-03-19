@@ -112,4 +112,12 @@ class Client
 
         return $connection->run($query, $parameters, $tag);
     }
+
+    /**
+     * @return \GraphAware\Neo4j\Client\Connection\ConnectionManager
+     */
+    public function getConnectionManager()
+    {
+        return $this->connectionManager;
+    }
 }

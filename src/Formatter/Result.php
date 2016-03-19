@@ -13,6 +13,7 @@ namespace GraphAware\Neo4j\Client\Formatter;
 
 use GraphAware\Common\Result\AbstractRecordCursor;
 use GraphAware\Neo4j\Client\Formatter\Type\Node;
+use GraphAware\Neo4j\Client\Formatter\Type\Path;
 use GraphAware\Neo4j\Client\Formatter\Type\Relationship;
 use GraphAware\Common\Cypher\StatementInterface;
 use GraphAware\Neo4j\Client\HttpDriver\Result\ResultSummary;
@@ -30,7 +31,15 @@ class Result extends AbstractRecordCursor
      */
     protected $fields = [];
 
+    /**
+     * @var \GraphAware\Neo4j\Client\HttpDriver\Result\ResultSummary
+     */
     protected $resultSummary;
+
+    /**
+     * @var array
+     */
+    private $graph;
 
     public function __construct(StatementInterface $statement)
     {
@@ -38,14 +47,25 @@ class Result extends AbstractRecordCursor
         parent::__construct($statement);
     }
 
+    /**
+     * @param array $fields
+     */
     public function setFields(array $fields)
     {
         $this->fields = $fields;
     }
 
-    public function pushRecord($data)
+    /**
+     * @param array $graph
+     */
+    public function setGraph(array $graph)
     {
-        $mapped = $this->array_map_deep($data);
+        $this->graph = $graph;
+    }
+
+    public function pushRecord($data, $graph)
+    {
+        $mapped = $this->array_map_deep($data, $graph);
         $this->records[] = new RecordView($this->fields, $mapped);
     }
 
@@ -70,21 +90,35 @@ class Result extends AbstractRecordCursor
         return !empty($this->records) ? $this->records[0] : null;
     }
 
+    /**
+     * @return bool
+     */
     public function hasRecord()
     {
         return !empty($this->records);
     }
 
-    public function position()
+    /**
+     * @return int
+     */
+    public function size()
     {
-        // TODO: Implement position() method.
+        return count($this->records);
     }
 
-    public function skip()
+    /**
+     * @return \GraphAware\Common\Result\RecordViewInterface|null
+     */
+    public function firstRecord()
     {
+        if (!empty($this->records)) {
+            return $this->records[0];
+        }
+
+        return null;
     }
 
-    private function array_map_deep(array $array)
+    private function array_map_deep(array $array, array $graph)
     {
         foreach ($array as $k => $v) {
             if (is_array($v)) {
@@ -98,8 +132,13 @@ class Result extends AbstractRecordCursor
                         $this->extractIdFromRestUrl($v['end']),
                         $v['data']
                         );
+                } elseif(array_key_exists('length', $v) && array_key_exists('relationships', $v) && array_key_exists('nodes', $v)) {
+                    $array[$k] = new Path(
+                        $this->getNodesFromPathMetadata($v, $graph),
+                        $this->getRelationshipsFromPathMetadata($v, $graph)
+                    );
                 } else {
-                    $array[$k] = $this->array_map_deep($v);
+                    $array[$k] = $this->array_map_deep($v, $graph);
                 }
             }
         }
@@ -115,19 +154,46 @@ class Result extends AbstractRecordCursor
         return (int) $v;
     }
 
-    public function size()
+    private function getRelationshipsFromPathMetadata(array $metadata, array $graph)
     {
-        return count($this->records);
-    }
+        $rels = [];
 
-    public function firstRecord()
-    {
-        if (!empty($this->records)) {
-            return $this->records[0];
+        foreach ($metadata['relationships'] as $relationship) {
+            $relId = $this->extractIdFromRestUrl($relationship);
+            foreach ($graph['relationships'] as $grel) {
+                $grid = (int) $grel['id'];
+                if ($grid === $relId) {
+                    $rels[$grid] = new Relationship(
+                        $grel['id'],
+                        $grel['type'],
+                        $grel['startNode'],
+                        $grel['endNode'],
+                        $grel['properties']
+                    );
+                }
+            }
         }
 
-        return null;
+        return array_values($rels);
     }
 
+    private function getNodesFromPathMetadata(array $metadata, array $graph)
+    {
+        $nodes = [];
+        foreach ($metadata['nodes'] as $node) {
+            $nodeId = $this->extractIdFromRestUrl($node);
+            foreach ($graph['nodes'] as $gn) {
+                $gnid = (int) $gn['id'];
+                if ($gnid === $nodeId) {
+                    $nodes[$nodeId] = new Node(
+                        $gn['id'],
+                        $gn['labels'],
+                        $gn['properties']
+                    );
+                }
+            }
+        }
 
+        return array_values($nodes);
+    }
 }

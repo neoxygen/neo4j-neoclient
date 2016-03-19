@@ -103,7 +103,7 @@ class Session implements SessionInterface
         foreach ($pipeline->statements() as $statement) {
             $st = [
                 'statement' => $statement->text(),
-                'resultDataContents' => ["REST"],
+                'resultDataContents' => ["REST", "GRAPH"],
                 'includeStats' => true
             ];
             if (!empty($statement->parameters())) {
@@ -170,7 +170,7 @@ class Session implements SessionInterface
         foreach ($statementsStack as $statement) {
             $st = [
                 'statement' => $statement->text(),
-                'resultDataContents' => ["REST"],
+                'resultDataContents' => ["REST", "GRAPH"],
                 'includeStats' => true
             ];
             if (!empty($statement->parameters())) {
