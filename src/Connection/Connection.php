@@ -11,6 +11,7 @@
 
 namespace GraphAware\Neo4j\Client\Connection;
 
+use GraphAware\Bolt\Configuration;
 use GraphAware\Bolt\GraphDatabase as BoltGraphDB;
 use GraphAware\Common\Cypher\Statement;
 use GraphAware\Neo4j\Client\Exception\Neo4jException;
@@ -64,10 +65,19 @@ class Connection
 
     private function buildDriver()
     {
+        $params = parse_url($this->uri);
         if (preg_match('/bolt/', $this->uri)) {
-            $this->driver = BoltGraphDB::driver($this->uri);
+            $port = isset($params['port']) ? (int) $params['port'] : 7687;
+            $uri  = sprintf('%s://%s:%d', $params['scheme'], $params['host'], $port);
+            $config = null;
+            if (isset($params['user']) && isset($params['pass'])) {
+                $config = Configuration::withCredentials($params['user'], $params['pass']);
+            }
+            $this->driver = BoltGraphDB::driver($uri, $config);
         } elseif (preg_match('/http/', $this->uri)) {
-            $this->driver = HttpGraphDB::driver($this->uri);
+            $port = isset($params['port']) ? (int) $params['port'] : 7474;
+            $uri  = sprintf('%s://%s:%d', $params['scheme'], $params['host'], $port);
+            $this->driver = HttpGraphDB::driver($uri);
         } else {
             throw new \RuntimeException(sprintf('Unable to build a driver from uri "%s"', $this->uri));
         }
