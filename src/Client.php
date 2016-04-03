@@ -29,6 +29,8 @@ class Client
     }
 
     /**
+     * Run a Cypher statement against the default database or the database specified
+     *
      * @param $query
      * @param null|array $parameters
      * @param null|string $tag
@@ -41,6 +43,39 @@ class Client
         $connection = $this->connectionManager->getConnection($connectionAlias);
 
         return $connection->run($query, $parameters, $tag);
+    }
+
+    /**
+     * @param string $query
+     * @param null|array $parameters
+     * @param null|string $tag
+     *
+     * @return mixed
+     *
+     * @throws \GraphAware\Neo4j\Client\Exception\Neo4jException
+     */
+    public function runWrite($query, $parameters = null, $tag = null)
+    {
+        $connection = $this->connectionManager->getMasterConnection();
+
+        return $connection->run($query, $parameters, $tag);
+    }
+
+    /**
+     *
+     * @deprecated since 4.0 - will be removed in 5.0 - use <code>$client->runWrite()</code> instead.
+     *
+     * @param string $query
+     * @param null|array $parameters
+     * @param null|string $tag
+     *
+     * @return mixed
+     *
+     * @throws \GraphAware\Neo4j\Client\Exception\Neo4jException
+     */
+    public function sendWriteQuery($query, $parameters = null, $tag = null)
+    {
+        return $this->runWrite($query, $parameters, $tag);
     }
 
     /**

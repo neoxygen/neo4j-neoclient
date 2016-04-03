@@ -21,6 +21,8 @@ class ConnectionManager
      */
     private $connections = [];
 
+    private $master;
+
     public function registerConnection($alias, $uri, $config = null)
     {
         $this->connections[$alias] = new Connection($alias, $uri, $config);
@@ -42,5 +44,18 @@ class ConnectionManager
         }
 
         return $this->connections[$alias];
+    }
+
+    public function setMaster($alias)
+    {
+        $this->master = $this->connections[$alias];
+    }
+
+    /**
+     * @return null|\GraphAware\Neo4j\Client\Connection\Connection
+     */
+    public function getMasterConnection()
+    {
+        return $this->master;
     }
 }

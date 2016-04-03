@@ -14,7 +14,6 @@ before_install:
 
 script:
     - vendor/bin/phpunit --exclude-group fail
-    # - vendor/bin/behat
 
 notifications:
     email: "christophe@graphaware.com"

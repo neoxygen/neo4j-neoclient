@@ -57,6 +57,24 @@ class ClientBuilder
         $this->config['connection_manager']['preflight_env'] = $variable;
     }
 
+    public function setMaster($connectionAlias)
+    {
+        if (!isset($this->config['connections']) || !array_key_exists($connectionAlias, $this->config['connections'])) {
+            throw new \InvalidArgumentException(sprintf('The connection "%s" is not registered',  (string) $connectionAlias));
+        }
+
+        if (isset($this->config['connections'])) {
+            foreach ($this->config['connections'] as $k => $conn) {
+                $conn['is_master'] = false;
+                $this->config['connections'][$k] = $conn;
+            }
+        }
+
+        $this->config['connections'][$connectionAlias]['is_master'] = true;
+
+        return $this;
+    }
+
     /**
      * Builds a Client based on the connections given
      *
@@ -67,6 +85,9 @@ class ClientBuilder
         $connectionManager = new ConnectionManager();
         foreach ($this->config['connections'] as $alias => $conn) {
             $connectionManager->registerConnection($alias, $conn['uri']);
+            if (isset($conn['is_master']) && $conn['is_master'] === true) {
+                $connectionManager->setMaster($alias);
+            }
         }
         return new Client($connectionManager);
     }
