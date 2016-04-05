@@ -75,7 +75,9 @@ class Transaction implements TransactionInterface
     {
         $this->assertStarted();
         try {
-            return $this->session->pushToTransaction($this->transactionId, array($statement));
+            $results =  $this->session->pushToTransaction($this->transactionId, array($statement));
+
+            return $results->results()[0];
         } catch (Neo4jException $e) {
             if ($e->effect() === Neo4jException::EFFECT_ROLLBACK) {
                 $this->closed = true;

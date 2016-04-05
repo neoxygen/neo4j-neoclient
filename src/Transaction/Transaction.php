@@ -50,6 +50,23 @@ class Transaction
     }
 
     /**
+     * @param $statement
+     * @param array $parameters
+     * @param null $tag
+     *
+     * @return \GraphAware\Common\Result\Result
+     */
+    public function run($statement, array $parameters = array(), $tag = null)
+    {
+        if (!$this->driverTransaction->isOpen() && !in_array($this->driverTransaction->status(), ['COMMITED', 'ROLLED_BACK'])) {
+            $this->driverTransaction->begin();
+        }
+        $result = $this->driverTransaction->run(Statement::create($statement, $parameters, $tag));
+
+        return $result;
+    }
+
+    /**
      * Push a statements Stack to the queue, without actually sending it
      *
      * @param \GraphAware\Neo4j\Client\Stack $stack
