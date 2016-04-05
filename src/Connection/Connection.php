@@ -75,8 +75,7 @@ class Connection
             }
             $this->driver = BoltGraphDB::driver($uri, $config);
         } elseif (preg_match('/http/', $this->uri)) {
-            $port = isset($params['port']) ? (int) $params['port'] : 7474;
-            $uri  = sprintf('%s://%s:%d', $params['scheme'], $params['host'], $port);
+            $uri = $this->uri;
             $this->driver = HttpGraphDB::driver($uri);
         } else {
             throw new \RuntimeException(sprintf('Unable to build a driver from uri "%s"', $this->uri));
