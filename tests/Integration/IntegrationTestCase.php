@@ -27,6 +27,6 @@ class IntegrationTestCase extends \PHPUnit_Framework_TestCase
      */
     public function emptyDb()
     {
-        $this->client->run('MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE r,n');
+        $this->client->run('MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE r,n', null, null, 'http');
     }
 }

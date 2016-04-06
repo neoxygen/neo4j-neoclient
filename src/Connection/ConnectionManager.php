@@ -11,8 +11,6 @@
 
 namespace GraphAware\Neo4j\Client\Connection;
 
-use Neoxygen\NeoClient\Exception\InvalidConnectionException;
-use Neoxygen\NeoClient\Exception\HttpException;
 
 class ConnectionManager
 {

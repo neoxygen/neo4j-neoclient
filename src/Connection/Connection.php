@@ -52,7 +52,6 @@ class Connection
         $this->alias = (string) $alias;
         $this->uri = (string) $uri;
         $this->buildDriver();
-        $this->session = $this->driver->session();
     }
 
     /**
@@ -98,6 +97,7 @@ class Connection
      */
     public function createPipeline($query = null, $parameters = array(), $tag = null)
     {
+        $this->checkSession();
         $parameters = is_array($parameters) ? $parameters : array();
 
         return $this->session->createPipeline($query, $parameters, $tag);
@@ -105,6 +105,7 @@ class Connection
 
     public function run($statement, $parameters, $tag)
     {
+        $this->checkSession();
         $parameters = is_array($parameters) ? $parameters : array();
         try {
             $results = $this->session->run($statement, $parameters, $tag);
@@ -120,6 +121,7 @@ class Connection
 
     public function runMixed(array $queue)
     {
+        $this->checkSession();
         $pipeline = $this->createPipeline();
         foreach ($queue as $element) {
             if ($element instanceof Stack) {
@@ -136,6 +138,7 @@ class Connection
 
     public function getTransaction()
     {
+        $this->checkSession();
         return $this->session->transaction();
     }
 
@@ -144,6 +147,14 @@ class Connection
      */
     public function getSession()
     {
+        $this->checkSession();
         return $this->session;
+    }
+
+    private function checkSession()
+    {
+        if (null === $this->session) {
+            $this->session = $this->driver->session();
+        }
     }
 }
