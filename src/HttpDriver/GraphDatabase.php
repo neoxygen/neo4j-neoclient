@@ -18,7 +18,7 @@ class GraphDatabase implements GraphDatabaseInterface
 {
     static function driver($uri, ConfigInterface $config = null)
     {
-        return new Driver($uri);
+        return new Driver($uri, $config);
     }
 
 }

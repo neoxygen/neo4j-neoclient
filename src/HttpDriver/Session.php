@@ -12,6 +12,7 @@
 namespace GraphAware\Neo4j\Client\HttpDriver;
 
 use GraphAware\Common\Cypher\Statement;
+use GraphAware\Common\Driver\ConfigInterface;
 use GraphAware\Common\Driver\SessionInterface;
 use GraphAware\Neo4j\Client\Exception\Neo4jException;
 use GraphAware\Neo4j\Client\Formatter\ResponseFormatter;
@@ -29,11 +30,14 @@ class Session implements SessionInterface
 
     public $transaction;
 
-    public function __construct($uri, Client $httpClient)
+    protected $config;
+
+    public function __construct($uri, Client $httpClient, ConfigInterface $config)
     {
         $this->uri = $uri;
         $this->httpClient = $httpClient;
         $this->responseFormatter = new ResponseFormatter();
+        $this->config = $config;
     }
 
     public function run($statement, $parameters = array(), $tag = null)

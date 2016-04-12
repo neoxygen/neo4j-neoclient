@@ -18,6 +18,7 @@ use GraphAware\Neo4j\Client\Exception\Neo4jException;
 use GraphAware\Bolt\Exception\MessageFailureException;
 use GraphAware\Neo4j\Client\HttpDriver\GraphDatabase as HttpGraphDB;
 use GraphAware\Neo4j\Client\Stack;
+use GraphAware\Neo4j\Client\HttpDriver\Configuration as HttpConfig;
 
 class Connection
 {
@@ -42,15 +43,21 @@ class Connection
     private $session;
 
     /**
+     * @var int
+     */
+    private $timeout;
+
+    /**
      * Connection constructor.
      *
      * @param string $alias
      * @param string $uri
      */
-    public function __construct($alias, $uri)
+    public function __construct($alias, $uri, $config = null, $timeout)
     {
         $this->alias = (string) $alias;
         $this->uri = (string) $uri;
+        $this->timeout = $timeout;
         $this->buildDriver();
     }
 
@@ -75,7 +82,7 @@ class Connection
             $this->driver = BoltGraphDB::driver($uri, $config);
         } elseif (preg_match('/http/', $this->uri)) {
             $uri = $this->uri;
-            $this->driver = HttpGraphDB::driver($uri);
+            $this->driver = HttpGraphDB::driver($uri, HttpConfig::withTimeout($this->timeout));
         } else {
             throw new \RuntimeException(sprintf('Unable to build a driver from uri "%s"', $this->uri));
         }

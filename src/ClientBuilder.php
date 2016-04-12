@@ -17,6 +17,10 @@ class ClientBuilder
 {
     const PREFLIGHT_ENV_DEFAULT = 'NEO4J_DB_VERSION';
 
+    const DEFAULT_TIMEOUT = 5;
+
+    private static $TIMEOUT_CONFIG_KEY = "timeout";
+
     /**
      * @var array
      */
@@ -75,6 +79,13 @@ class ClientBuilder
         return $this;
     }
 
+    public function setDefaultTimeout($timeout)
+    {
+        $this->config[self::$TIMEOUT_CONFIG_KEY] = (int) $timeout;
+
+        return $this;
+    }
+
     /**
      * Builds a Client based on the connections given
      *
@@ -84,11 +95,16 @@ class ClientBuilder
     {
         $connectionManager = new ConnectionManager();
         foreach ($this->config['connections'] as $alias => $conn) {
-            $connectionManager->registerConnection($alias, $conn['uri']);
+            $connectionManager->registerConnection($alias, $conn['uri'], null, $this->getDefaultTimeout());
             if (isset($conn['is_master']) && $conn['is_master'] === true) {
                 $connectionManager->setMaster($alias);
             }
         }
         return new Client($connectionManager);
+    }
+
+    private function getDefaultTimeout()
+    {
+        return array_key_exists(self::$TIMEOUT_CONFIG_KEY, $this->config) ? $this->config[self::$TIMEOUT_CONFIG_KEY] : self::DEFAULT_TIMEOUT;
     }
 }

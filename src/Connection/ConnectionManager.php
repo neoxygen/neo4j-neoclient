@@ -21,9 +21,9 @@ class ConnectionManager
 
     private $master;
 
-    public function registerConnection($alias, $uri, $config = null)
+    public function registerConnection($alias, $uri, $config = null, $timeout)
     {
-        $this->connections[$alias] = new Connection($alias, $uri, $config);
+        $this->connections[$alias] = new Connection($alias, $uri, $config, $timeout);
     }
 
     /**

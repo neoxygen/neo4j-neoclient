@@ -11,6 +11,7 @@
 
 namespace GraphAware\Neo4j\Client\HttpDriver;
 
+use GraphAware\Common\Driver\ConfigInterface;
 use GraphAware\Common\Driver\DriverInterface;
 use GuzzleHttp\Client;
 
@@ -18,14 +19,17 @@ class Driver implements DriverInterface
 {
     protected $uri;
 
-    public function __construct($uri)
+    protected $config;
+
+    public function __construct($uri, ConfigInterface $config)
     {
         $this->uri = $uri;
+        $this->config = $config;
     }
 
     function session()
     {
-        return new Session($this->uri, new Client());
+        return new Session($this->uri, new Client(['timeout' => $this->config->getTimeout()]), $this->config);
     }
 
     function getUri()
