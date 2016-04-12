@@ -13,7 +13,7 @@ class ConnectionUnitTest extends \PHPUnit_Framework_TestCase
 {
     public function testConnectionInstantiation()
     {
-        $connection = new Connection('default', 'http://localhost:7474', 5);
+        $connection = new Connection('default', 'http://localhost:7474', null, 5);
         $this->assertInstanceOf(HttpDriver::class, $connection->getDriver());
     }
 }
