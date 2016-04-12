@@ -118,7 +118,7 @@ class ClientSetupIntegrationTest extends \PHPUnit_Framework_TestCase
     public function testSendWriteUseMasterIfAvailable()
     {
         $connectionManager = $this->prophesize(ConnectionManager::class);
-        $conn = new Connection('default', 'http://localhost:7474');
+        $conn = new Connection('default', 'http://localhost:7474', 5);
         $connectionManager->getMasterConnection()->willReturn($conn);
         $connectionManager->getMasterConnection()->shouldBeCalled();
 

@@ -297,6 +297,20 @@ $results = $tx->commit();
 
 After a commit, you will not be able to `push` or `run` statements in this transaction.
 
+### Settings
+
+#### Timeout
+
+You can configure a global timeout for the connections :
+
+```php
+$client = ClientBuilder::create()
+    ->addConnection('default', 'http://localhost:7474')
+    ->setDefaultTimeout(3)
+    ->build();
+```
+
+The timeout by default is 5 seconds.
 
 ### License
 
