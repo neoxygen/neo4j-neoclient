@@ -81,7 +81,7 @@ class RecordView implements RecordViewInterface
      */
     public function nodeValue($key)
     {
-        if (!$this->hasValue('n') || !$this->get($key) instanceof NodeInterface) {
+        if (!$this->hasValue($key) || !$this->get($key) instanceof NodeInterface) {
             throw new \InvalidArgumentException(sprintf('value for %s is not of type %s', $key, 'NODE'));
         }
 
