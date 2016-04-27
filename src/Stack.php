@@ -51,11 +51,12 @@ class Stack
 
     /**
      * @param $query
-     * @param array $parameters
+     * @param null|array $parameters
      */
-    public function push($query, array $parameters = array(), $tag = null)
+    public function push($query, $parameters = null, $tag = null)
     {
-        $this->statements[] = Statement::create($query, $parameters, $tag);
+        $params = null !== $parameters ? $parameters : array();
+        $this->statements[] = Statement::create($query, $params, $tag);
     }
 
     /**
