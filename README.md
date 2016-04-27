@@ -219,6 +219,8 @@ The client takes care of the hydration of Graph objects to PHP Objects, so it is
 * `identity()` : returns the internal ID of the node
 * `values()` : returns the properties of the node (array)
 * `value($key)` : returns the value for the given property key
+* `hasValue($key)` : returns whether or not the nodes has a property with the given key
+* `keys()` : returns you an array representing the keys of the node properties
 * `hasLabel($label)` : returns whether or not the node has the given label (boolean)
 
 
@@ -228,6 +230,8 @@ The client takes care of the hydration of Graph objects to PHP Objects, so it is
 * `identity()` : returns the internal ID of the relationship
 * `values()` : returns the properties of the relationship (array)
 * `value($key)` : returns the value for the given property key
+* `hasValue($key)` : returns whether or not the relationship has a property with the given key
+* `keys()` : returns you an array representing the keys of the relationship properties
 * `startNodeIdentity` : returns the start node id
 * `endNodeIdentity` : returns the end node id
 
