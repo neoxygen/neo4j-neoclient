@@ -12,8 +12,9 @@
 namespace GraphAware\Neo4j\Client\Formatter;
 
 use GraphAware\Common\Result\RecordViewInterface;
-use GraphAware\Common\Type\NodeInterface;
-use GraphAware\Common\Type\RelationshipInterface;
+use GraphAware\Common\Type\Node;
+use GraphAware\Common\Type\Path;
+use GraphAware\Common\Type\Relationship;
 
 class RecordView implements RecordViewInterface
 {
@@ -64,7 +65,7 @@ class RecordView implements RecordViewInterface
 
     /**
      * @param $key
-     * @return mixed|\GraphAware\Neo4j\Client\Formatter\Node|\GraphAware\Neo4j\Client\Formatter\Relationship
+     * @return mixed|\GraphAware\Neo4j\Client\Formatter\Type\Node|\GraphAware\Neo4j\Client\Formatter\Type\Relationship
      */
     public function value($key)
     {
@@ -75,14 +76,14 @@ class RecordView implements RecordViewInterface
      * Returns the Node for value <code>$key</code>. Ease IDE integration
      *
      * @param $key
-     * @return \GraphAware\Neo4j\Client\Formatter\Node
+     * @return \GraphAware\Neo4j\Client\Formatter\Type\Node
      *
      * @throws \InvalidArgumentException When the value is not null or instance of Node
      */
     public function nodeValue($key)
     {
-        if (!$this->hasValue($key) || !$this->get($key) instanceof NodeInterface) {
-            throw new \InvalidArgumentException(sprintf('value for %s is not of type %s', $key, 'NODE'));
+        if (!$this->hasValue($key) || !$this->get($key) instanceof Node) {
+            throw new \InvalidArgumentException(sprintf('value for %s is not of type %s', $key, Node::class));
         }
 
         return $this->value($key);
@@ -90,19 +91,25 @@ class RecordView implements RecordViewInterface
 
     /**
      * @param $key
-     * @return \GraphAware\Neo4j\Client\Formatter\Relationship
+     * @return \GraphAware\Neo4j\Client\Formatter\Type\Relationship
      *
      * @throws \InvalidArgumentException When the value is not null or instance of Relationship
      */
     public function relationshipValue($key) {
-        if ($this->values[$key] !== null && !$this->values[$key] instanceof RelationshipInterface) {
-            throw new \InvalidArgumentException(sprintf('value for %s is not of type %s', $key, 'RELATIONSHIP'));
+        if (!isset($this->values[$key]) || !$this->values[$key] instanceof Relationship) {
+            throw new \InvalidArgumentException(sprintf('value for %s is not of type %s', $key, Relationship::class));
         }
+
+        return $this->value($key);
     }
 
     public function pathValue($key)
     {
-        // TODO: Implement pathValue() method.
+        if (!$this->hasValue($key) || !$this->value($key) instanceof Path) {
+            throw new \InvalidArgumentException(sprintf('value for %s is not of type %s', $key, Path::class));
+        }
+
+        return $this->value($key);
     }
 
     /**
@@ -138,7 +145,7 @@ class RecordView implements RecordViewInterface
     /**
      * @param string $key
      *
-     * @return \GraphAware\Neo4j\Client\Formatter\Node|\GraphAware\Neo4j\Client\Formatter\Relationship|mixed
+     * @return \GraphAware\Neo4j\Client\Formatter\Type\Node|\GraphAware\Neo4j\Client\Formatter\Type\Relationship|mixed
      */
     public function get($key)
     {
@@ -154,6 +161,5 @@ class RecordView implements RecordViewInterface
     {
         return $this->valueByIndex($index);
     }
-
 
 }
