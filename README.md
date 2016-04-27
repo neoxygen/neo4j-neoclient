@@ -7,8 +7,6 @@
 [![Total Downloads](https://poser.pugx.org/neoxygen/neoclient/downloads.svg)](https://packagist.org/packages/neoxygen/neoclient)
 [![License](https://poser.pugx.org/neoxygen/neoclient/license.svg)](https://packagist.org/packages/graphaware/neo4j-php-client)
 
-NB: This is the master development branch for 4.x (currently in Alpha), for previous versions refer to the 3.4 branch.
-
 ## Introduction
 
 Neo4j-PHP-Client is the most advanced and flexible [Neo4j](http://neo4j.com) Client for PHP. 
