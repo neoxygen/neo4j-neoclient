@@ -33,7 +33,7 @@ class StatementStatistics implements StatementStatisticsInterface
     /**
      * @var int
      */
-    protected $relationshipsDeleted = 0;
+    protected $relationshipDeleted = 0;
 
     /**
      * @var int
@@ -132,7 +132,7 @@ class StatementStatistics implements StatementStatisticsInterface
      */
     public function relationshipsDeleted()
     {
-        return $this->relationshipsDeleted;
+        return $this->relationshipDeleted;
     }
 
     /**
