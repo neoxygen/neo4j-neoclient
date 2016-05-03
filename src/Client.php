@@ -91,11 +91,11 @@ class Client
     /**
      * @param \GraphAware\Neo4j\Client\Stack $stack
      *
-     * @return \GraphAware\Common\Result\ResultCollection
+     * @return \GraphAware\Neo4j\Client\Result\ResultCollection
      */
     public function runStack(Stack $stack)
     {
-        $pipeline = $this->pipeline($stack->getConnectionAlias());
+        $pipeline = $this->pipeline(null, null, $stack->getTag(), $stack->getConnectionAlias());
         foreach ($stack->statements() as $statement) {
             $pipeline->push($statement->text(), $statement->parameters(), $statement->getTag());
         }
@@ -122,7 +122,7 @@ class Client
      * @param null|string $tag
      * @param null|string $connectionAlias
      *
-     * @return \GraphAware\Neo4j\Client\HttpDriver\Pipeline
+     * @return \GraphAware\Neo4j\Client\HttpDriver\Pipeline|\GraphAware\Bolt\Protocol\Pipeline
      */
     private function pipeline($query = null, $parameters = null, $tag = null, $connectionAlias = null)
     {
