@@ -1,5 +1,9 @@
 # Changelog for v4
 
+4.1.0 - 02 May 2016
+
+- Added `updateStatistics()` method on the ResultCollection for combined statistics of stacks, transactions, etc..
+
 4.0.2 - 28 Apr 2016
 
 - Fixed a bug where relationships deleted count was not hydrated in the http result update statistics
