@@ -100,7 +100,7 @@ $client->run("CREATE (n:Person) SET n += {infos}", ['infos' => ['name' => 'Ales'
 #### Reading a Result
 
 ```php
-$result = $client->run("MATCH (n:Person) RETURN n";
+$result = $client->run("MATCH (n:Person) RETURN n)";
 // a result contains always a collection (array) of Record objects
 
 // get all records
