@@ -328,6 +328,27 @@ The client is also aware of the manually configured master connection, so sendin
 $client->runWrite('CREATE (n:User {login: 123})');
 ```
 
+### Event Dispatching
+
+3 types of events are dispatched during the `run` methods :
+
+* `PreRunEvent` : before the statement or stack is run.
+* `PostRunEvent` : after the statement or stack is run.
+* `FailureEvent` : in case of failure, you can disable the client to throw an exception with this event.
+
+##### Registering listeners
+
+Example :
+
+```php
+$client = ClientBuilder::create()
+    ->addConnection('default', 'bolt://localhost')
+    ->registerEventListener(Neo4jClientEvents::NEO4J_PRE_RUN, array($listener, 'onPreRun')
+    ->build();
+```
+
+The event dispatcher is available via the client with the `$client->getEventDispatcher` methods.
+
 ### Settings
 
 #### Timeout
