@@ -12,7 +12,6 @@ class Configuration implements ConfigInterface
     protected $timeout;
 
     /**
-     * Configuration constructor.
      * @param int $timeout
      */
     public function __construct($timeout)
@@ -22,7 +21,8 @@ class Configuration implements ConfigInterface
 
     /**
      * @param int $timeout
-     * @return \GraphAware\Neo4j\Client\HttpDriver\Configuration
+     *
+     * @return Configuration
      */
     public static function withTimeout($timeout)
     {
@@ -36,6 +36,4 @@ class Configuration implements ConfigInterface
     {
         return $this->timeout;
     }
-
-
 }

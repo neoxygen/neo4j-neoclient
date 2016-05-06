@@ -2,12 +2,12 @@
 
 namespace GraphAware\Neo4j\Client\Tests\Integration;
 
-use GraphAware\Common\Type\Node;
 use GraphAware\Bolt\Result\Type\Node as BoltNode;
+use GraphAware\Common\Type\Node;
 use GraphAware\Neo4j\Client\Formatter\Type\Node as HttpNode;
 use GraphAware\Neo4j\Client\Formatter\Type\Relationship as HttpRelationship;
 use GraphAware\Bolt\Result\Type\Relationship as BoltRelationship;
-use GraphAware\Common\Type\PathInterface;
+use GraphAware\Common\Type\Path;
 
 class CypherIntegrationTest extends IntegrationTestCase
 {
@@ -45,7 +45,7 @@ class CypherIntegrationTest extends IntegrationTestCase
         $query = 'CREATE p=(a:Cool)-[:RELATES]->(b:NotSoCool) RETURN p';
         $record1 = $this->client->run($query, [], null, 'http')->firstRecord();
         $record2 = $this->client->run($query, [], null, 'bolt')->firstRecord();
-        $this->assertInstanceOf(PathInterface::class, $record1->get('p'));
-        $this->assertInstanceOf(PathInterface::class, $record2->get('p'));
+        $this->assertInstanceOf(Path::class, $record1->get('p'));
+        $this->assertInstanceOf(Path::class, $record2->get('p'));
     }
 }

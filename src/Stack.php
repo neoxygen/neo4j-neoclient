@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace GraphAware\Neo4j\Client;
 
 use GraphAware\Common\Cypher\Statement;
@@ -26,13 +25,13 @@ class Stack
     protected $connectionAlias;
 
     /**
-     * @var \GraphAware\Common\Cypher\Statement[]
+     * @var Statement[]
      */
     protected $statements = [];
 
     /**
-     * Stack constructor.
-     * @param null $tag
+     * @param null        $tag
+     * @param null|string $connectionAlias
      */
     public function __construct($tag = null, $connectionAlias = null)
     {
@@ -41,8 +40,10 @@ class Stack
     }
 
     /**
-     * @param string|null $tag
-     * @return \GraphAware\Neo4j\Client\Stack
+     * @param null|string $tag
+     * @param null|string $connectionAlias
+     *
+     * @return Stack
      */
     public static function create($tag = null, $connectionAlias = null)
     {
@@ -50,8 +51,9 @@ class Stack
     }
 
     /**
-     * @param $query
+     * @param string     $query
      * @param null|array $parameters
+     * @param null|array $tag
      */
     public function push($query, $parameters = null, $tag = null)
     {
@@ -68,7 +70,7 @@ class Stack
     }
 
     /**
-     * @return \GraphAware\Common\Cypher\Statement[]
+     * @return Statement[]
      */
     public function statements()
     {

@@ -34,15 +34,6 @@ class RecordView implements RecordViewInterface
     private $keyToIndexMap = [];
 
     /**
-     * @return array
-     */
-    public function keys()
-    {
-        return $this->keys;
-    }
-
-    /**
-     * RecordView constructor.
      * @param array $keys
      * @param array $values
      */
@@ -50,13 +41,22 @@ class RecordView implements RecordViewInterface
     {
         $this->keys = $keys;
         $this->values = $values;
+
         foreach ($this->keys as $i => $k) {
             $this->keyToIndexMap[$k] = $i;
         }
     }
 
     /**
-     * @return bool
+     * {@inheritdoc}
+     */
+    public function keys()
+    {
+        return $this->keys;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function hasValues()
     {
@@ -64,8 +64,9 @@ class RecordView implements RecordViewInterface
     }
 
     /**
-     * @param $key
-     * @return mixed|\GraphAware\Neo4j\Client\Formatter\Type\Node|\GraphAware\Neo4j\Client\Formatter\Type\Relationship
+     * @param string $key
+     *
+     * @return \GraphAware\Neo4j\Client\Formatter\Type\Node|\GraphAware\Neo4j\Client\Formatter\Type\Relationship
      */
     public function value($key)
     {
@@ -73,9 +74,10 @@ class RecordView implements RecordViewInterface
     }
 
     /**
-     * Returns the Node for value <code>$key</code>. Ease IDE integration
+     * Returns the Node for value <code>$key</code>. Ease IDE integration.
      *
-     * @param $key
+     * @param string $key
+     *
      * @return \GraphAware\Neo4j\Client\Formatter\Type\Node
      *
      * @throws \InvalidArgumentException When the value is not null or instance of Node
@@ -90,12 +92,14 @@ class RecordView implements RecordViewInterface
     }
 
     /**
-     * @param $key
+     * @param string $key
+     *
      * @return \GraphAware\Neo4j\Client\Formatter\Type\Relationship
      *
      * @throws \InvalidArgumentException When the value is not null or instance of Relationship
      */
-    public function relationshipValue($key) {
+    public function relationshipValue($key)
+    {
         if (!isset($this->values[$key]) || !$this->values[$key] instanceof Relationship) {
             throw new \InvalidArgumentException(sprintf('value for %s is not of type %s', $key, Relationship::class));
         }
@@ -103,6 +107,9 @@ class RecordView implements RecordViewInterface
         return $this->value($key);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function pathValue($key)
     {
         if (!$this->hasValue($key) || !$this->value($key) instanceof Path) {
@@ -113,21 +120,23 @@ class RecordView implements RecordViewInterface
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function values()
     {
         return $this->values;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function hasValue($key)
     {
         return array_key_exists($key, $this->keyToIndexMap);
     }
 
     /**
-     * @param $index
-     * @return mixed
+     * {@inheritdoc}
      */
     public function valueByIndex($index)
     {
@@ -135,11 +144,11 @@ class RecordView implements RecordViewInterface
     }
 
     /**
-     * @return \GraphAware\Neo4j\Client\Formatter\RecordView
+     * @return RecordView
      */
     public function record()
     {
-        return clone($this);
+        return clone $this;
     }
 
     /**
@@ -153,13 +162,10 @@ class RecordView implements RecordViewInterface
     }
 
     /**
-     * @param int $index
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getByIndex($index)
     {
         return $this->valueByIndex($index);
     }
-
 }

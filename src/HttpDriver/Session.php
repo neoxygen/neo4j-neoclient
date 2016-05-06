@@ -8,12 +8,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace GraphAware\Neo4j\Client\HttpDriver;
 
-use GraphAware\Common\Cypher\Statement;
 use GraphAware\Common\Driver\ConfigInterface;
 use GraphAware\Common\Driver\SessionInterface;
+use GraphAware\Common\Transaction\TransactionInterface;
 use GraphAware\Neo4j\Client\Exception\Neo4jException;
 use GraphAware\Neo4j\Client\Formatter\ResponseFormatter;
 use GuzzleHttp\Client;
@@ -22,16 +21,36 @@ use GuzzleHttp\Psr7\Request;
 
 class Session implements SessionInterface
 {
+    /**
+     * @var string
+     */
     protected $uri;
 
+    /**
+     * @var Client
+     */
     protected $httpClient;
 
+    /**
+     * @var ResponseFormatter
+     */
     protected $responseFormatter;
 
+    /**
+     * @var TransactionInterface|null
+     */
     public $transaction;
 
+    /**
+     * @var ConfigInterface
+     */
     protected $config;
 
+    /**
+     * @param string          $uri
+     * @param Client          $httpClient
+     * @param ConfigInterface $config
+     */
     public function __construct($uri, Client $httpClient, ConfigInterface $config)
     {
         $this->uri = $uri;
@@ -40,6 +59,9 @@ class Session implements SessionInterface
         $this->config = $config;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function run($statement, array $parameters = array(), $tag = null)
     {
         $parameters = is_array($parameters) ? $parameters : array();
@@ -50,14 +72,36 @@ class Session implements SessionInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function close()
+    {
+        //
+    }
+
+    /**
+     * @return Transaction
+     */
+    public function transaction()
+    {
+        if ($this->transaction instanceof Transaction) {
+            throw new \RuntimeException('A transaction is already bound to this session');
+        }
+
+        return new Transaction($this);
+    }
+
+    /**
      * @param string|null $query
-     * @param array $parameters
+     * @param array       $parameters
      * @param string|null $tag
-     * @return \GraphAware\Neo4j\Client\HttpDriver\Pipeline
+     *
+     * @return Pipeline
      */
     public function createPipeline($query = null, array $parameters = array(), $tag = null)
     {
         $pipeline = new Pipeline($this);
+
         if (null !== $query) {
             $pipeline->push($query, $parameters, $tag);
         }
@@ -66,7 +110,8 @@ class Session implements SessionInterface
     }
 
     /**
-     * @param \GraphAware\Neo4j\Client\HttpDriver\Pipeline $pipeline
+     * @param Pipeline $pipeline
+     *
      * @return \GraphAware\Common\Result\ResultCollection
      *
      * @throws \GraphAware\Neo4j\Client\Exception\Neo4jException
@@ -96,19 +141,19 @@ class Session implements SessionInterface
         }
     }
 
-    public function close()
-    {
-        //
-    }
-
+    /**
+     * @param Pipeline $pipeline
+     *
+     * @return Request
+     */
     public function prepareRequest(Pipeline $pipeline)
     {
         $statements = [];
         foreach ($pipeline->statements() as $statement) {
             $st = [
                 'statement' => $statement->text(),
-                'resultDataContents' => ["REST", "GRAPH"],
-                'includeStats' => true
+                'resultDataContents' => ['REST', 'GRAPH'],
+                'includeStats' => true,
             ];
             if (!empty($statement->parameters())) {
                 $st['parameters'] = $statement->parameters();
@@ -117,40 +162,29 @@ class Session implements SessionInterface
         }
 
         $body = json_encode([
-            'statements' => $statements
+            'statements' => $statements,
         ]);
         $headers = [
             [
                 'X-Stream' => true,
-                'Content-Type' => 'application/json'
-            ]
+                'Content-Type' => 'application/json',
+            ],
         ];
 
-        $request = new Request("POST", sprintf('%s/db/data/transaction/commit', $this->uri), $headers, $body);
-
-        return $request;
-    }
-
-    public function transaction()
-    {
-        if ($this->transaction instanceof Transaction) {
-            throw new \RuntimeException('A transaction is already bound to this session');
-        }
-
-        return new Transaction($this);
+        return new Request('POST', sprintf('%s/db/data/transaction/commit', $this->uri), $headers, $body);
     }
 
     /**
-     * @return mixed|\Psr\Http\Message\ResponseInterface
-     * @throws \GraphAware\Neo4j\Client\Exception\Neo4jException
+     * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws Neo4jException
      */
     public function begin()
     {
-        $request = new Request("POST", sprintf('%s/db/data/transaction', $this->uri));
-        try {
-            $response = $this->httpClient->send($request);
+        $request = new Request('POST', sprintf('%s/db/data/transaction', $this->uri));
 
-            return $response;
+        try {
+            return $this->httpClient->send($request);
         } catch (RequestException $e) {
             if ($e->hasResponse()) {
                 $body = json_decode($e->getResponse()->getBody(), true);
@@ -168,14 +202,22 @@ class Session implements SessionInterface
         }
     }
 
+    /**
+     * @param int   $transactionId
+     * @param array $statementsStack
+     *
+     * @return \GraphAware\Common\Result\ResultCollection
+     *
+     * @throws Neo4jException
+     */
     public function pushToTransaction($transactionId, array $statementsStack)
     {
         $statements = [];
         foreach ($statementsStack as $statement) {
             $st = [
                 'statement' => $statement->text(),
-                'resultDataContents' => ["REST", "GRAPH"],
-                'includeStats' => true
+                'resultDataContents' => ['REST', 'GRAPH'],
+                'includeStats' => true,
             ];
             if (!empty($statement->parameters())) {
                 $st['parameters'] = $statement->parameters();
@@ -186,19 +228,20 @@ class Session implements SessionInterface
         $headers = [
             [
                 'X-Stream' => true,
-                'Content-Type' => 'application/json'
-            ]
+                'Content-Type' => 'application/json',
+            ],
         ];
 
         $body = json_encode([
-            'statements' => $statements
+            'statements' => $statements,
         ]);
-        $request = new Request("POST", sprintf('%s/db/data/transaction/%d', $this->uri, $transactionId), $headers, $body);
+
+        $request = new Request('POST', sprintf('%s/db/data/transaction/%d', $this->uri, $transactionId), $headers, $body);
+
         try {
             $response = $this->httpClient->send($request);
-            $results = $this->responseFormatter->format(json_decode($response->getBody(), true), $statementsStack);
 
-            return $results;
+            return $this->responseFormatter->format(json_decode($response->getBody(), true), $statementsStack);
         } catch (RequestException $e) {
             if ($e->hasResponse()) {
                 $body = json_decode($e->getResponse()->getBody(), true);
@@ -216,9 +259,14 @@ class Session implements SessionInterface
         }
     }
 
+    /**
+     * @param int $transactionId
+     *
+     * @throws Neo4jException
+     */
     public function commitTransaction($transactionId)
     {
-        $request = new Request("POST", sprintf('%s/db/data/transaction/%d/commit', $this->uri, $transactionId));
+        $request = new Request('POST', sprintf('%s/db/data/transaction/%d/commit', $this->uri, $transactionId));
         try {
             $this->httpClient->send($request);
         } catch (RequestException $e) {
@@ -238,9 +286,15 @@ class Session implements SessionInterface
         }
     }
 
+    /**
+     * @param int $transactionId
+     *
+     * @throws Neo4jException
+     */
     public function rollbackTransaction($transactionId)
     {
-        $request = new Request("DELETE", sprintf('%s/db/data/transaction/%d', $this->uri, $transactionId));
+        $request = new Request('DELETE', sprintf('%s/db/data/transaction/%d', $this->uri, $transactionId));
+
         try {
             $this->httpClient->send($request);
         } catch (RequestException $e) {

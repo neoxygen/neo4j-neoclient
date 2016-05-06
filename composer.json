@@ -25,7 +25,7 @@
       "graphaware/neo4j-bolt": "^1.0",
       "guzzlehttp/guzzle": "^6.0",
       "symfony/event-dispatcher": "^2.7|^3.0",
-      "graphaware/neo4j-common": "^2.0",
+      "graphaware/neo4j-common": "^3.0",
       "myclabs/php-enum": "^1.4"
     },
     "require-dev": {
