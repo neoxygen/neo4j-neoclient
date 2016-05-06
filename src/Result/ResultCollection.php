@@ -11,6 +11,7 @@
 
 namespace GraphAware\Neo4j\Client\Result;
 
+use GraphAware\Common\Result\RecordCursorInterface;
 use GraphAware\Common\Result\ResultCollection as BaseResultCollection;
 
 class ResultCollection extends BaseResultCollection
@@ -25,5 +26,13 @@ class ResultCollection extends BaseResultCollection
     public function getTag()
     {
         return $this->tag;
+    }
+
+    public static function withResult(RecordCursorInterface $result)
+    {
+        $coll = new ResultCollection();
+        $coll->add($result);
+
+        return $coll;
     }
 }

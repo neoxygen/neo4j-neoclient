@@ -11,21 +11,34 @@
 
 namespace GraphAware\Neo4j\Client;
 
+use GraphAware\Common\Cypher\Statement;
 use GraphAware\Neo4j\Client\Connection\ConnectionManager;
+use GraphAware\Neo4j\Client\Event\PostRunEvent;
+use GraphAware\Neo4j\Client\Event\PreRunEvent;
+use GraphAware\Neo4j\Client\Exception\Neo4jException;
+use GraphAware\Neo4j\Client\Result\ResultCollection;
 use GraphAware\Neo4j\Client\Transaction\Transaction;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Neo4jClientEvents;
 
 class Client
 {
-    const NEOCLIENT_VERSION = '4.0.0';
+    const NEOCLIENT_VERSION = '4.0';
 
     /**
      * @var \GraphAware\Neo4j\Client\Connection\ConnectionManager
      */
     protected $connectionManager;
 
+    /**
+     * @var \Symfony\Component\EventDispatcher\EventDispatcher
+     */
+    protected $eventDispatcher;
+
     public function __construct(ConnectionManager $connectionManager)
     {
         $this->connectionManager = $connectionManager;
+        $this->eventDispatcher = new EventDispatcher();
     }
 
     /**
@@ -37,12 +50,22 @@ class Client
      * @param null|string $connectionAlias
      *
      * @return \GraphAware\Common\Result\Result
+     *
+     * @throws \GraphAware\Neo4j\Client\Exception\Neo4jExceptionInterface
      */
     public function run($query, $parameters = null, $tag = null, $connectionAlias = null)
     {
         $connection = $this->connectionManager->getConnection($connectionAlias);
-
-        return $connection->run($query, $parameters, $tag);
+        $statement = Statement::create($query, $parameters, $tag);
+        $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_PRE_RUN, new PreRunEvent(array($statement)));
+        try {
+            $result = $connection->run($query, $parameters, $tag);
+            $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_POST_RUN, new PostRunEvent(ResultCollection::withResult($result)));
+            return $result;
+        } catch (Neo4jException $e) {
+            // dispatch event
+            throw $e;
+        }
     }
 
     /**
@@ -99,8 +122,15 @@ class Client
         foreach ($stack->statements() as $statement) {
             $pipeline->push($statement->text(), $statement->parameters(), $statement->getTag());
         }
-
-        return $pipeline->run();
+        $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_PRE_RUN, new PreRunEvent($stack->statements()));
+        try {
+            $results = $pipeline->run();
+            $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_POST_RUN, new PostRunEvent($results));
+            return $results;
+        } catch(Neo4jException $e) {
+            //dispatch event
+            throw $e;
+        }
     }
 
     /**
