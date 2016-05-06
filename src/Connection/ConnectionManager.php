@@ -19,11 +19,29 @@ class ConnectionManager
      */
     private $connections = [];
 
+    /**
+     * @var Connection|null
+     */
     private $master;
 
+    /**
+     * @param string $alias
+     * @param string $uri
+     * @param null $config
+     * @param int $timeout
+     */
     public function registerConnection($alias, $uri, $config = null, $timeout)
     {
-        $this->connections[$alias] = new Connection($alias, $uri, $config, $timeout);
+        $this->registerExistingConnection($alias, new Connection($alias, $uri, $config, $timeout));
+    }
+
+    /**
+     * @param string     $alias
+     * @param Connection $connection
+     */
+    public function registerExistingConnection($alias, Connection $connection)
+    {
+        $this->connections[$alias] = $connection;
     }
 
     /**
@@ -44,13 +62,16 @@ class ConnectionManager
         return $this->connections[$alias];
     }
 
+    /**
+     * @param string $alias
+     */
     public function setMaster($alias)
     {
         $this->master = $this->connections[$alias];
     }
 
     /**
-     * @return null|\GraphAware\Neo4j\Client\Connection\Connection
+     * @return Connection|null
      */
     public function getMasterConnection()
     {

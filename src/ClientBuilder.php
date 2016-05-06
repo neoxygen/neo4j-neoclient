@@ -34,7 +34,7 @@ class ClientBuilder
     /**
      * Creates a new Client factory
      *
-     * @return \GraphAware\Neo4j\Client\ClientBuilder
+     * @return ClientBuilder
      */
     public static function create()
     {
@@ -61,6 +61,11 @@ class ClientBuilder
         $this->config['connection_manager']['preflight_env'] = $variable;
     }
 
+    /**
+     * @param string $connectionAlias
+     *
+     * @return $this
+     */
     public function setMaster($connectionAlias)
     {
         if (!isset($this->config['connections']) || !array_key_exists($connectionAlias, $this->config['connections'])) {
@@ -79,6 +84,11 @@ class ClientBuilder
         return $this;
     }
 
+    /**
+     * @param int $timeout
+     *
+     * @return $this
+     */
     public function setDefaultTimeout($timeout)
     {
         $this->config[self::$TIMEOUT_CONFIG_KEY] = (int) $timeout;
@@ -103,6 +113,9 @@ class ClientBuilder
         return new Client($connectionManager);
     }
 
+    /**
+     * @return int
+     */
     private function getDefaultTimeout()
     {
         return array_key_exists(self::$TIMEOUT_CONFIG_KEY, $this->config) ? $this->config[self::$TIMEOUT_CONFIG_KEY] : self::DEFAULT_TIMEOUT;
