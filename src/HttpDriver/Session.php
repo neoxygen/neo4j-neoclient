@@ -40,7 +40,7 @@ class Session implements SessionInterface
         $this->config = $config;
     }
 
-    public function run($statement, $parameters = array(), $tag = null)
+    public function run($statement, array $parameters = array(), $tag = null)
     {
         $parameters = is_array($parameters) ? $parameters : array();
         $pipeline = $this->createPipeline($statement, $parameters, $tag);
