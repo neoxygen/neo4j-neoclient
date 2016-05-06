@@ -13,13 +13,13 @@ namespace GraphAware\Neo4j\Client;
 
 use GraphAware\Common\Cypher\Statement;
 use GraphAware\Neo4j\Client\Connection\ConnectionManager;
+use GraphAware\Neo4j\Client\Event\FailureEvent;
 use GraphAware\Neo4j\Client\Event\PostRunEvent;
 use GraphAware\Neo4j\Client\Event\PreRunEvent;
 use GraphAware\Neo4j\Client\Exception\Neo4jException;
 use GraphAware\Neo4j\Client\Result\ResultCollection;
 use GraphAware\Neo4j\Client\Transaction\Transaction;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use GraphAware\Neo4j\Client\Neo4jClientEvents;
 
 class Client
 {
@@ -64,7 +64,7 @@ class Client
             $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_POST_RUN, new PostRunEvent(ResultCollection::withResult($result)));
             return $result;
         } catch (Neo4jException $e) {
-            // dispatch event
+            $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_ON_FAILURE, new FailureEvent($e));
             throw $e;
         }
     }
@@ -129,7 +129,7 @@ class Client
             $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_POST_RUN, new PostRunEvent($results));
             return $results;
         } catch(Neo4jException $e) {
-            //dispatch event
+            $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_ON_FAILURE, new FailureEvent($e));
             throw $e;
         }
     }
