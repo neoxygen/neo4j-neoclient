@@ -1,5 +1,9 @@
 # Changelog for v4
 
+4.2.0 - 06 May 2016
+
+- Added events dispatching before and after running statements and stacks
+
 4.1.1 - 06 May 2016
 
 - Added `registerExistingConnection` in ConnectionManager
