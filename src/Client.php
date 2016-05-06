@@ -19,7 +19,7 @@ use GraphAware\Neo4j\Client\Exception\Neo4jException;
 use GraphAware\Neo4j\Client\Result\ResultCollection;
 use GraphAware\Neo4j\Client\Transaction\Transaction;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Neo4jClientEvents;
+use GraphAware\Neo4j\Client\Neo4jClientEvents;
 
 class Client
 {
@@ -56,7 +56,8 @@ class Client
     public function run($query, $parameters = null, $tag = null, $connectionAlias = null)
     {
         $connection = $this->connectionManager->getConnection($connectionAlias);
-        $statement = Statement::create($query, $parameters, $tag);
+        $params = null !== $parameters ? $parameters : array();
+        $statement = Statement::create($query, $params, $tag);
         $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_PRE_RUN, new PreRunEvent(array($statement)));
         try {
             $result = $connection->run($query, $parameters, $tag);

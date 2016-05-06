@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+namespace GraphAware\Neo4j\Client;
+
 final class Neo4jClientEvents
 {
     const NEO4J_PRE_RUN = 'neo4j.pre_run';
