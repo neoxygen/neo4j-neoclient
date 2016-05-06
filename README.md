@@ -50,7 +50,6 @@ Neo4j is a transactional, open-source graph database. A graph database manages d
 
 You can:
 
- * Check out an [example application built with GraphAware Neo4j Client](https://github.com/neo4j-contrib/developer-resources/tree/gh-pages/language-guides/php/neoclient)
  * [Ask a question on StackOverflow](http://stackoverflow.com/questions/ask?tags=graphaware,php,neo4j)
  * For bugs, please feel free to create a [new issue on GitHub](https://github.com/graphaware/neo4j-php-client/issues/new)
  
@@ -298,6 +297,36 @@ $results = $tx->commit();
 ```
 
 After a commit, you will not be able to `push` or `run` statements in this transaction.
+
+### Working with multiple connections
+
+Generally speaking, you would better use HAProxy for running Neo4j in a cluster environment. However sometimes it makes sense to
+have full control to which instance you send your statements.
+
+Let's assume a environment with 3 neo4j nodes :
+
+```php
+$client = ClientBuilder::create()
+    ->addConnection('node1', 'bolt://10.0.0.1')
+    ->addConnection('node2', 'bolt://10.0.0.2')
+    ->addConnection('node3', 'bolt://10.0.0.3')
+    ->setMaster('node1')
+    ->build();
+```
+
+By default, the `$client->run()` command will send your Cypher statements to the first registered connection in the list.
+
+You can specify to which connection to send the statement by specifying its alias as 4th argument to the run parameter :
+
+```php
+$result = $client->run('CREATE (n) RETURN n', null, null, 'node1');
+```
+
+The client is also aware of the manually configured master connection, so sending your writes can be easier with :
+
+```php
+$client->runWrite('CREATE (n:User {login: 123})');
+```
 
 ### Settings
 

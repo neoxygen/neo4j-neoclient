@@ -1,5 +1,9 @@
 # Changelog for v4
 
+4.1.1 - 06 May 2016
+
+- Added `registerExistingConnection` in ConnectionManager
+
 4.1.0 - 02 May 2016
 
 - Added `updateStatistics()` method on the ResultCollection for combined statistics of stacks, transactions, etc..
