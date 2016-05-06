@@ -20,6 +20,7 @@ use GraphAware\Neo4j\Client\Exception\Neo4jException;
 use GraphAware\Neo4j\Client\Result\ResultCollection;
 use GraphAware\Neo4j\Client\Transaction\Transaction;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class Client
 {
@@ -35,10 +36,10 @@ class Client
      */
     protected $eventDispatcher;
 
-    public function __construct(ConnectionManager $connectionManager)
+    public function __construct(ConnectionManager $connectionManager, EventDispatcherInterface $ev = null)
     {
         $this->connectionManager = $connectionManager;
-        $this->eventDispatcher = new EventDispatcher();
+        $this->eventDispatcher = null !== $ev ? $ev : new EventDispatcher();
     }
 
     /**
@@ -64,8 +65,13 @@ class Client
             $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_POST_RUN, new PostRunEvent(ResultCollection::withResult($result)));
             return $result;
         } catch (Neo4jException $e) {
-            $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_ON_FAILURE, new FailureEvent($e));
-            throw $e;
+            $event = new FailureEvent($e);
+            $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_ON_FAILURE, $event);
+            if ($event->shouldThrowException()) {
+                throw $e;
+            }
+
+            return null;
         }
     }
 
@@ -116,6 +122,8 @@ class Client
      * @param \GraphAware\Neo4j\Client\Stack $stack
      *
      * @return \GraphAware\Neo4j\Client\Result\ResultCollection
+     *
+     * @throws \GraphAware\Neo4j\Client\Exception\Neo4jExceptionInterface
      */
     public function runStack(Stack $stack)
     {
@@ -129,8 +137,13 @@ class Client
             $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_POST_RUN, new PostRunEvent($results));
             return $results;
         } catch(Neo4jException $e) {
-            $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_ON_FAILURE, new FailureEvent($e));
-            throw $e;
+            $event = new FailureEvent($e);
+            $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_ON_FAILURE, $event);
+            if ($event->shouldThrowException()) {
+                throw $e;
+            }
+
+            return null;
         }
     }
 
@@ -185,5 +198,13 @@ class Client
     public function getConnectionManager()
     {
         return $this->connectionManager;
+    }
+
+    /**
+     * @return \Symfony\Component\EventDispatcher\EventDispatcherInterface
+     */
+    public function getEventDispatcher()
+    {
+        return $this->eventDispatcher;
     }
 }

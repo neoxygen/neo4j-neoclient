@@ -12,6 +12,7 @@
 namespace GraphAware\Neo4j\Client;
 
 use GraphAware\Neo4j\Client\Connection\ConnectionManager;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class ClientBuilder
 {
@@ -96,6 +97,13 @@ class ClientBuilder
         return $this;
     }
 
+    public function registerEventListener($eventName, $callback)
+    {
+        $this->config['event_listeners'][$eventName][] = $callback;
+
+        return $this;
+    }
+
     /**
      * Builds a Client based on the connections given
      *
@@ -110,7 +118,16 @@ class ClientBuilder
                 $connectionManager->setMaster($alias);
             }
         }
-        return new Client($connectionManager);
+        $ev = null;
+        if (isset($this->config['event_listeners'])) {
+            $ev = new EventDispatcher();
+            foreach ($this->config['event_listeners'] as $k => $callbacks) {
+                foreach ($callbacks as $callback) {
+                    $ev->addListener($k, $callback);
+                }
+            }
+        }
+        return new Client($connectionManager, $ev);
     }
 
     /**

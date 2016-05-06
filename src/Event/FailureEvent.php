@@ -21,6 +21,11 @@ class FailureEvent extends Event
      */
     protected $exception;
 
+    /**
+     * @var bool
+     */
+    protected $shouldThrowException = true;
+
     public function __construct(Neo4jExceptionInterface $exception)
     {
         $this->exception = $exception;
@@ -32,5 +37,18 @@ class FailureEvent extends Event
     public function getException()
     {
         return $this->exception;
+    }
+
+    public function disableException()
+    {
+        $this->shouldThrowException = false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldThrowException()
+    {
+        return $this->shouldThrowException;
     }
 }
