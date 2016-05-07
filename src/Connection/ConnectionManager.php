@@ -8,9 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace GraphAware\Neo4j\Client\Connection;
-
 
 class ConnectionManager
 {
@@ -27,8 +25,8 @@ class ConnectionManager
     /**
      * @param string $alias
      * @param string $uri
-     * @param null $config
-     * @param int $timeout
+     * @param null   $config
+     * @param int    $timeout
      */
     public function registerConnection($alias, $uri, $config = null, $timeout)
     {
@@ -46,12 +44,14 @@ class ConnectionManager
 
     /**
      * @param null $alias
+     *
      * @return \GraphAware\Neo4j\Client\Connection\Connection
      */
     public function getConnection($alias = null)
     {
         if (null === $alias) {
             list($a) = array_keys($this->connections);
+
             return $this->connections[$a];
         }
 

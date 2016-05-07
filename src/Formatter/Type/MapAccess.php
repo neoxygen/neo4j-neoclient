@@ -6,10 +6,13 @@ use GraphAware\Common\Type\MapAccessor;
 
 class MapAccess implements MapAccessor
 {
-    protected $properties;
+    /**
+     * @var array
+     */
+    protected $properties = [];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function value($key, $default = null)
     {
@@ -21,13 +24,12 @@ class MapAccess implements MapAccessor
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function hasValue($key)
     {
         return array_key_exists($key, $this->properties);
     }
-
 
     /**
      * @return array
@@ -38,9 +40,7 @@ class MapAccess implements MapAccessor
     }
 
     /**
-     * @param string $key
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function get($key)
     {
@@ -48,9 +48,7 @@ class MapAccess implements MapAccessor
     }
 
     /**
-     * @param string $key
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function containsKey($key)
     {
@@ -58,7 +56,7 @@ class MapAccess implements MapAccessor
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function values()
     {
@@ -66,7 +64,7 @@ class MapAccess implements MapAccessor
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function asArray()
     {

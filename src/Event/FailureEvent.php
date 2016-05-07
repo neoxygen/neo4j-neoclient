@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace GraphAware\Neo4j\Client\Event;
 
 use GraphAware\Neo4j\Client\Exception\Neo4jExceptionInterface;
@@ -17,7 +16,7 @@ use Symfony\Component\EventDispatcher\Event;
 class FailureEvent extends Event
 {
     /**
-     * @var \GraphAware\Neo4j\Client\Exception\Neo4jExceptionInterface
+     * @var Neo4jExceptionInterface
      */
     protected $exception;
 
@@ -26,13 +25,16 @@ class FailureEvent extends Event
      */
     protected $shouldThrowException = true;
 
+    /**
+     * @param Neo4jExceptionInterface $exception
+     */
     public function __construct(Neo4jExceptionInterface $exception)
     {
         $this->exception = $exception;
     }
 
     /**
-     * @return \GraphAware\Neo4j\Client\Exception\Neo4jExceptionInterface
+     * @return Neo4jExceptionInterface
      */
     public function getException()
     {

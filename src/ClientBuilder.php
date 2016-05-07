@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace GraphAware\Neo4j\Client;
 
 use GraphAware\Neo4j\Client\Connection\ConnectionManager;
@@ -20,7 +19,7 @@ class ClientBuilder
 
     const DEFAULT_TIMEOUT = 5;
 
-    private static $TIMEOUT_CONFIG_KEY = "timeout";
+    private static $TIMEOUT_CONFIG_KEY = 'timeout';
 
     /**
      * @var array
@@ -33,7 +32,7 @@ class ClientBuilder
     }
 
     /**
-     * Creates a new Client factory
+     * Creates a new Client factory.
      *
      * @return ClientBuilder
      */
@@ -43,7 +42,7 @@ class ClientBuilder
     }
 
     /**
-     * Add a connection to the handled connections
+     * Add a connection to the handled connections.
      *
      * @param string $alias
      * @param string $uri
@@ -97,6 +96,12 @@ class ClientBuilder
         return $this;
     }
 
+    /**
+     * @param string $eventName
+     * @param mixed  $callback
+     *
+     * @return $this
+     */
     public function registerEventListener($eventName, $callback)
     {
         $this->config['event_listeners'][$eventName][] = $callback;
@@ -105,28 +110,34 @@ class ClientBuilder
     }
 
     /**
-     * Builds a Client based on the connections given
+     * Builds a Client based on the connections given.
      *
      * @return \GraphAware\Neo4j\Client\Client
      */
     public function build()
     {
         $connectionManager = new ConnectionManager();
+
         foreach ($this->config['connections'] as $alias => $conn) {
             $connectionManager->registerConnection($alias, $conn['uri'], null, $this->getDefaultTimeout());
+
             if (isset($conn['is_master']) && $conn['is_master'] === true) {
                 $connectionManager->setMaster($alias);
             }
         }
+
         $ev = null;
+
         if (isset($this->config['event_listeners'])) {
             $ev = new EventDispatcher();
+
             foreach ($this->config['event_listeners'] as $k => $callbacks) {
                 foreach ($callbacks as $callback) {
                     $ev->addListener($k, $callback);
                 }
             }
         }
+
         return new Client($connectionManager, $ev);
     }
 

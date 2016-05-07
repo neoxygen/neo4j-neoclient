@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace GraphAware\Neo4j\Client\Exception;
 
 class Neo4jException extends \Exception implements Neo4jExceptionInterface
@@ -19,15 +18,7 @@ class Neo4jException extends \Exception implements Neo4jExceptionInterface
     protected $statusCode;
 
     /**
-     * @param string $code
-     */
-    public function setNeo4jStatusCode($code)
-    {
-        $this->statusCode = $code;
-    }
-
-    /**
-     * @return string
+     * {@inheritdoc}
      */
     public function effect()
     {
@@ -45,6 +36,14 @@ class Neo4jException extends \Exception implements Neo4jExceptionInterface
             default:
                 throw new \InvalidArgumentException(sprintf('Invalid classification "%s" in "%s"', $classification, $this->getMessage()));
         }
+    }
+
+    /**
+     * @param string $code
+     */
+    public function setNeo4jStatusCode($code)
+    {
+        $this->statusCode = $code;
     }
 
     /**

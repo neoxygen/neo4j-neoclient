@@ -8,29 +8,27 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace GraphAware\Neo4j\Client\Formatter\Type;
 
-use GraphAware\Common\Type\NodeInterface;
-use GraphAware\Common\Type\PathInterface;
-use GraphAware\Common\Type\RelationshipInterface;
+use GraphAware\Common\Type\Node as NodeInterface;
+use GraphAware\Common\Type\Path as PathInterface;
+use GraphAware\Common\Type\Relationship as RelationshipInterface;
 
 class Path implements PathInterface
 {
     /**
-     * @var \GraphAware\Neo4j\Client\Formatter\Type\Node[]
+     * @var Node[]
      */
     protected $nodes;
 
     /**
-     * @var \GraphAware\Neo4j\Client\Formatter\Type\Relationship[]
+     * @var Relationship[]
      */
     protected $relationships;
 
     /**
-     * Path constructor.
-     * @param array $nodes
-     * @param array $relationships
+     * @param Node[]         $nodes
+     * @param Relationship[] $relationships
      */
     public function __construct(array $nodes, array $relationships)
     {
@@ -39,34 +37,33 @@ class Path implements PathInterface
     }
 
     /**
-     * @return \GraphAware\Neo4j\Client\Formatter\Type\Node
+     * {@inheritdoc}
      */
-    function start()
+    public function start()
     {
         return $this->nodes[0];
     }
 
     /**
-     * @return \GraphAware\Neo4j\Client\Formatter\Type\Node
+     * {@inheritdoc}
      */
-    function end()
+    public function end()
     {
-        return $this->nodes[count($this->nodes)-1];
+        return $this->nodes[count($this->nodes) - 1];
     }
 
     /**
-     * @return int
+     * {@inheritdoc}
      */
-    function length()
+    public function length()
     {
         return count($this->relationships);
     }
 
     /**
-     * @param \GraphAware\Common\Type\NodeInterface $node
-     * @return bool
+     * {@inheritdoc}
      */
-    function containsNode(NodeInterface $node)
+    public function containsNode(NodeInterface $node)
     {
         foreach ($this->nodes as $n) {
             if ($n->identity() === $node->identity()) {
@@ -78,10 +75,9 @@ class Path implements PathInterface
     }
 
     /**
-     * @param \GraphAware\Common\Type\RelationshipInterface $relationship
-     * @return bool
+     * {@inheritdoc}
      */
-    function containsRelationship(RelationshipInterface $relationship)
+    public function containsRelationship(RelationshipInterface $relationship)
     {
         foreach ($this->relationships as $rel) {
             if ($rel->identity() === $relationship->identity()) {
@@ -93,19 +89,18 @@ class Path implements PathInterface
     }
 
     /**
-     * @return array|\GraphAware\Neo4j\Client\Formatter\Type\Node[]
+     * {@inheritdoc}
      */
-    function nodes()
+    public function nodes()
     {
         return $this->nodes;
     }
 
     /**
-     * @return array|\GraphAware\Neo4j\Client\Formatter\Type\Relationship[]
+     * {@inheritdoc}
      */
-    function relationships()
+    public function relationships()
     {
         return $this->relationships;
     }
-
 }
