@@ -60,20 +60,22 @@ class Client
         $params = null !== $parameters ? $parameters : array();
         $statement = Statement::create($query, $params, $tag);
         $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_PRE_RUN, new PreRunEvent(array($statement)));
+
         try {
             $result = $connection->run($query, $parameters, $tag);
             $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_POST_RUN, new PostRunEvent(ResultCollection::withResult($result)));
-
-            return $result;
         } catch (Neo4jException $e) {
             $event = new FailureEvent($e);
             $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_ON_FAILURE, $event);
+
             if ($event->shouldThrowException()) {
                 throw $e;
             }
 
             return;
         }
+
+        return $result;
     }
 
     /**

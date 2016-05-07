@@ -10,9 +10,9 @@
  */
 namespace GraphAware\Neo4j\Client\Formatter\Type;
 
-use GraphAware\Common\Type\Node;
+use GraphAware\Common\Type\Node as NodeInterface;
 use GraphAware\Common\Type\Path as PathInterface;
-use GraphAware\Common\Type\Relationship;
+use GraphAware\Common\Type\Relationship as RelationshipInterface;
 
 class Path implements PathInterface
 {
@@ -63,7 +63,7 @@ class Path implements PathInterface
     /**
      * {@inheritdoc}
      */
-    public function containsNode(Node $node)
+    public function containsNode(NodeInterface $node)
     {
         foreach ($this->nodes as $n) {
             if ($n->identity() === $node->identity()) {
@@ -77,7 +77,7 @@ class Path implements PathInterface
     /**
      * {@inheritdoc}
      */
-    public function containsRelationship(Relationship $relationship)
+    public function containsRelationship(RelationshipInterface $relationship)
     {
         foreach ($this->relationships as $rel) {
             if ($rel->identity() === $relationship->identity()) {
