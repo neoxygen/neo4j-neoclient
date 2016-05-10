@@ -52,7 +52,11 @@ You can:
 
  * [Ask a question on StackOverflow](http://stackoverflow.com/questions/ask?tags=graphaware,php,neo4j)
  * For bugs, please feel free to create a [new issue on GitHub](https://github.com/graphaware/neo4j-php-client/issues/new)
- 
+
+### Implementations
+
+* [Symfony Framework Bundle](https://github.com/PandawanTechnology/Neo4jBundle)
+
 ## Installation and basic usage
 
 ### Installation
