@@ -64,7 +64,7 @@ You can:
 Add the library to your composer dependencies :
 
 ```bash
-composer require graphaware/neo4j-php-client:^4.0@alpha
+composer require graphaware/neo4j-php-client
 ```
 
 Require the composer autoloader, configure your connection by providing a connection alias and your connection settings :
