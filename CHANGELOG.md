@@ -1,5 +1,9 @@
 # Changelog for v4
 
+4.3.1 - 13 May 2016
+
+- Added the possibility to pass a default value to `Record::get()` to be returned if the record doesn't contains the given key
+
 4.2.0 - 06 May 2016
 
 - Added events dispatching before and after running statements and stacks
