@@ -153,11 +153,16 @@ class RecordView implements RecordViewInterface
 
     /**
      * @param string $key
+     * @param mixed  $defaultValue
      *
      * @return \GraphAware\Neo4j\Client\Formatter\Type\Node|\GraphAware\Neo4j\Client\Formatter\Type\Relationship|mixed
      */
-    public function get($key)
+    public function get($key, $defaultValue = null)
     {
+        if (!isset($this->keyToIndexMap[$key]) && 2 === func_num_args()) {
+            return $defaultValue;
+        }
+
         return $this->value($key);
     }
 
