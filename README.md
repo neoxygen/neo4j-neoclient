@@ -1,4 +1,4 @@
-# NeoClient
+# NeoClient (Deprecated ! )
 
 # This repository has moved
 
