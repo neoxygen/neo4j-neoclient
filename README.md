@@ -29,6 +29,7 @@ Neo4j is a transactional, open-source graph database. A graph database manages d
 | >= 2.2.6    |   Yes       |
 | 2.2         |   Yes       |
 | 2.3         |   Yes       |
+| 3.0 +       |   Yes       |
 
 #### Neo4j Feature Support
 
