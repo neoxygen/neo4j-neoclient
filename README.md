@@ -426,6 +426,14 @@ The client is also aware of the manually configured master connection, so sendin
 $client->runWrite('CREATE (n:User {login: 123})');
 ```
 
+### Helper Methods
+
+```
+$client->getLabels();
+```
+
+Returns an array of `Label` objects.
+
 ### Event Dispatching
 
 3 types of events are dispatched during the `run` methods :
