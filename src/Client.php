@@ -12,12 +12,14 @@ namespace GraphAware\Neo4j\Client;
 
 use GraphAware\Common\Cypher\Statement;
 use GraphAware\Common\Result\AbstractRecordCursor;
+use GraphAware\Common\Result\Record;
 use GraphAware\Neo4j\Client\Connection\ConnectionManager;
 use GraphAware\Neo4j\Client\Event\FailureEvent;
 use GraphAware\Neo4j\Client\Event\PostRunEvent;
 use GraphAware\Neo4j\Client\Event\PreRunEvent;
 use GraphAware\Neo4j\Client\Exception\Neo4jException;
 use GraphAware\Neo4j\Client\Result\ResultCollection;
+use GraphAware\Neo4j\Client\Schema\Label;
 use GraphAware\Neo4j\Client\Transaction\Transaction;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -181,6 +183,20 @@ class Client
         $connection = $this->connectionManager->getConnection($connectionAlias);
 
         return $connection->createPipeline($query, $parameters, $tag);
+    }
+
+    /**
+     * @param string|null $conn
+     * @return Label[]
+     */
+    public function getLabels($conn = null)
+    {
+        $connection = $this->connectionManager->getConnection($conn);
+        $result = $connection->getSession()->run("CALL db.labels()");
+
+        return array_map(function(Record $record) {
+            return new Label($record->get('label'));
+        }, $result->records());
     }
 
     /**
