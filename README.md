@@ -237,7 +237,16 @@ The client takes care of the hydration of Graph objects to PHP Objects, so it is
 * `startNodeIdentity` : returns the start node id
 * `endNodeIdentity` : returns the end node id
 
+##### Path
+
+* `start()` : returns the start node of the path
+* `end()` : returns the end node of the path
+* `length()` : returns the length of the path
+* `nodes()` : returns all the nodes in the path
+* `relationships` : returns all the relationships in the path
+
 #### Handling Results (from v3 to v4)
+
 
 There are 3 main concepts around this topic :
 
