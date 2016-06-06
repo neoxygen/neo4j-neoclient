@@ -70,4 +70,12 @@ class MapAccess implements MapAccessor
     {
         return $this->properties;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __get($name)
+    {
+        return $this->get($name);
+    }
 }
