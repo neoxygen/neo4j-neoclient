@@ -35,6 +35,12 @@ class Issue40Test extends IntegrationTestCase
         $this->assertGraphExist('(n:BRIEF {id: 123})<-[:CARD_OF {order:0}]-(:BRIEFNOTECARD)');
     }
 
+    public function testIssueNTest()
+    {
+        $this->emptyDb();
+        $this->client->run("\n");
+    }
+
     private function assertGraphExist($pattern)
     {
         $q = sprintf('MATCH %s RETURN *', $pattern);

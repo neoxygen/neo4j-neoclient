@@ -15,7 +15,7 @@ class IntegrationTestCase extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->client = ClientBuilder::create()
-            ->addConnection('http', 'http://localhost:7474')
+            //->addConnection('http', 'http://localhost:7474')
             ->addConnection('bolt', 'bolt://localhost')
             ->build();
     }
@@ -27,6 +27,6 @@ class IntegrationTestCase extends \PHPUnit_Framework_TestCase
      */
     public function emptyDb()
     {
-        $this->client->run('MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE r,n', null, null, 'http');
+        $this->client->run('MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE r,n', null, null);
     }
 }
