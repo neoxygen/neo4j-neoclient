@@ -1,5 +1,13 @@
 # Changelog for v4
 
+4.4.2 - 09 June 2016
+
+- Fixed an issue where empty nested arrays were not converted to json objects
+
+4.4.1 - 06 June 2016
+
+- Upgraded to latest commons
+
 4.4.0 - 28 May 2016
 
 - Added getLabels method to the client
