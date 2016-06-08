@@ -156,7 +156,7 @@ class Session implements SessionInterface
                 'includeStats' => true,
             ];
             if (!empty($statement->parameters())) {
-                $st['parameters'] = $statement->parameters();
+                $st['parameters'] = $this->formatParams($statement->parameters());
             }
             $statements[] = $st;
         }
@@ -172,6 +172,21 @@ class Session implements SessionInterface
         ];
 
         return new Request('POST', sprintf('%s/db/data/transaction/commit', $this->uri), $headers, $body);
+    }
+
+    private function formatParams(array $params)
+    {
+        foreach ($params as $key => $v) {
+            if (is_array($v)) {
+                if (empty($v)) {
+                    $params[$key] = new \stdClass();
+                } else {
+                    $params[$key] = $this->formatParams($params[$key]);
+                }
+            }
+        }
+
+        return $params;
     }
 
     /**
