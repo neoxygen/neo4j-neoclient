@@ -1,5 +1,9 @@
 # Changelog for v4
 
+4.4.3 - 09 June 2016
+
+- Fixed same issue as 4.4.2 in a transaction
+
 4.4.2 - 09 June 2016
 
 - Fixed an issue where empty nested arrays were not converted to json objects
