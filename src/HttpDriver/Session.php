@@ -235,7 +235,7 @@ class Session implements SessionInterface
                 'includeStats' => true,
             ];
             if (!empty($statement->parameters())) {
-                $st['parameters'] = $statement->parameters();
+                $st['parameters'] = $this->formatParams($statement->parameters());
             }
             $statements[] = $st;
         }
