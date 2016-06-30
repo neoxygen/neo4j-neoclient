@@ -30,6 +30,11 @@ class Stack
     protected $statements = [];
 
     /**
+     * @var Statement[]
+     */
+    protected $preflights = [];
+
+    /**
      * @param null        $tag
      * @param null|string $connectionAlias
      */
@@ -59,6 +64,33 @@ class Stack
     {
         $params = null !== $parameters ? $parameters : array();
         $this->statements[] = Statement::create($query, $params, $tag);
+    }
+
+    /**
+     * @param $query
+     * @param array|null $parameters
+     * @param array|null $tag
+     */
+    public function addPreflight($query, $parameters = null, $tag = null)
+    {
+        $params = null !== $parameters ? $parameters : array();
+        $this->preflights[] = Statement::create($query, $params, $tag);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasPreflights()
+    {
+        return !empty($this->preflights);
+    }
+
+    /**
+     * @return \GraphAware\Common\Cypher\Statement[]
+     */
+    public function getPreflights()
+    {
+        return $this->preflights;
     }
 
     /**
