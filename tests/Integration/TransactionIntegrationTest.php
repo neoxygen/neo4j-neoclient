@@ -119,6 +119,19 @@ class TransactionIntegrationTest extends IntegrationTestCase
         //$this->assertEquals(Transaction::COMMITED, $tx->status());
     }
 
+    /**
+     * @group tx-bug
+     */
+    public function testPushAndCommitInTxWithBolt()
+    {
+        $this->emptyDb();
+        $tx = $this->client->transaction('bolt');
+        $tx->push('MATCH (n) RETURN count(n)');
+        $tx->push('MATCH (n) RETURN count(n)');
+        $results = $tx->commit();
+        $this->assertEquals(2, $results->size());
+    }
+
     private function assertXNodesWithLabelExist($label, $number = 1)
     {
         $query = 'MATCH (n:' . $label . ') RETURN count(n) as c';
