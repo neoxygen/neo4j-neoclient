@@ -84,7 +84,7 @@ class RecordView implements RecordViewInterface
      */
     public function nodeValue($key)
     {
-        if (!$this->hasValue($key) || !$this->get($key) instanceof Node) {
+        if (!$this->hasValue($key) || !$this->value($key) instanceof Node) {
             throw new \InvalidArgumentException(sprintf('value for %s is not of type %s', $key, Node::class));
         }
 
@@ -100,7 +100,7 @@ class RecordView implements RecordViewInterface
      */
     public function relationshipValue($key)
     {
-        if (!isset($this->values[$key]) || !$this->values[$key] instanceof Relationship) {
+        if (!isset($this->values[$key]) || !$this->value($key) instanceof Relationship) {
             throw new \InvalidArgumentException(sprintf('value for %s is not of type %s', $key, Relationship::class));
         }
 
