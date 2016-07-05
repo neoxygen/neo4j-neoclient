@@ -1,5 +1,13 @@
 # Changelog for v4
 
+4.4.5 - 05 July 2016
+
+- Fixed an issue with `relationshipValue()`
+
+4.4.4
+
+- Added preflight to stack
+
 4.4.3 - 09 June 2016
 
 - Fixed same issue as 4.4.2 in a transaction
