@@ -11,6 +11,7 @@
 namespace GraphAware\Neo4j\Client\Connection;
 
 use GraphAware\Bolt\Configuration;
+use GraphAware\Bolt\Driver as BoltDriver;
 use GraphAware\Bolt\GraphDatabase as BoltGraphDB;
 use GraphAware\Common\Cypher\Statement;
 use GraphAware\Neo4j\Client\Exception\Neo4jException;
@@ -168,7 +169,7 @@ class Connection
         $params = parse_url($this->uri);
 
         if (preg_match('/bolt/', $this->uri)) {
-            $port = isset($params['port']) ? (int) $params['port'] : 7687;
+            $port = isset($params['port']) ? (int) $params['port'] : BoltDriver::DEFAULT_TCP_PORT;
             $uri = sprintf('%s://%s:%d', $params['scheme'], $params['host'], $port);
             $config = null;
             if (isset($params['user']) && isset($params['pass'])) {
