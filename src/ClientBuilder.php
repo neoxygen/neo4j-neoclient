@@ -10,7 +10,9 @@
  */
 namespace GraphAware\Neo4j\Client;
 
+use GraphAware\Common\Driver\ConfigInterface;
 use GraphAware\Neo4j\Client\Connection\ConnectionManager;
+use GraphAware\Neo4j\Client\HttpDriver\Configuration;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class ClientBuilder
@@ -46,12 +48,16 @@ class ClientBuilder
      *
      * @param string $alias
      * @param string $uri
+     * @param array  $extraParameters
      *
      * @return $this
      */
-    public function addConnection($alias, $uri)
+    public function addConnection($alias, $uri, ConfigInterface $config = null)
     {
         $this->config['connections'][$alias]['uri'] = $uri;
+        if (null !== $config) {
+            if ($this->config['connections'][$alias]['config'] = $config);
+        }
 
         return $this;
     }
@@ -119,7 +125,16 @@ class ClientBuilder
         $connectionManager = new ConnectionManager();
 
         foreach ($this->config['connections'] as $alias => $conn) {
-            $connectionManager->registerConnection($alias, $conn['uri'], null, $this->getDefaultTimeout());
+            $config =
+                isset($this->config['connections'][$alias]['config'])
+                    ? $this->config['connections'][$alias]['config']
+                    : Configuration::create()
+                        ->withTimeout($this->getDefaultTimeout());
+            $connectionManager->registerConnection(
+                $alias,
+                $conn['uri'],
+                $config
+            );
 
             if (isset($conn['is_master']) && $conn['is_master'] === true) {
                 $connectionManager->setMaster($alias);

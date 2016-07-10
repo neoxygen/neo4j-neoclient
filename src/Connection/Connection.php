@@ -38,6 +38,11 @@ class Connection
     private $driver;
 
     /**
+     * @var array
+     */
+    private $config;
+
+    /**
      * @var \GraphAware\Common\Driver\SessionInterface
      */
     private $session;
@@ -52,14 +57,13 @@ class Connection
      *
      * @param string $alias
      * @param string $uri
-     * @param null   $config
-     * @param int    $timeout
+     * @param Configuration|null   $config
      */
-    public function __construct($alias, $uri, $config = null, $timeout)
+    public function __construct($alias, $uri, $config = null)
     {
         $this->alias = (string) $alias;
         $this->uri = (string) $uri;
-        $this->timeout = (int) $timeout;
+        $this->config = $config;
 
         $this->buildDriver();
     }
@@ -178,7 +182,7 @@ class Connection
             $this->driver = BoltGraphDB::driver($uri, $config);
         } elseif (preg_match('/http/', $this->uri)) {
             $uri = $this->uri;
-            $this->driver = HttpGraphDB::driver($uri, HttpConfig::withTimeout($this->timeout));
+            $this->driver = HttpGraphDB::driver($uri, $this->config);
         } else {
             throw new \RuntimeException(sprintf('Unable to build a driver from uri "%s"', $this->uri));
         }

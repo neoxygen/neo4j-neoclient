@@ -10,6 +10,8 @@
  */
 namespace GraphAware\Neo4j\Client\Connection;
 
+use GraphAware\Neo4j\Client\HttpDriver\Configuration;
+
 class ConnectionManager
 {
     /**
@@ -25,12 +27,11 @@ class ConnectionManager
     /**
      * @param string $alias
      * @param string $uri
-     * @param null   $config
-     * @param int    $timeout
+     * @param null|Configuration   $config
      */
-    public function registerConnection($alias, $uri, $config = null, $timeout)
+    public function registerConnection($alias, $uri, $config = null)
     {
-        $this->registerExistingConnection($alias, new Connection($alias, $uri, $config, $timeout));
+        $this->registerExistingConnection($alias, new Connection($alias, $uri, $config));
     }
 
     /**

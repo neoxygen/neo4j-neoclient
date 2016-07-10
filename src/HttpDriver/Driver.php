@@ -12,6 +12,7 @@ namespace GraphAware\Neo4j\Client\HttpDriver;
 
 use GraphAware\Common\Driver\DriverInterface;
 use GuzzleHttp\Client;
+use GraphAware\Common\Driver\ConfigInterface;
 
 class Driver implements DriverInterface
 {
@@ -29,10 +30,10 @@ class Driver implements DriverInterface
      * @param string        $uri
      * @param Configuration $config
      */
-    public function __construct($uri, Configuration $config)
+    public function __construct($uri, ConfigInterface $config = null)
     {
         $this->uri = $uri;
-        $this->config = $config;
+        $this->config = null !== $config ? $config : Configuration::create();
     }
 
     /**
@@ -40,7 +41,19 @@ class Driver implements DriverInterface
      */
     public function session()
     {
-        return new Session($this->uri, new Client(['timeout' => $this->config->getTimeout()]), $this->config);
+        $options = [];
+        if (null !== $this->config->getTimeout()) {
+            $options['timeout'] = $this->config->getTimeout();
+        }
+
+        if (null !== $this->config->getCurlInterface()) {
+            $options['curl'] = [
+                'CURLOPT_INTERFACE' => $this->config->getCurlInterface()
+            ];
+        }
+
+        return new Session(
+            $this->uri, new Client($options), $this->config);
     }
 
     /**

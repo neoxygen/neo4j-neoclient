@@ -12,11 +12,13 @@ class Configuration implements ConfigInterface
     protected $timeout;
 
     /**
-     * @param int $timeout
+     * @var string
      */
-    public function __construct($timeout)
+    protected $curlInterface;
+
+    public static function create()
     {
-        $this->timeout = (int) $timeout;
+        return new self();
     }
 
     /**
@@ -24,9 +26,20 @@ class Configuration implements ConfigInterface
      *
      * @return Configuration
      */
-    public static function withTimeout($timeout)
+    public function withTimeout($timeout)
     {
-        return new self($timeout);
+        $this->timeout = $timeout;
+        return $this;
+    }
+
+    /**
+     * @param string $interface
+     * @return $this
+     */
+    public function withCurlInterface($interface)
+    {
+        $this->curlInterface = $interface;
+        return $this;
     }
 
     /**
@@ -35,5 +48,13 @@ class Configuration implements ConfigInterface
     public function getTimeout()
     {
         return $this->timeout;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurlInterface()
+    {
+        return $this->curlInterface;
     }
 }
