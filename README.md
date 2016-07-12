@@ -45,6 +45,8 @@ Neo4j is a transactional, open-source graph database. A graph database manages d
 ### Requirements
 
 * PHP >= 5.6
+* ext-bcmath
+* ext-mbstring
 * A Neo4j database (minimum version 2.2.6)
 
 ### Getting Help
@@ -65,7 +67,7 @@ You can:
 Add the library to your composer dependencies :
 
 ```bash
-composer require graphaware/neo4j-php-client
+composer require graphaware/neo4j-php-client:^4.0
 ```
 
 Require the composer autoloader, configure your connection by providing a connection alias and your connection settings :
