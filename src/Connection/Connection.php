@@ -177,7 +177,7 @@ class Connection
             $uri = sprintf('%s://%s:%d', $params['scheme'], $params['host'], $port);
             $config = null;
             if (isset($params['user']) && isset($params['pass'])) {
-                $config = Configuration::withCredentials($params['user'], $params['pass']);
+                $config = Configuration::newInstance()->withCredentials($params['user'], $params['pass']);
             }
             $this->driver = BoltGraphDB::driver($uri, $config);
         } elseif (preg_match('/http/', $this->uri)) {
