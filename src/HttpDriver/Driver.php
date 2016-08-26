@@ -47,10 +47,11 @@ class Driver implements DriverInterface
         }
 
         if (null !== $this->config->getCurlInterface()) {
-            $options['curl'] = [
-                'CURLOPT_INTERFACE' => $this->config->getCurlInterface()
-            ];
+            $options['curl'][10062] = $this->config->getCurlInterface();
         }
+
+        $options['curl'][74] = true;
+        $options['curl'][75] = true;
 
         return new Session(
             $this->uri, new Client($options), $this->config);
