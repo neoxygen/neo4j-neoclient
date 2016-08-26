@@ -124,7 +124,7 @@ $query = "MATCH (n:Person)-[:FOLLOWS]->(friend) RETURN n.name, collect(friend) a
 $result = $client->run($query);
 
 foreach ($result->getRecords() as $record) {
-    echo sprintf('Person name is : %s and has %d number of friends', $record->value('name'), count($record->value('friends'));
+    echo sprintf('Person name is : %s and has %d number of friends', $record->value('name'), count($record->value('friends')));
 }
 ```
 
