@@ -13,6 +13,7 @@ namespace GraphAware\Neo4j\Client\HttpDriver;
 use GraphAware\Common\Transaction\TransactionInterface;
 use GraphAware\Neo4j\Client\Exception\Neo4jException;
 use GraphAware\Common\Cypher\Statement;
+use GraphAware\Neo4j\Client\Exception\Neo4jExceptionInterface;
 
 class Transaction implements TransactionInterface
 {
@@ -40,6 +41,8 @@ class Transaction implements TransactionInterface
     protected $transactionId;
 
     protected $expires;
+
+    protected $pending = [];
 
     /**
      * @param Session $session
@@ -179,7 +182,15 @@ class Transaction implements TransactionInterface
     {
         $this->assertNotClosed();
         $this->assertStarted();
-        $this->session->commitTransaction($this->transactionId);
+        try {
+            $this->session->commitTransaction($this->transactionId);
+        } catch (Neo4jException $e) {
+            if ($e->effect() === Neo4jExceptionInterface::EFFECT_ROLLBACK) {
+                $this->state = self::ROLLED_BACK;
+            }
+
+            throw $e;
+        }
         $this->state = self::COMMITED;
         $this->closed = true;
         $this->session->transaction = null;
@@ -194,6 +205,7 @@ class Transaction implements TransactionInterface
     {
         if ($this->state !== self::OPENED) {
             throw new \RuntimeException('This transaction has not been started');
+            //$this->begin();
         }
     }
 

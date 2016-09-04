@@ -255,7 +255,15 @@ class Session implements SessionInterface
 
         try {
             $response = $this->httpClient->send($request);
+            $data = json_decode((string) $response->getBody(), true);
+            if (!empty($data['errors'])) {
+                $msg = sprintf('Neo4j Exception with code "%s" and message "%s"', $data['errors'][0]['code'], $data['errors'][0]['message']);
+                $exception = new Neo4jException($msg);
+                $exception->setNeo4jStatusCode($data['errors'][0]['code']);
 
+                throw $exception;
+
+            }
             return $this->responseFormatter->format(json_decode($response->getBody(), true), $statementsStack);
         } catch (RequestException $e) {
             if ($e->hasResponse()) {
@@ -283,7 +291,15 @@ class Session implements SessionInterface
     {
         $request = new Request('POST', sprintf('%s/db/data/transaction/%d/commit', $this->uri, $transactionId));
         try {
-            $this->httpClient->send($request);
+            $response = $this->httpClient->send($request);
+            $data = json_decode((string) $response->getBody(), true);
+            if (!empty($data['errors'])) {
+                $msg = sprintf('Neo4j Exception with code "%s" and message "%s"', $data['errors'][0]['code'], $data['errors'][0]['message']);
+                $exception = new Neo4jException($msg);
+                $exception->setNeo4jStatusCode($data['errors'][0]['code']);
+                throw $exception;
+
+            }
         } catch (RequestException $e) {
             if ($e->hasResponse()) {
                 $body = json_decode($e->getResponse()->getBody(), true);
