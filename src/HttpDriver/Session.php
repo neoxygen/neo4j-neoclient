@@ -121,6 +121,15 @@ class Session implements SessionInterface
         $request = $this->prepareRequest($pipeline);
         try {
             $response = $this->httpClient->send($request);
+            $data = json_decode((string) $response->getBody(), true);
+            if (!empty($data['errors'])) {
+                $msg = sprintf('Neo4j Exception with code "%s" and message "%s"', $data['errors'][0]['code'], $data['errors'][0]['message']);
+                $exception = new Neo4jException($msg);
+                $exception->setNeo4jStatusCode($data['errors'][0]['code']);
+
+                throw $exception;
+
+            }
             $results = $this->responseFormatter->format(json_decode($response->getBody(), true), $pipeline->statements());
 
             return $results;
