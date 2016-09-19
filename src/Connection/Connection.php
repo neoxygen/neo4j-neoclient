@@ -108,15 +108,13 @@ class Connection
      *
      * @throws Neo4jException
      */
-    public function run($statement, $parameters = null, $tag)
+    public function run($statement, $parameters = null, $tag = null)
     {
         $this->checkSession();
         $parameters = (array) $parameters;
 
         try {
-            $results = $this->session->run($statement, $parameters, $tag);
-
-            return $results;
+            return $this->session->run($statement, $parameters, $tag);
         } catch (MessageFailureException $e) {
             $exception = new Neo4jException($e->getMessage());
             $exception->setNeo4jStatusCode($e->getStatusCode());
