@@ -12,7 +12,7 @@ namespace GraphAware\Neo4j\Client;
 
 use GraphAware\Common\Cypher\Statement;
 
-class Stack
+class Stack implements StackInterface
 {
     /**
      * @var null|string
@@ -52,7 +52,7 @@ class Stack
      */
     public static function create($tag = null, $connectionAlias = null)
     {
-        return new self($tag, $connectionAlias);
+        return new static($tag, $connectionAlias);
     }
 
     /**
