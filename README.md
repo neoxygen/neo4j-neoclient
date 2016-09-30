@@ -482,6 +482,20 @@ $client = ClientBuilder::create()
 
 The timeout by default is 5 seconds.
 
+### TLS
+
+You can enable TLS encryption for the Bolt Protocol by passing a `Configuration` instance when building the connection, here
+is a simple example :
+
+```
+$config = \GraphAware\Bolt\Configuration::newInstance()
+    ->withCredentials('bolttest', 'L7n7SfTSj')
+    ->withTLSMode(\GraphAware\Bolt\Configuration::TLSMODE_REQUIRED);
+
+$driver = \GraphAware\Bolt\GraphDatabase::driver('bolt://hodccomjfkgdenl.dbs.gdb.com:24786', $config);
+$session = $driver->session();
+```
+
 ### License
 
 The library is released under the MIT License, refer to the LICENSE file bundled with this package.
