@@ -1,5 +1,9 @@
 # Changelog for v4
 
+4.6.0 - 01 October 2016
+
+- Client class parameterizable
+
 4.4.5 - 05 July 2016
 
 - Fixed an issue with `relationshipValue()`
