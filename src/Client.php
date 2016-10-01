@@ -24,7 +24,7 @@ use GraphAware\Neo4j\Client\Transaction\Transaction;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class Client
+class Client implements ClientInterface
 {
     const NEOCLIENT_VERSION = '4.0';
 
@@ -116,7 +116,7 @@ class Client
      * @param string|null $tag
      * @param string|null $connectionAlias
      *
-     * @return Stack
+     * @return StackInterface
      */
     public function stack($tag = null, $connectionAlias = null)
     {
@@ -130,7 +130,7 @@ class Client
      *
      * @throws Neo4jException
      */
-    public function runStack(Stack $stack)
+    public function runStack(StackInterface $stack)
     {
         $pipeline = $this->pipeline(null, null, $stack->getTag(), $stack->getConnectionAlias());
 

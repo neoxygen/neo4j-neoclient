@@ -28,9 +28,13 @@ class ClientBuilder
      */
     protected $config = [];
 
-    public function __construct()
+    public function __construct($config = [])
     {
         $this->config['connection_manager']['preflight_env'] = self::PREFLIGHT_ENV_DEFAULT;
+        $this->config['client_class'] = \GraphAware\Neo4j\Client\Client::class;
+        if(!empty($config)){
+            $this->config = array_merge($this->config, $config);
+        }
     }
 
     /**
@@ -38,9 +42,9 @@ class ClientBuilder
      *
      * @return ClientBuilder
      */
-    public static function create()
+    public static function create($config = [])
     {
-        return new self();
+        return new static($config);
     }
 
     /**
@@ -117,8 +121,6 @@ class ClientBuilder
 
     /**
      * Builds a Client based on the connections given.
-     *
-     * @return \GraphAware\Neo4j\Client\Client
      */
     public function build()
     {
@@ -153,7 +155,7 @@ class ClientBuilder
             }
         }
 
-        return new Client($connectionManager, $ev);
+        return new $this->config['client_class']($connectionManager, $ev);
     }
 
     /**

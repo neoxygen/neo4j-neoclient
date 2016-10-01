@@ -12,7 +12,7 @@ namespace GraphAware\Neo4j\Client\Transaction;
 
 use GraphAware\Common\Cypher\Statement;
 use GraphAware\Common\Transaction\TransactionInterface;
-use GraphAware\Neo4j\Client\Stack;
+use GraphAware\Neo4j\Client\StackInterface;
 
 class Transaction
 {
@@ -65,19 +65,19 @@ class Transaction
     /**
      * Push a statements Stack to the queue, without actually sending it.
      *
-     * @param \GraphAware\Neo4j\Client\Stack $stack
+     * @param \GraphAware\Neo4j\Client\StackInterface $stack
      */
-    public function pushStack(Stack $stack)
+    public function pushStack(StackInterface $stack)
     {
         $this->queue[] = $stack;
     }
 
     /**
-     * @param Stack $stack
+     * @param StackInterface $stack
      *
      * @return mixed
      */
-    public function runStack(Stack $stack)
+    public function runStack(StackInterface $stack)
     {
         if (!$this->driverTransaction->isOpen() && !in_array($this->driverTransaction->status(), ['COMMITED', 'ROLLED_BACK'])) {
             $this->driverTransaction->begin();
@@ -140,7 +140,7 @@ class Transaction
         if (!empty($this->queue)) {
             $stack = [];
             foreach ($this->queue as $element) {
-                if ($element instanceof Stack) {
+                if ($element instanceof StackInterface) {
                     foreach ($element->statements() as $statement) {
                         $stack[] = $statement;
                     }

@@ -17,8 +17,8 @@ use GraphAware\Common\Cypher\Statement;
 use GraphAware\Neo4j\Client\Exception\Neo4jException;
 use GraphAware\Bolt\Exception\MessageFailureException;
 use GraphAware\Neo4j\Client\HttpDriver\GraphDatabase as HttpGraphDB;
-use GraphAware\Neo4j\Client\Stack;
 use GraphAware\Neo4j\Client\HttpDriver\Configuration as HttpConfig;
+use GraphAware\Neo4j\Client\StackInterface;
 
 class Connection
 {
@@ -134,7 +134,7 @@ class Connection
         $pipeline = $this->createPipeline();
 
         foreach ($queue as $element) {
-            if ($element instanceof Stack) {
+            if ($element instanceof StackInterface) {
                 foreach ($element->statements() as $statement) {
                     $pipeline->push($statement->text(), $statement->parameters(), $statement->getTag());
                 }
