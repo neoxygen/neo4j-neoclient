@@ -121,6 +121,8 @@ class ClientBuilder
 
     /**
      * Builds a Client based on the connections given.
+     *
+     * @return ClientInterface
      */
     public function build()
     {
