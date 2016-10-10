@@ -51,4 +51,26 @@ class ResultIntegrationTest extends IntegrationTestCase
         $this->setExpectedException(InvalidArgumentException::class);
         $record->relationshipValue('r');
     }
+
+    /**
+     * @group issue54
+     */
+    public function testExceptionIsThrownWhenTryingToGetRecordOnEmptyCursor()
+    {
+        $this->emptyDb();
+        $result = $this->client->run('MATCH (n) RETURN n');
+        $this->setExpectedException(\RuntimeException::class);
+        $result->firstRecord();
+    }
+
+    /**
+     * @group issue54
+     */
+    public function testExceptionIsThrownWhenTryingToGetRecordOnEmptyCursorWithGetRecord()
+    {
+        $this->emptyDb();
+        $result = $this->client->run('MATCH (n) RETURN n');
+        $this->setExpectedException(\RuntimeException::class);
+        $result->getRecord();
+    }
 }
