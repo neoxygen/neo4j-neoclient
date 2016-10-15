@@ -100,7 +100,7 @@ class RecordView implements RecordViewInterface
      */
     public function relationshipValue($key)
     {
-        if (!isset($this->values[$key]) || !$this->value($key) instanceof Relationship) {
+        if (!$this->hasValue($key) || !$this->value($key) instanceof Relationship) {
             throw new \InvalidArgumentException(sprintf('value for %s is not of type %s', $key, Relationship::class));
         }
 
