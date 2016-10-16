@@ -1,5 +1,13 @@
 # Changelog for v4
 
+4.6.3 - 16 October 2016
+
+- Added a convenient method for having a default return when there is no record and firstRecord is called
+
+4.6.2 - 10 October 2016
+
+- Fixes Issue 54 (inconsistent behavior of getRecord on empty cursor between http and bolt
+
 4.6.0 - 01 October 2016
 
 - Client class parameterizable
