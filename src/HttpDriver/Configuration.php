@@ -16,6 +16,9 @@ class Configuration implements ConfigInterface
      */
     protected $curlInterface;
 
+    /**
+     * @return Configuration
+     */
     public static function create()
     {
         return new self();
@@ -29,16 +32,19 @@ class Configuration implements ConfigInterface
     public function withTimeout($timeout)
     {
         $this->timeout = $timeout;
+
         return $this;
     }
 
     /**
      * @param string $interface
+     *
      * @return $this
      */
     public function withCurlInterface($interface)
     {
         $this->curlInterface = $interface;
+
         return $this;
     }
 

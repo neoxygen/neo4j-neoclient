@@ -8,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace GraphAware\Neo4j\Client;
 
 use GraphAware\Common\Driver\ConfigInterface;
@@ -21,24 +22,30 @@ class ClientBuilder
 
     const DEFAULT_TIMEOUT = 5;
 
-    private static $TIMEOUT_CONFIG_KEY = 'timeout';
+    const TIMEOUT_CONFIG_KEY = 'timeout';
 
     /**
      * @var array
      */
     protected $config = [];
 
-    public function __construct($config = [])
+    /**
+     * @param array $config
+     */
+    public function __construct(array $config = [])
     {
         $this->config['connection_manager']['preflight_env'] = self::PREFLIGHT_ENV_DEFAULT;
-        $this->config['client_class'] = \GraphAware\Neo4j\Client\Client::class;
-        if(!empty($config)){
+        $this->config['client_class'] = Client::class;
+
+        if (!empty($config)) {
             $this->config = array_merge($this->config, $config);
         }
     }
 
     /**
      * Creates a new Client factory.
+     *
+     * @param array $config
      *
      * @return ClientBuilder
      */
@@ -50,11 +57,11 @@ class ClientBuilder
     /**
      * Add a connection to the handled connections.
      *
-     * @param string $alias
-     * @param string $uri
-     * @param array  $extraParameters
+     * @param string          $alias
+     * @param string          $uri
+     * @param ConfigInterface $config
      *
-     * @return $this
+     * @return ClientBuilder
      */
     public function addConnection($alias, $uri, ConfigInterface $config = null)
     {
@@ -66,6 +73,9 @@ class ClientBuilder
         return $this;
     }
 
+    /**
+     * @param string $variable
+     */
     public function preflightEnv($variable)
     {
         $this->config['connection_manager']['preflight_env'] = $variable;
@@ -82,12 +92,11 @@ class ClientBuilder
             throw new \InvalidArgumentException(sprintf('The connection "%s" is not registered',  (string) $connectionAlias));
         }
 
-        if (isset($this->config['connections'])) {
-            foreach ($this->config['connections'] as $k => $conn) {
-                $conn['is_master'] = false;
-                $this->config['connections'][$k] = $conn;
-            }
-        }
+        $this->config['connections'] = array_map(function ($connectionSettings) {
+            $connectionSettings['is_master'] = false;
+
+            return $connectionSettings;
+        }, $this->config['connections']);
 
         $this->config['connections'][$connectionAlias]['is_master'] = true;
 
@@ -101,7 +110,7 @@ class ClientBuilder
      */
     public function setDefaultTimeout($timeout)
     {
-        $this->config[self::$TIMEOUT_CONFIG_KEY] = (int) $timeout;
+        $this->config[static::TIMEOUT_CONFIG_KEY] = (int) $timeout;
 
         return $this;
     }
@@ -165,6 +174,6 @@ class ClientBuilder
      */
     private function getDefaultTimeout()
     {
-        return array_key_exists(self::$TIMEOUT_CONFIG_KEY, $this->config) ? $this->config[self::$TIMEOUT_CONFIG_KEY] : self::DEFAULT_TIMEOUT;
+        return array_key_exists(static::TIMEOUT_CONFIG_KEY, $this->config) ? $this->config[static::TIMEOUT_CONFIG_KEY] : self::DEFAULT_TIMEOUT;
     }
 }
