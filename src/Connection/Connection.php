@@ -17,7 +17,6 @@ use GraphAware\Common\Cypher\Statement;
 use GraphAware\Neo4j\Client\Exception\Neo4jException;
 use GraphAware\Bolt\Exception\MessageFailureException;
 use GraphAware\Neo4j\Client\HttpDriver\GraphDatabase as HttpGraphDB;
-use GraphAware\Neo4j\Client\HttpDriver\Configuration as HttpConfig;
 use GraphAware\Neo4j\Client\StackInterface;
 
 class Connection
@@ -46,11 +45,6 @@ class Connection
      * @var \GraphAware\Common\Driver\SessionInterface
      */
     private $session;
-
-    /**
-     * @var int
-     */
-    private $timeout;
 
     /**
      * Connection constructor.
@@ -89,7 +83,7 @@ class Connection
      * @param array $parameters
      * @param null  $tag
      *
-     * @return \GraphAware\Bolt\Protocol\Pipeline|\GraphAware\Neo4j\Client\HttpDriver\Pipeline
+     * @return \GraphAware\Common\Driver\PipelineInterface
      */
     public function createPipeline($query = null, $parameters = array(), $tag = null)
     {
@@ -104,7 +98,7 @@ class Connection
      * @param array|null  $parameters
      * @param null|string $tag
      *
-     * @return \GraphAware\Common\Result\AbstractRecordCursor
+     * @return \GraphAware\Common\Result\Result
      *
      * @throws Neo4jException
      */

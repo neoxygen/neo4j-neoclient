@@ -8,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace GraphAware\Neo4j\Client;
 
 use GraphAware\Common\Cypher\Statement;
@@ -48,7 +49,7 @@ class Stack implements StackInterface
      * @param null|string $tag
      * @param null|string $connectionAlias
      *
-     * @return Stack
+     * @return StackInterface
      */
     public static function create($tag = null, $connectionAlias = null)
     {

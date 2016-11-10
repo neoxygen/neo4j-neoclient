@@ -8,10 +8,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace GraphAware\Neo4j\Client;
 
 use GraphAware\Common\Cypher\Statement;
-use GraphAware\Common\Result\AbstractRecordCursor;
 use GraphAware\Common\Result\Record;
 use GraphAware\Neo4j\Client\Connection\ConnectionManager;
 use GraphAware\Neo4j\Client\Event\FailureEvent;
@@ -26,7 +26,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class Client implements ClientInterface
 {
-    const NEOCLIENT_VERSION = '4.0';
+    const NEOCLIENT_VERSION = '4.6.3';
 
     /**
      * @var ConnectionManager
@@ -38,10 +38,10 @@ class Client implements ClientInterface
      */
     protected $eventDispatcher;
 
-    public function __construct(ConnectionManager $connectionManager, EventDispatcherInterface $ev = null)
+    public function __construct(ConnectionManager $connectionManager, EventDispatcherInterface $eventDispatcher = null)
     {
         $this->connectionManager = $connectionManager;
-        $this->eventDispatcher = null !== $ev ? $ev : new EventDispatcher();
+        $this->eventDispatcher = null !== $eventDispatcher ? $eventDispatcher : new EventDispatcher();
     }
 
     /**
@@ -52,7 +52,7 @@ class Client implements ClientInterface
      * @param null|string $tag
      * @param null|string $connectionAlias
      *
-     * @return \GraphAware\Common\Result\Result
+     * @return \GraphAware\Common\Result\Result|null
      *
      * @throws \GraphAware\Neo4j\Client\Exception\Neo4jExceptionInterface
      */
@@ -85,25 +85,25 @@ class Client implements ClientInterface
      * @param null|array  $parameters
      * @param null|string $tag
      *
-     * @return AbstractRecordCursor
+     * @return \GraphAware\Common\Result\Result
      *
      * @throws Neo4jException
      */
     public function runWrite($query, $parameters = null, $tag = null)
     {
-        $connection = $this->connectionManager->getMasterConnection();
-
-        return $connection->run($query, $parameters, $tag);
+        return $this->connectionManager
+            ->getMasterConnection()
+            ->run($query, $parameters, $tag);
     }
 
     /**
-     * @deprecated since 4.0 - will be removed in 5.0 - use <code>$client->runWrite()</code> instead.
+     * @deprecated since 4.0 - will be removed in 5.0 - use <code>$client->runWrite()</code> instead
      *
      * @param string      $query
      * @param null|array  $parameters
      * @param null|string $tag
      *
-     * @return AbstractRecordCursor
+     * @return \GraphAware\Common\Result\Result
      *
      * @throws Neo4jException
      */
@@ -124,7 +124,7 @@ class Client implements ClientInterface
     }
 
     /**
-     * @param Stack $stack
+     * @param StackInterface $stack
      *
      * @return ResultCollection|null
      *
@@ -176,7 +176,7 @@ class Client implements ClientInterface
      * @param null|string $tag
      * @param null|string $connectionAlias
      *
-     * @return \GraphAware\Neo4j\Client\HttpDriver\Pipeline|\GraphAware\Bolt\Protocol\Pipeline
+     * @return \GraphAware\Common\Driver\PipelineInterface
      */
     private function pipeline($query = null, $parameters = null, $tag = null, $connectionAlias = null)
     {
@@ -187,33 +187,34 @@ class Client implements ClientInterface
 
     /**
      * @param string|null $conn
+     *
      * @return Label[]
      */
     public function getLabels($conn = null)
     {
         $connection = $this->connectionManager->getConnection($conn);
-        $result = $connection->getSession()->run("CALL db.labels()");
+        $result = $connection->getSession()->run('CALL db.labels()');
 
-        return array_map(function(Record $record) {
+        return array_map(function (Record $record) {
             return new Label($record->get('label'));
         }, $result->records());
     }
 
     /**
-     * @deprecated since 4.0 - will be removed in 5.0 - use <code>$client->run()</code> instead.
+     * @deprecated since 4.0 - will be removed in 5.0 - use <code>$client->run()</code> instead
      *
      * @param string      $query
      * @param null|array  $parameters
      * @param null|string $tag
      * @param null|string $connectionAlias
      *
-     * @return AbstractRecordCursor
+     * @return \GraphAware\Common\Result\Result
      */
     public function sendCypherQuery($query, $parameters = null, $tag = null, $connectionAlias = null)
     {
-        $connection = $this->connectionManager->getConnection($connectionAlias);
-
-        return $connection->run($query, $parameters, $tag);
+        return $this->connectionManager
+            ->getConnection($connectionAlias)
+            ->run($query, $parameters, $tag);
     }
 
     /**
