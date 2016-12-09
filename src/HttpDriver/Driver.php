@@ -16,6 +16,8 @@ use GraphAware\Common\Driver\ConfigInterface;
 
 class Driver implements DriverInterface
 {
+    const DEFAULT_HTTP_PORT = 7474;
+
     /**
      * @var string
      */
