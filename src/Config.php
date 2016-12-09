@@ -10,9 +10,11 @@
  */
 namespace GraphAware\Neo4j\Client;
 
+use GraphAware\Neo4j\Client\HttpDriver\Driver;
+
 class Config
 {
-    protected $defaultHttpPort = 7474;
+    protected $defaultHttpPort = Driver::DEFAULT_HTTP_PORT;
 
     protected $defaultTcpPort = 8687;
 
