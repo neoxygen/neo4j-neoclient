@@ -208,7 +208,7 @@ $query = "MATCH (n:Person) n, n.name as name, n.age as age";
 $result = $client->run($query);
 
 foreach ($result->records() as $record) {
-    print_r($record->get('n'); // nodes returned are automatically hydrated to Node objects
+    print_r($record->get('n')); // nodes returned are automatically hydrated to Node objects
 
     echo $record->value('name') . PHP_EOL;
     echo $record->value('age') . PHP_EOL;
