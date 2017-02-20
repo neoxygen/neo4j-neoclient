@@ -58,7 +58,7 @@ You can:
 
 ### Implementations
 
-* [Symfony Framework Bundle](https://github.com/PandawanTechnology/Neo4jBundle)
+* [Symfony Framework Bundle](https://github.com/neo4j-contrib/neo4j-symfony)
 
 ## Installation and basic usage
 
