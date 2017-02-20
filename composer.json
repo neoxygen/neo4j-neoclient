@@ -10,7 +10,7 @@
         "client",
         "bolt",
         "http",
-        "high-availibility"
+        "high-availability"
     ],
     "homepage": "http://graphaware.com",
     "license": "MIT",
