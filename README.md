@@ -464,7 +464,7 @@ The event dispatcher is available via the client with the `$client->getEventDisp
 
 ### Settings
 
-#### Timeout
+#### Timeout (deprecated)
 
 You can configure a global timeout for the connections :
 
@@ -477,6 +477,8 @@ $client = ClientBuilder::create()
 
 The timeout by default is 5 seconds.
 
+This feature is deprecated and will be removed in version 5. See Http client settings below. 
+
 ### TLS
 
 You can enable TLS encryption for the Bolt Protocol by passing a `Configuration` instance when building the connection, here
@@ -487,6 +489,26 @@ $config = \GraphAware\Bolt\Configuration::newInstance()
     ->withCredentials('bolttest', 'L7n7SfTSj')
     ->withTLSMode(\GraphAware\Bolt\Configuration::TLSMODE_REQUIRED);
 
+$driver = \GraphAware\Bolt\GraphDatabase::driver('bolt://hodccomjfkgdenl.dbs.gdb.com:24786', $config);
+$session = $driver->session();
+```
+
+#### HTTP client settings
+
+We use HTTPlug to give you full control of the HTTP client. Version 4 of the Neo4jClient comes with Guzzle6 by default
+to preserve backward compatibility. Version 5 will give you the option to choose whatever client you want. Read more
+about HTTPlug [in their documentation](http://docs.php-http.org/en/latest/httplug/users.html).
+
+To configure your client you may add it to `Configuration`. 
+
+```php
+$options = [
+    CURLOPT_CONNECTTIMEOUT => 3, // The number of seconds to wait while trying to connect.
+    CURLOPT_SSL_VERIFYPEER => false // Stop cURL from verifying the peer's certificate
+];
+$httpClient = new Client(null, null, $options);
+
+$config = \GraphAware\Neo4j\Client\HttpDriver\Configuration::create($httpClient);
 $driver = \GraphAware\Bolt\GraphDatabase::driver('bolt://hodccomjfkgdenl.dbs.gdb.com:24786', $config);
 $session = $driver->session();
 ```
