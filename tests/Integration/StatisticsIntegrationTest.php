@@ -11,8 +11,6 @@
 
 namespace GraphAware\Neo4j\Client\Tests\Integration;
 
-use GraphAware\Neo4j\Client\Tests\Integration\IntegrationTestCase;
-
 /**
  * Class StatisticsIntegrationTest.
  *

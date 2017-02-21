@@ -80,7 +80,7 @@ class ClientBuilder
     public function setMaster($connectionAlias)
     {
         if (!isset($this->config['connections']) || !array_key_exists($connectionAlias, $this->config['connections'])) {
-            throw new \InvalidArgumentException(sprintf('The connection "%s" is not registered',  (string) $connectionAlias));
+            throw new \InvalidArgumentException(sprintf('The connection "%s" is not registered', (string) $connectionAlias));
         }
 
         if (isset($this->config['connections'])) {

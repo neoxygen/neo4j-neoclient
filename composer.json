@@ -19,6 +19,7 @@
         "symfony/event-dispatcher": "^2.7|^3.0"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.0",
         "phpunit/phpunit": "^4.0",
         "symfony/stopwatch": "^3.0"
     },
