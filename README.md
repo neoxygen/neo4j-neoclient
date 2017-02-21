@@ -513,7 +513,7 @@ $options = [
 ];
 $httpClient = new Client(null, null, $options);
 
-$config = \GraphAware\Neo4j\Client\HttpDriver\Configuration::craete($httpClient);
+$config = \GraphAware\Neo4j\Client\HttpDriver\Configuration::create($httpClient);
 $driver = \GraphAware\Bolt\GraphDatabase::driver('bolt://hodccomjfkgdenl.dbs.gdb.com:24786', $config);
 $session = $driver->session();
 ```
