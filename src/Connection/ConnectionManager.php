@@ -11,8 +11,6 @@
 
 namespace GraphAware\Neo4j\Client\Connection;
 
-use GraphAware\Neo4j\Client\HttpDriver\Configuration;
-
 class ConnectionManager
 {
     /**

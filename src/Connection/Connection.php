@@ -11,7 +11,7 @@
 
 namespace GraphAware\Neo4j\Client\Connection;
 
-use GraphAware\Bolt\Configuration;
+use GraphAware\Bolt\Configuration as BoltConfiguration;
 use GraphAware\Bolt\Driver as BoltDriver;
 use GraphAware\Bolt\Exception\MessageFailureException;
 use GraphAware\Bolt\GraphDatabase as BoltGraphDB;
@@ -170,7 +170,7 @@ class Connection
             $uri = sprintf('%s://%s:%d', $params['scheme'], $params['host'], $port);
             $config = null;
             if (isset($params['user']) && isset($params['pass'])) {
-                $config = Configuration::newInstance()->withCredentials($params['user'], $params['pass']);
+                $config = BoltConfiguration::newInstance()->withCredentials($params['user'], $params['pass']);
             }
             $this->driver = BoltGraphDB::driver($uri, $config);
         } elseif (preg_match('/http/', $this->uri)) {

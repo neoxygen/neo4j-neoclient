@@ -17,8 +17,8 @@ use GraphAware\Common\GraphDatabaseInterface;
 class GraphDatabase implements GraphDatabaseInterface
 {
     /**
-     * @param string               $uri
-     * @param ConfigInterface|null $config
+     * @param string             $uri
+     * @param Configuration|null $config
      *
      * @return Driver
      */
