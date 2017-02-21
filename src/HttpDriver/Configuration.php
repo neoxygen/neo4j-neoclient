@@ -25,6 +25,9 @@ class Configuration implements ConfigInterface
      */
     protected $curlInterface;
 
+    /**
+     * @return Configuration
+     */
     public static function create()
     {
         return new self();

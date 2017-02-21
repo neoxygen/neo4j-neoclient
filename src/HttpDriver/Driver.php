@@ -17,6 +17,8 @@ use GuzzleHttp\Client;
 
 class Driver implements DriverInterface
 {
+    const DEFAULT_HTTP_PORT = 7474;
+
     /**
      * @var string
      */

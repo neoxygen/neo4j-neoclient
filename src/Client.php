@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * This file is part of the GraphAware Neo4j Client package.
  *
  * (c) GraphAware Limited <http://graphaware.com>
@@ -12,7 +12,6 @@
 namespace GraphAware\Neo4j\Client;
 
 use GraphAware\Common\Cypher\Statement;
-use GraphAware\Common\Result\AbstractRecordCursor;
 use GraphAware\Common\Result\Record;
 use GraphAware\Neo4j\Client\Connection\ConnectionManager;
 use GraphAware\Neo4j\Client\Event\FailureEvent;
@@ -27,7 +26,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class Client implements ClientInterface
 {
-    const NEOCLIENT_VERSION = '4.0';
+    const NEOCLIENT_VERSION = '4.6.3';
 
     /**
      * @var ConnectionManager
@@ -39,10 +38,10 @@ class Client implements ClientInterface
      */
     protected $eventDispatcher;
 
-    public function __construct(ConnectionManager $connectionManager, EventDispatcherInterface $ev = null)
+    public function __construct(ConnectionManager $connectionManager, EventDispatcherInterface $eventDispatcher = null)
     {
         $this->connectionManager = $connectionManager;
-        $this->eventDispatcher = null !== $ev ? $ev : new EventDispatcher();
+        $this->eventDispatcher = null !== $eventDispatcher ? $eventDispatcher : new EventDispatcher();
     }
 
     /**
@@ -53,16 +52,16 @@ class Client implements ClientInterface
      * @param null|string $tag
      * @param null|string $connectionAlias
      *
-     * @throws \GraphAware\Neo4j\Client\Exception\Neo4jExceptionInterface
+     * @return \GraphAware\Common\Result\Result|null
      *
-     * @return \GraphAware\Common\Result\Result
+     * @throws \GraphAware\Neo4j\Client\Exception\Neo4jExceptionInterface
      */
     public function run($query, $parameters = null, $tag = null, $connectionAlias = null)
     {
         $connection = $this->connectionManager->getConnection($connectionAlias);
-        $params = null !== $parameters ? $parameters : [];
+        $params = null !== $parameters ? $parameters : array();
         $statement = Statement::create($query, $params, $tag);
-        $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_PRE_RUN, new PreRunEvent([$statement]));
+        $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_PRE_RUN, new PreRunEvent(array($statement)));
 
         try {
             $result = $connection->run($query, $parameters, $tag);
@@ -86,15 +85,15 @@ class Client implements ClientInterface
      * @param null|array  $parameters
      * @param null|string $tag
      *
-     * @throws Neo4jException
+     * @return \GraphAware\Common\Result\Result
      *
-     * @return AbstractRecordCursor
+     * @throws Neo4jException
      */
     public function runWrite($query, $parameters = null, $tag = null)
     {
-        $connection = $this->connectionManager->getMasterConnection();
-
-        return $connection->run($query, $parameters, $tag);
+        return $this->connectionManager
+            ->getMasterConnection()
+            ->run($query, $parameters, $tag);
     }
 
     /**
@@ -104,9 +103,9 @@ class Client implements ClientInterface
      * @param null|array  $parameters
      * @param null|string $tag
      *
-     * @throws Neo4jException
+     * @return \GraphAware\Common\Result\Result
      *
-     * @return AbstractRecordCursor
+     * @throws Neo4jException
      */
     public function sendWriteQuery($query, $parameters = null, $tag = null)
     {
@@ -125,11 +124,11 @@ class Client implements ClientInterface
     }
 
     /**
-     * @param Stack $stack
-     *
-     * @throws Neo4jException
+     * @param StackInterface $stack
      *
      * @return ResultCollection|null
+     *
+     * @throws Neo4jException
      */
     public function runStack(StackInterface $stack)
     {
@@ -177,7 +176,7 @@ class Client implements ClientInterface
      * @param null|string $tag
      * @param null|string $connectionAlias
      *
-     * @return \GraphAware\Neo4j\Client\HttpDriver\Pipeline|\GraphAware\Bolt\Protocol\Pipeline
+     * @return \GraphAware\Common\Driver\PipelineInterface
      */
     private function pipeline($query = null, $parameters = null, $tag = null, $connectionAlias = null)
     {
@@ -209,13 +208,13 @@ class Client implements ClientInterface
      * @param null|string $tag
      * @param null|string $connectionAlias
      *
-     * @return AbstractRecordCursor
+     * @return \GraphAware\Common\Result\Result
      */
     public function sendCypherQuery($query, $parameters = null, $tag = null, $connectionAlias = null)
     {
-        $connection = $this->connectionManager->getConnection($connectionAlias);
-
-        return $connection->run($query, $parameters, $tag);
+        return $this->connectionManager
+            ->getConnection($connectionAlias)
+            ->run($query, $parameters, $tag);
     }
 
     /**

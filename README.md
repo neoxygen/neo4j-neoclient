@@ -58,7 +58,7 @@ You can:
 
 ### Implementations
 
-* [Symfony Framework Bundle](https://github.com/PandawanTechnology/Neo4jBundle)
+* [Symfony Framework Bundle](https://github.com/neo4j-contrib/neo4j-symfony)
 
 ## Installation and basic usage
 
@@ -207,7 +207,7 @@ $query = 'MATCH (n:Person) n, n.name as name, n.age as age';
 $result = $client->run($query);
 
 foreach ($result->records() as $record) {
-    print_r($record->get('n'); // nodes returned are automatically hydrated to Node objects
+    print_r($record->get('n')); // nodes returned are automatically hydrated to Node objects
 
     echo $record->value('name') . PHP_EOL;
     echo $record->value('age') . PHP_EOL;

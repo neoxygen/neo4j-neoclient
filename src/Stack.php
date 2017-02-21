@@ -49,7 +49,7 @@ class Stack implements StackInterface
      * @param null|string $tag
      * @param null|string $connectionAlias
      *
-     * @return Stack
+     * @return StackInterface
      */
     public static function create($tag = null, $connectionAlias = null)
     {

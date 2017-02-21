@@ -71,7 +71,7 @@ class Result extends AbstractRecordCursor
             return $this->records[0];
         }
 
-        throw new \RuntimeException('There is no recrods');
+        throw new \RuntimeException('There is no records');
     }
 
     /**
@@ -139,7 +139,7 @@ class Result extends AbstractRecordCursor
             return $this->records[0];
         }
 
-        throw new \RuntimeException('There is no recrods');
+        throw new \RuntimeException('There is no records');
     }
 
     /**
