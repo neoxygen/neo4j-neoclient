@@ -9,7 +9,7 @@
 
 ## Introduction
 
-Neo4j-PHP-Client is the most advanced and flexible [Neo4j](http://neo4j.com) Client for PHP. 
+Neo4j-PHP-Client is the most advanced and flexible [Neo4j](http://neo4j.com) Client for PHP.
 
 ### What is Neo4j?
 
@@ -94,20 +94,20 @@ NB: The build method will process configuration settings and return you a `Clien
 #### Sending a Cypher Query
 
 ```php
-$client->run("CREATE (n:Person)");
+$client->run('CREATE (n:Person)');
 ```
 
 #### Sending a Cypher Query with parameters
 
 ```php
-$client->run("CREATE (n:Person) SET n += {infos}", ['infos' => ['name' => 'Ales', 'age' => 34]]);
+$client->run('CREATE (n:Person) SET n += {infos}', ['infos' => ['name' => 'Ales', 'age' => 34]]);
 ```
 
 #### Reading a Result
 
 ```php
-$result = $client->run("MATCH (n:Person) RETURN n");
-// a result contains always a collection (array) of Record objects
+$result = $client->run('MATCH (n:Person) RETURN n');
+// a result always contains a collection (array) of Record objects
 
 // get all records
 $records = $result->getRecords();
@@ -120,7 +120,7 @@ $record = $result->getRecord();
 A `Record` object contains the values of one record from your Cypher query :
 
 ```php
-$query = "MATCH (n:Person)-[:FOLLOWS]->(friend) RETURN n.name, collect(friend) as friends";
+$query = 'MATCH (n:Person)-[:FOLLOWS]->(friend) RETURN n.name, collect(friend) as friends';
 $result = $client->run($query);
 
 foreach ($result->getRecords() as $record) {
@@ -135,7 +135,6 @@ Ideally, you would stack your statements and issue them all at once in order to 
 You can create Cypher statement stacks that act as a Bag and run this stack with the client, example :
 
 ```php
-
 $stack = $client->stack();
 
 $stack->push('CREATE (n:Person {uuid: {uuid} })', ['uuid' => '123-fff']);
@@ -204,7 +203,7 @@ Each record contains one row of values returned by the Cypher query :
 
 ```
 
-$query = "MATCH (n:Person) n, n.name as name, n.age as age";
+$query = 'MATCH (n:Person) n, n.name as name, n.age as age';
 $result = $client->run($query);
 
 foreach ($result->records() as $record) {
@@ -280,9 +279,9 @@ A `Result` is a collection of `Record` objects, every **row** you see in the bro
 In contrary to the previous versions of the client, there is no more automatic merging of all the records into one big record, so you will need to iterate all the records from the `Result` :
 
 ```php
-$query = "MATCH (n:Address)
+$query = 'MATCH (n:Address)
 RETURN n.address as addr, n, collect(id(n)) as ids
-LIMIT 5";
+LIMIT 5';
 $result = $client->run($query);
 
 foreach ($result->records() as $record) {
@@ -349,7 +348,6 @@ The Client provides a Transaction object that ease how you would work with trans
 #### Creating a Transaction
 
 ```php
-
 $tx = $client->transaction();
 ```
 
@@ -358,7 +356,7 @@ At this stage, nothing has been sent to the server yet (the statement BEGIN has 
 #### Stack a query
 
 ```
-$tx->push("CREATE (n:Person) RETURN id(n)");
+$tx->push('CREATE (n:Person) RETURN id(n)');
 ```
 
 Again, until now nothing has been sent.
@@ -368,19 +366,16 @@ Again, until now nothing has been sent.
 Sometimes you want to get an immediate result of a statement inside the transaction, this can be done with the `run` method :
 
 ```php
-
-$result = $tx->run("CREATE (n:Person) SET n.name = {name} RETURN id(n)", ['name' => 'Michal']);
+$result = $tx->run('CREATE (n:Person) SET n.name = {name} RETURN id(n)', ['name' => 'Michal']);
 
 echo $result->getRecord()->value("id(n)");
 ```
 
 If the transaction has not yet begun, the BEGIN of the transaction will be done automatically.
-```
 
 #### You can also push or run Stacks
 
 ```php
-
 $stack = $client->stack();
 $stack->push('CREATE (n:Person {uuid: {uuid} })', ['uuid' => '123-fff']);
 $stack->push('MATCH (n:Person {uuid: {uuid1} }), (n2:Person {uuid: {uuid2} }) MERGE (n)-[:FOLLOWS]->(n2)', ['uuid1' => '123-fff', 'uuid2' => '456-ddd']);
@@ -401,7 +396,7 @@ $stack->push('CREATE (n:Person {uuid: {uuid} })', ['uuid' => '123-fff']);
 $stack->push('MATCH (n:Person {uuid: {uuid1} }), (n2:Person {uuid: {uuid2} }) MERGE (n)-[:FOLLOWS]->(n2)', ['uuid1' => '123-fff', 'uuid2' => '456-ddd']);
 
 $tx->pushStack($stack);
-$tx->pushQuery("MATCH (n) RETURN count(n)");
+$tx->pushQuery('MATCH (n) RETURN count(n)');
 
 $results = $tx->commit();
 ```
@@ -521,7 +516,3 @@ $session = $driver->session();
 ### License
 
 The library is released under the MIT License, refer to the LICENSE file bundled with this package.
-
-
-
-

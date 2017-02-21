@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the GraphAware Neo4j Client package.
  *
  * (c) GraphAware Limited <http://graphaware.com>
@@ -63,7 +63,7 @@ class Stack implements StackInterface
      */
     public function push($query, $parameters = null, $tag = null)
     {
-        $params = null !== $parameters ? $parameters : array();
+        $params = null !== $parameters ? $parameters : [];
         $this->statements[] = Statement::create($query, $params, $tag);
     }
 
@@ -74,7 +74,7 @@ class Stack implements StackInterface
      */
     public function addPreflight($query, $parameters = null, $tag = null)
     {
-        $params = null !== $parameters ? $parameters : array();
+        $params = null !== $parameters ? $parameters : [];
         $this->preflights[] = Statement::create($query, $params, $tag);
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the GraphAware Neo4j Client package.
  *
  * (c) GraphAware Limited <http://graphaware.com>
@@ -29,6 +29,6 @@ abstract class ExampleTestCase extends \PHPUnit_Framework_TestCase
 
     public function emptyDB()
     {
-        $this->client->run("MATCH (n) DETACH DELETE n");
+        $this->client->run('MATCH (n) DETACH DELETE n');
     }
 }

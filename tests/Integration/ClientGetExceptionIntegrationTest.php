@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the GraphAware Neo4j Client package.
  *
  * (c) GraphAware Limited <http://graphaware.com>
@@ -23,6 +23,6 @@ class ClientGetExceptionIntegrationTest extends \PHPUnit_Framework_TestCase
             ->build();
 
         $this->setExpectedException(Neo4jException::class);
-        $result = $client->run("CREATE (n:Cool");
+        $result = $client->run('CREATE (n:Cool');
     }
 }
