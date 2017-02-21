@@ -59,9 +59,10 @@ class Configuration implements ConfigInterface
      */
     public function setHttpClient(HttpClient $httpClient)
     {
-        $this->httpClient = $httpClient;
+        $new = clone $this;
+        $new->httpClient = $httpClient;
 
-        return $this;
+        return $new;
     }
 
     /**
@@ -79,9 +80,10 @@ class Configuration implements ConfigInterface
      */
     public function setRequestFactory(RequestFactory $requestFactory)
     {
-        $this->requestFactory = $requestFactory;
+        $new = clone $this;
+        $new->requestFactory = $requestFactory;
 
-        return $this;
+        return $new;
     }
 
     /**
