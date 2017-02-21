@@ -494,8 +494,9 @@ $config = \GraphAware\Bolt\Configuration::newInstance()
     ->withCredentials('bolttest', 'L7n7SfTSj')
     ->withTLSMode(\GraphAware\Bolt\Configuration::TLSMODE_REQUIRED);
 
-$driver = \GraphAware\Bolt\GraphDatabase::driver('bolt://hodccomjfkgdenl.dbs.gdb.com:24786', $config);
-$session = $driver->session();
+$client = ClientBuilder::create()
+    ->addConnection('default', 'bolt://hodccomjfkgdenl.dbs.gdb.com:24786', config)
+    ->build();
 ```
 
 #### HTTP client settings
@@ -514,8 +515,9 @@ $options = [
 $httpClient = new Client(null, null, $options);
 
 $config = \GraphAware\Neo4j\Client\HttpDriver\Configuration::create($httpClient);
-$driver = \GraphAware\Bolt\GraphDatabase::driver('bolt://hodccomjfkgdenl.dbs.gdb.com:24786', $config);
-$session = $driver->session();
+$client = ClientBuilder::create()
+    ->addConnection('default', 'http://neo4j:password@localhost:7474', config)
+    ->build();
 ```
 
 ### License
