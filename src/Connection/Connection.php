@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the GraphAware Neo4j Client package.
  *
  * (c) GraphAware Limited <http://graphaware.com>
@@ -8,14 +8,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace GraphAware\Neo4j\Client\Connection;
 
 use GraphAware\Bolt\Configuration;
 use GraphAware\Bolt\Driver as BoltDriver;
+use GraphAware\Bolt\Exception\MessageFailureException;
 use GraphAware\Bolt\GraphDatabase as BoltGraphDB;
 use GraphAware\Common\Cypher\Statement;
 use GraphAware\Neo4j\Client\Exception\Neo4jException;
-use GraphAware\Bolt\Exception\MessageFailureException;
 use GraphAware\Neo4j\Client\HttpDriver\GraphDatabase as HttpGraphDB;
 use GraphAware\Neo4j\Client\StackInterface;
 
@@ -49,9 +50,9 @@ class Connection
     /**
      * Connection constructor.
      *
-     * @param string $alias
-     * @param string $uri
-     * @param Configuration|null   $config
+     * @param string             $alias
+     * @param string             $uri
+     * @param Configuration|null $config
      */
     public function __construct($alias, $uri, $config = null)
     {
@@ -85,10 +86,10 @@ class Connection
      *
      * @return \GraphAware\Common\Driver\PipelineInterface
      */
-    public function createPipeline($query = null, $parameters = array(), $tag = null)
+    public function createPipeline($query = null, $parameters = [], $tag = null)
     {
         $this->checkSession();
-        $parameters = is_array($parameters) ? $parameters : array();
+        $parameters = is_array($parameters) ? $parameters : [];
 
         return $this->session->createPipeline($query, $parameters, $tag);
     }
@@ -98,9 +99,9 @@ class Connection
      * @param array|null  $parameters
      * @param null|string $tag
      *
-     * @return \GraphAware\Common\Result\Result
-     *
      * @throws Neo4jException
+     *
+     * @return \GraphAware\Common\Result\Result
      */
     public function run($statement, $parameters = null, $tag = null)
     {

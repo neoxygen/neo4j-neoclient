@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the GraphAware Neo4j Client package.
  *
  * (c) GraphAware Limited <http://graphaware.com>
@@ -52,16 +52,16 @@ class Client implements ClientInterface
      * @param null|string $tag
      * @param null|string $connectionAlias
      *
-     * @return \GraphAware\Common\Result\Result|null
-     *
      * @throws \GraphAware\Neo4j\Client\Exception\Neo4jExceptionInterface
+     *
+     * @return \GraphAware\Common\Result\Result|null
      */
     public function run($query, $parameters = null, $tag = null, $connectionAlias = null)
     {
         $connection = $this->connectionManager->getConnection($connectionAlias);
-        $params = null !== $parameters ? $parameters : array();
+        $params = null !== $parameters ? $parameters : [];
         $statement = Statement::create($query, $params, $tag);
-        $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_PRE_RUN, new PreRunEvent(array($statement)));
+        $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_PRE_RUN, new PreRunEvent([$statement]));
 
         try {
             $result = $connection->run($query, $parameters, $tag);
@@ -85,9 +85,9 @@ class Client implements ClientInterface
      * @param null|array  $parameters
      * @param null|string $tag
      *
-     * @return \GraphAware\Common\Result\Result
-     *
      * @throws Neo4jException
+     *
+     * @return \GraphAware\Common\Result\Result
      */
     public function runWrite($query, $parameters = null, $tag = null)
     {
@@ -103,9 +103,9 @@ class Client implements ClientInterface
      * @param null|array  $parameters
      * @param null|string $tag
      *
-     * @return \GraphAware\Common\Result\Result
-     *
      * @throws Neo4jException
+     *
+     * @return \GraphAware\Common\Result\Result
      */
     public function sendWriteQuery($query, $parameters = null, $tag = null)
     {
@@ -126,9 +126,9 @@ class Client implements ClientInterface
     /**
      * @param StackInterface $stack
      *
-     * @return ResultCollection|null
-     *
      * @throws Neo4jException
+     *
+     * @return ResultCollection|null
      */
     public function runStack(StackInterface $stack)
     {
