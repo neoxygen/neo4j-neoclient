@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace GraphAware\Neo4j\Client\tests\Issues;
+namespace GraphAware\Neo4j\Client\Tests\Issues;
 
 use GraphAware\Neo4j\Client\Tests\Integration\IntegrationTestCase;
 

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace GraphAware\Neo4j\Client\tests\Integration;
+namespace GraphAware\Neo4j\Client\Tests\Integration;
 
 use GraphAware\Bolt\Result\Type\Node as BoltNode;
 use GraphAware\Bolt\Result\Type\Relationship as BoltRelationship;

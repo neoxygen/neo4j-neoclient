@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace GraphAware\Neo4j\Client\tests\Integration;
+namespace GraphAware\Neo4j\Client\Tests\Integration;
 
 use GraphAware\Bolt\Exception\MessageFailureException;
 use GraphAware\Neo4j\Client\Exception\Neo4jException;

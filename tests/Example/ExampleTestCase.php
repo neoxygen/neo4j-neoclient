@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace GraphAware\Neo4j\Client\tests\Example;
+namespace GraphAware\Neo4j\Client\Tests\Example;
 
 use GraphAware\Neo4j\Client\ClientBuilder;
 

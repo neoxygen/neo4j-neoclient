@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace GraphAware\Neo4j\Client\tests\Unit\Connection;
+namespace GraphAware\Neo4j\Client\Tests\Unit\Connection;
 
 use GraphAware\Neo4j\Client\Connection\Connection;
 use GraphAware\Neo4j\Client\HttpDriver\Driver as HttpDriver;
