@@ -16,7 +16,7 @@ use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
 use Http\Discovery\MessageFactoryDiscovery;
 use Http\Message\RequestFactory;
-use GraphAware\Common\Connection\Configuration as BaseConfiguration;
+use GraphAware\Common\Connection\BaseConfiguration;
 
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>

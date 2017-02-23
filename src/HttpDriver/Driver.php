@@ -11,6 +11,8 @@
 
 namespace GraphAware\Neo4j\Client\HttpDriver;
 
+use GraphAware\Common\Connection\BaseConfiguration;
+use GraphAware\Common\Driver\ConfigInterface;
 use GraphAware\Common\Driver\DriverInterface;
 use Http\Adapter\Guzzle6\Client;
 
@@ -32,7 +34,7 @@ class Driver implements DriverInterface
      * @param string        $uri
      * @param Configuration $config
      */
-    public function __construct($uri, $config = null)
+    public function __construct($uri, ConfigInterface $config = null)
     {
         if (null !== $config && !$config instanceof Configuration) {
             throw new \RuntimeException(sprintf('Second argument to "%s" must be null or "%s"', __CLASS__, Configuration::class));
@@ -65,16 +67,16 @@ class Driver implements DriverInterface
     private function getHttpClient()
     {
         $options = [];
-        if (null !== $this->config->getTimeout()) {
-            $options['timeout'] = $this->config->getTimeout();
+        if ($this->config->hasValue('timeout')) {
+            $options['timeout'] = $this->config->getValue('timeout');
         }
 
-        if (null !== $this->config->getCurlInterface()) {
-            $options['curl'][10062] = $this->config->getCurlInterface();
+        if ($this->config->hasValue('curl_interface')) {
+            $options['curl'][10062] = $this->config->getValue('curl_interface');
         }
 
         if (empty($options)) {
-            return $this->config->getHttpClient();
+            return $this->config->get('http_client');
         }
 
         // This is to keep BC. Will be removed in 5.0

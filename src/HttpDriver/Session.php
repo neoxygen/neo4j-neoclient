@@ -11,6 +11,7 @@
 
 namespace GraphAware\Neo4j\Client\HttpDriver;
 
+use GraphAware\Common\Driver\ConfigInterface;
 use GraphAware\Common\Driver\SessionInterface;
 use GraphAware\Common\Transaction\TransactionInterface;
 use GraphAware\Neo4j\Client\Exception\Neo4jException;
@@ -63,7 +64,7 @@ class Session implements SessionInterface
      * @param GuzzleClient|HttpClient $httpClient
      * @param Configuration           $config
      */
-    public function __construct($uri, $httpClient, $config)
+    public function __construct($uri, $httpClient, ConfigInterface $config)
     {
         if ($httpClient instanceof GuzzleClient) {
             @trigger_error('Passing a Guzzle client to Session is deprecrated. Will be removed in 5.0. Use a HTTPlug client');

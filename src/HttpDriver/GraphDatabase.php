@@ -11,15 +11,15 @@
 
 namespace GraphAware\Neo4j\Client\HttpDriver;
 
-use GraphAware\Common\Connection\Configuration;
+use GraphAware\Common\Connection\BaseConfiguration;
 use GraphAware\Common\Driver\ConfigInterface;
 use GraphAware\Common\GraphDatabaseInterface;
 
 class GraphDatabase implements GraphDatabaseInterface
 {
     /**
-     * @param string             $uri
-     * @param Configuration|null $config
+     * @param string                 $uri
+     * @param BaseConfiguration|null $config
      *
      * @return Driver
      */
