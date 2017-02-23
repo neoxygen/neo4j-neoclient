@@ -16,8 +16,12 @@ use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
 use Http\Discovery\MessageFactoryDiscovery;
 use Http\Message\RequestFactory;
+use GraphAware\Common\Connection\BaseConfiguration;
 
-class Configuration implements ConfigInterface
+/**
+ * @author Tobias Nyholm <tobias.nyholm@gmail.com>
+ */
+class Configuration extends BaseConfiguration implements ConfigInterface
 {
     /**
      * @var int
@@ -32,33 +36,14 @@ class Configuration implements ConfigInterface
     protected $curlInterface;
 
     /**
-     * @var HttpClient
-     */
-    private $httpClient;
-
-    /**
-     * @var RequestFactory
-     */
-    private $requestFactory;
-
-    /**
      * @return Configuration
      */
     public static function create(HttpClient $httpClient = null, RequestFactory $requestFactory = null)
     {
-        $config = new self();
-        $config->httpClient = $httpClient ?: HttpClientDiscovery::find();
-        $config->requestFactory = $requestFactory ?: MessageFactoryDiscovery::find();
-
-        return $config;
-    }
-
-    /**
-     * @return HttpClient
-     */
-    public function getHttpClient()
-    {
-        return $this->httpClient;
+        return new self([
+            'http_client' => $httpClient ?: HttpClientDiscovery::find(),
+            'request_factory' => $requestFactory ?: MessageFactoryDiscovery::find(),
+        ]);
     }
 
     /**
@@ -68,18 +53,7 @@ class Configuration implements ConfigInterface
      */
     public function setHttpClient(HttpClient $httpClient)
     {
-        $new = clone $this;
-        $new->httpClient = $httpClient;
-
-        return $new;
-    }
-
-    /**
-     * @return RequestFactory
-     */
-    public function getRequestFactory()
-    {
-        return $this->requestFactory;
+        return $this->setValue('http_client', $httpClient);
     }
 
     /**
@@ -89,36 +63,29 @@ class Configuration implements ConfigInterface
      */
     public function setRequestFactory(RequestFactory $requestFactory)
     {
-        $new = clone $this;
-        $new->requestFactory = $requestFactory;
-
-        return $new;
+        return $this->setValue('request_factory', $requestFactory);
     }
 
     /**
      * @param int $timeout
      *
      * @return Configuration
-     * @deprecated Will be removed in 5.0
+     * @deprecated Will be removed in 5.0. The Timeout option will disappear.
      */
     public function withTimeout($timeout)
     {
-        $this->timeout = $timeout;
-
-        return $this;
+        return $this->setValue('timeout', $timeout);
     }
 
     /**
      * @param string $interface
      *
      * @return $this
-     * @deprecated Will be removed in 5.0
+     * @deprecated Will be removed in 5.0. The CurlInterface option will disappear.
      */
     public function withCurlInterface($interface)
     {
-        $this->curlInterface = $interface;
-
-        return $this;
+        return $this->setValue('curl_interface', $interface);
     }
 
     /**
@@ -127,15 +94,15 @@ class Configuration implements ConfigInterface
      */
     public function getTimeout()
     {
-        return $this->timeout;
+        return $this->getValue('timeout');
     }
 
     /**
      * @return string
-     * @deprecated Will be removed in 5.0
+     * @deprecated Will be removed in 5.0.
      */
     public function getCurlInterface()
     {
-        return $this->curlInterface;
+        return $this->getValue('curl_interface');
     }
 }

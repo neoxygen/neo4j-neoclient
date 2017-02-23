@@ -11,6 +11,7 @@
 
 namespace GraphAware\Neo4j\Client;
 
+use GraphAware\Common\Connection\BaseConfiguration;
 use GraphAware\Common\Driver\ConfigInterface;
 use GraphAware\Neo4j\Client\Connection\ConnectionManager;
 use GraphAware\Neo4j\Client\HttpDriver\Configuration;
@@ -57,9 +58,9 @@ class ClientBuilder
     /**
      * Add a connection to the handled connections.
      *
-     * @param string          $alias
-     * @param string          $uri
-     * @param ConfigInterface $config
+     * @param string            $alias
+     * @param string            $uri
+     * @param BaseConfiguration $config
      *
      * @return ClientBuilder
      */

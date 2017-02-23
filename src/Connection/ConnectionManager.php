@@ -11,7 +11,7 @@
 
 namespace GraphAware\Neo4j\Client\Connection;
 
-use GraphAware\Neo4j\Client\HttpDriver\Configuration;
+use GraphAware\Common\Connection\BaseConfiguration;
 
 class ConnectionManager
 {
@@ -26,9 +26,9 @@ class ConnectionManager
     private $master;
 
     /**
-     * @param string             $alias
-     * @param string             $uri
-     * @param null|Configuration $config
+     * @param string                 $alias
+     * @param string                 $uri
+     * @param BaseConfiguration|null $config
      */
     public function registerConnection($alias, $uri, $config = null)
     {
