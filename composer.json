@@ -50,5 +50,6 @@
         "psr-4": {
             "GraphAware\\Neo4j\\Client\\Tests\\": "tests/"
         }
-    }
+    },
+    "minimum-stability": "dev"
 }
