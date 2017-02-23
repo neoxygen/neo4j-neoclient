@@ -11,6 +11,7 @@
 
 namespace GraphAware\Neo4j\Client\HttpDriver;
 
+use GraphAware\Common\Connection\BaseConfiguration;
 use GraphAware\Common\Driver\ConfigInterface;
 use GraphAware\Common\Driver\SessionInterface;
 use GraphAware\Common\Transaction\TransactionInterface;
@@ -62,7 +63,7 @@ class Session implements SessionInterface
     /**
      * @param string                  $uri
      * @param GuzzleClient|HttpClient $httpClient
-     * @param Configuration           $config
+     * @param BaseConfiguration       $config
      */
     public function __construct($uri, $httpClient, ConfigInterface $config)
     {
@@ -73,15 +74,15 @@ class Session implements SessionInterface
             throw new \RuntimeException('Second argument to Session::__construct must be an instance of Http\Client\HttpClient.');
         }
 
-        if (null !== $config && !$config instanceof Configuration) {
-            throw new \RuntimeException(sprintf('Third argument to "%s" must be null or "%s"', __CLASS__, Configuration::class));
+        if (null !== $config && !$config instanceof BaseConfiguration) {
+            throw new \RuntimeException(sprintf('Third argument to "%s" must be null or "%s"', __CLASS__, BaseConfiguration::class));
         }
 
         $this->uri = $uri;
         $this->httpClient = new PluginClient($httpClient, [new ErrorPlugin()]);
         $this->responseFormatter = new ResponseFormatter();
         $this->config = $config;
-        $this->requestFactory = $config->getRequestFactory();
+        $this->requestFactory = $config->getValue('request_factory');
     }
 
     /**

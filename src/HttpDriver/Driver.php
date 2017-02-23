@@ -31,13 +31,13 @@ class Driver implements DriverInterface
     protected $config;
 
     /**
-     * @param string        $uri
-     * @param Configuration $config
+     * @param string            $uri
+     * @param BaseConfiguration $config
      */
     public function __construct($uri, ConfigInterface $config = null)
     {
-        if (null !== $config && !$config instanceof Configuration) {
-            throw new \RuntimeException(sprintf('Second argument to "%s" must be null or "%s"', __CLASS__, Configuration::class));
+        if (null !== $config && !$config instanceof BaseConfiguration) {
+            throw new \RuntimeException(sprintf('Second argument to "%s" must be null or "%s"', __CLASS__, BaseConfiguration::class));
         }
 
         $this->uri = $uri;
