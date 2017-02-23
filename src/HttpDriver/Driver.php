@@ -76,7 +76,7 @@ class Driver implements DriverInterface
         }
 
         if (empty($options)) {
-            return $this->config->get('http_client');
+            return $this->config->getValue('http_client');
         }
 
         // This is to keep BC. Will be removed in 5.0
