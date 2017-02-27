@@ -167,7 +167,7 @@ class Client implements ClientInterface
         $connection = $this->connectionManager->getConnection($connectionAlias);
         $driverTransaction = $connection->getTransaction();
 
-        return new Transaction($driverTransaction);
+        return new Transaction($driverTransaction, $this->eventDispatcher);
     }
 
     /**
