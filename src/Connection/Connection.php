@@ -110,7 +110,8 @@ class Connection
         $parameters = (array) $parameters;
 
         try {
-            return $this->session->run($statement, $parameters, $tag);
+            $result = $this->session->run($statement, $parameters, $tag);
+            return $result;
         } catch (MessageFailureException $e) {
             $exception = new Neo4jException($e->getMessage());
             $exception->setNeo4jStatusCode($e->getStatusCode());

@@ -10,6 +10,7 @@
  */
 
 namespace GraphAware\Neo4j\Client\Tests\Integration;
+use GraphAware\Common\Result\StatementStatisticsInterface;
 
 /**
  * Class StatisticsIntegrationTest.
@@ -51,5 +52,20 @@ class StatisticsIntegrationTest extends IntegrationTestCase
         $result = $this->client->run('MATCH (n) DETACH DELETE n', null, null, 'http');
 
         $this->assertEquals(1, $result->summarize()->updateStatistics()->relationshipsDeleted());
+    }
+
+    /**
+     * @group bolt-stats
+     */
+    public function testNodesCreatedWithBolt()
+    {
+        $this->emptyDb();
+        $result = $this->client->run('MATCH (n) RETURN count(n)', [], null, 'bolt');
+        $this->assertInstanceOf(StatementStatisticsInterface::class, $result->summarize()->updateStatistics());
+
+        $tx = $this->client->transaction('bolt');
+        $result = $tx->run('MATCH (n) RETURN count(n)');
+        $tx->commit();
+        $this->assertInstanceOf(StatementStatisticsInterface::class, $result->summarize()->updateStatistics());
     }
 }

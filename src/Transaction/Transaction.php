@@ -13,7 +13,12 @@ namespace GraphAware\Neo4j\Client\Transaction;
 
 use GraphAware\Common\Cypher\Statement;
 use GraphAware\Common\Transaction\TransactionInterface;
+use GraphAware\Neo4j\Client\Event\PostRunEvent;
+use GraphAware\Neo4j\Client\Event\PreRunEvent;
+use GraphAware\Neo4j\Client\Neo4jClientEvents;
+use GraphAware\Neo4j\Client\Result\ResultCollection;
 use GraphAware\Neo4j\Client\StackInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class Transaction
 {
@@ -28,11 +33,18 @@ class Transaction
     protected $queue = [];
 
     /**
-     * @param TransactionInterface $driverTransaction
+     * @var EventDispatcherInterface
      */
-    public function __construct(TransactionInterface $driverTransaction)
+    protected $eventDispatcher;
+
+    /**
+     * @param TransactionInterface $driverTransaction
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(TransactionInterface $driverTransaction, EventDispatcherInterface $eventDispatcher)
     {
         $this->driverTransaction = $driverTransaction;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -59,8 +71,12 @@ class Transaction
         if (!$this->driverTransaction->isOpen() && !in_array($this->driverTransaction->status(), ['COMMITED', 'ROLLED_BACK'], true)) {
             $this->driverTransaction->begin();
         }
+        $stmt = Statement::create($statement, $parameters, $tag);
+        $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_PRE_RUN, new PreRunEvent([$stmt]));
+        $result = $this->driverTransaction->run(Statement::create($statement, $parameters, $tag));
+        $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_POST_RUN, new PostRunEvent(ResultCollection::withResult($result)));
 
-        return $this->driverTransaction->run(Statement::create($statement, $parameters, $tag));
+        return $result;
     }
 
     /**
@@ -90,7 +106,11 @@ class Transaction
             $sts[] = $statement;
         }
 
-        return $this->driverTransaction->runMultiple($sts);
+        $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_PRE_RUN, new PreRunEvent($stack->statements()));
+        $results = $this->driverTransaction->runMultiple($sts);
+        $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_POST_RUN, new PostRunEvent($results));
+
+        return $results;
     }
 
     public function begin()
