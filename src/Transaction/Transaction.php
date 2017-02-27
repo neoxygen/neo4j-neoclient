@@ -71,8 +71,8 @@ class Transaction
         if (!$this->driverTransaction->isOpen() && !in_array($this->driverTransaction->status(), ['COMMITED', 'ROLLED_BACK'], true)) {
             $this->driverTransaction->begin();
         }
-        $statement = Statement::create($statement, $parameters, $tag);
-        $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_PRE_RUN, new PreRunEvent([$statement]));
+        $stmt = Statement::create($statement, $parameters, $tag);
+        $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_PRE_RUN, new PreRunEvent([$stmt]));
         $result = $this->driverTransaction->run(Statement::create($statement, $parameters, $tag));
         $this->eventDispatcher->dispatch(Neo4jClientEvents::NEO4J_POST_RUN, new PostRunEvent(ResultCollection::withResult($result)));
 
