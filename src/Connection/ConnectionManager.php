@@ -65,19 +65,12 @@ class ConnectionManager
      */
     public function getConnection($alias = null)
     {
-        $message = null;
-
-        if (null === $alias && empty($this->connections)) {
-            $message = sprintf('There is no connection configured');
-        } elseif (null !== $alias && !array_key_exists($alias, $this->connections)) {
-            $message = sprintf('The connection with alias "%s" is not configured', $alias);
-        }
-        if ($message) {
-            throw new InvalidConnectionException($message);
-        }
-
         if (null === $alias) {
             return $this->getDefaultConnection();
+        }
+
+        if (!array_key_exists($alias, $this->connections)) {
+            throw new InvalidConnectionException(sprintf('The connection with alias "%s" is not configured', $alias));
         }
 
         return $this->connections[$alias];
